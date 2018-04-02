@@ -23,6 +23,9 @@
 #include "CoreRpcServerErrorCodes.h"
 #include "JsonRpc.h"
 
+#include "Common/ConsoleTools.h"
+#include "zrainbow.h"
+
 #undef ERROR
 
 using namespace Logging;
@@ -171,7 +174,21 @@ bool RpcServer::processJsonRpcRequest(const HttpRequest& request, HttpResponse& 
 	logger(TRACE) << "JSON-RPC response: " << jsonResponse.getBody();
 	return true;
 }
+//$$$$
+bool RpcServer::set_public_node(const bool _is_restricted) {
+  m_public_node = _is_restricted;
+  if (m_public_node) 
+	  std::cout 
+			<< std::endl 
+			<< magenta
+			<< "Public mode activated ... ... ..." 
+			<< grey
+			<< std::endl 
+			<< std::endl;
 
+  return true;
+}
+//$$$$
 bool RpcServer::isCoreReady() {
   return m_core.currency().isTestnet() || m_p2p.get_payload_object().isSynchronized();
 }
@@ -823,7 +840,11 @@ bool RpcServer::on_send_raw_tx(const COMMAND_RPC_SEND_RAW_TX::request& req, COMM
 }
 
 bool RpcServer::on_start_mining(const COMMAND_RPC_START_MINING::request& req, COMMAND_RPC_START_MINING::response& res) {
-
+  if (m_public_node) {
+	res.status = "Public mode activated, command forbidden";
+	return false;
+  }
+  
   AccountPublicAddress adr;
 
   if (!m_core.currency().parseAccountAddressString(req.miner_address, adr)) {
@@ -841,6 +862,11 @@ bool RpcServer::on_start_mining(const COMMAND_RPC_START_MINING::request& req, CO
 }
 
 bool RpcServer::on_stop_mining(const COMMAND_RPC_STOP_MINING::request& req, COMMAND_RPC_STOP_MINING::response& res) {
+  if (m_public_node) {
+	res.status = "Public mode activated, command forbidden";
+	return false;
+  }
+  
   if (!m_core.get_miner().stop()) {
     res.status = "Failed, mining not stopped";
     return true;
@@ -850,6 +876,11 @@ bool RpcServer::on_stop_mining(const COMMAND_RPC_STOP_MINING::request& req, COMM
 }
 //$$$$
 bool RpcServer::on_stop_daemon(const COMMAND_RPC_STOP_DAEMON::request& req, COMMAND_RPC_STOP_DAEMON::response& res) {
+  if (m_public_node) {
+	res.status = "Public mode activated, command forbidden";
+	return false;
+  }
+
 	m_p2p.sendStopSignal();
 	res.status = CORE_RPC_STATUS_OK;
 	return true;

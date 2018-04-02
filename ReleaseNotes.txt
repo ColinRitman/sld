@@ -1,4 +1,6 @@
 Nitrogen version:
+ Build #43
+  - daemon: public node mode;
  Build #42
   - wallet: restore from legacy key implemented; 
  Build #41
