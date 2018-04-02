@@ -1,6 +1,6 @@
 Nitrogen version:
  Build #42
-- wallet: restore from legacy key implemented; 
+  - wallet: restore from legacy key implemented; 
  Build #41
   - added reset param in CreateAddress method @ PayGate;
  Build #40
