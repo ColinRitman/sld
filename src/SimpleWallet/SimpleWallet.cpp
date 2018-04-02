@@ -24,6 +24,9 @@
 #include "Common/StringTools.h"
 #include "Common/PathTools.h"
 #include "Common/Util.h"
+
+#include <Common/Base58.h>
+
 #include "CryptoNoteCore/CryptoNoteFormatUtils.h"
 #include "CryptoNoteProtocol/CryptoNoteProtocolHandler.h"
 #include "NodeRpcProxy/NodeRpcProxy.h"
@@ -1054,8 +1057,29 @@ if (m_restore_legacy) //legacy restore
 		
 		if (!m_legacy_key.empty())
 		{
-			fail_msg_writer() << "NOT IMPLEMENTED YET :(";
-			return false;
+
+			uint64_t addressPrefix;
+			std::string data;
+			CryptoNote::AccountKeys keys;
+			
+			addressPrefix = parameters::CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX;
+
+			if (!Tools::Base58::decode_addr(m_legacy_key, addressPrefix, data))
+			{
+				fail_msg_writer() << "can't decode key from Base58";
+				return false;
+			}
+			
+			if (!data.size() == sizeof(keys))
+			{
+				fail_msg_writer() << "data.size() == sizeof(keys)";
+				return false;
+			}
+			
+			std::memcpy(&keys, data.data(), sizeof(keys));
+			m_spend_secret_key = keys.spendSecretKey;
+			m_view_secret_key = keys.viewSecretKey;
+			
 		}
     }
 // prep finished here ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
