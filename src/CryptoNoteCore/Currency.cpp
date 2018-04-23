@@ -130,7 +130,12 @@ uint64_t Currency::baseRewardFunction(uint64_t alreadyGeneratedCoins, uint32_t h
 	{
 		base_reward = parameters::COMMON_REWARD_Z*prize_factor;
 	}
-
+//////////
+	if (alreadyGeneratedCoins>parameters::MONEY_SUPPLY_LOWSPEED_Z) 
+	{
+		base_reward = base_reward / 100;
+	}
+//////////	
 	if (alreadyGeneratedCoins>parameters::MONEY_SUPPLY_MINEABLE_Z) 
 	{
 		base_reward = 1;
