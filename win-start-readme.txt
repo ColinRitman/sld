@@ -46,7 +46,8 @@ Run daemon.bat.
 Wait to full sync.
 
 If daemon will not find any seed - check your windows firewall and home/office router NAT and firewall rules.
-If still failed - ask for assistance at official Ryver forum - https://zzl.ryver.com/application/signup/members/h07SVMfFAvFRGiZ
+If still failed - ask for assistance at the Discord chat - https://discord.gg/46xpPye
+
 
 5 - Start mining
 

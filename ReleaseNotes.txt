@@ -1,4 +1,6 @@
 Oxygen version:
+ Build #46
+  - core: critical checkpoins;
  Build #45
   - core: new mining curve 2.5M - 10M added;
 

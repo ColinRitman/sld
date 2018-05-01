@@ -34,9 +34,9 @@ const uint64_t MINIMUM_FEE                                   = UINT64_C(1);// Tr
 const uint64_t DEFAULT_DUST_THRESHOLD                        = UINT64_C(2);//The amount bellow this value will be considered as dust: ZZP=1, SLD=2
 
 const uint64_t REAL_COINS_LIMITED_Z                          = UINT64_C(10000000);//Total amount of coins mineable with full reward: 10000000=SLD,10000000000=ZZP
-const uint64_t REAL_COINS_LOWSPEED_Z                          = UINT64_C(2500000);//Total amount of coins mineable with limited reward: 10000000=SLD,10000000000=ZZP
+const uint64_t REAL_COINS_LOWSPEED_Z                         = UINT64_C(2500000);//Total amount of coins mineable with limited reward: 2500000=SLD,10000000000=ZZP
 const uint64_t MONEY_SUPPLY_MINEABLE_Z                       = REAL_COINS_LIMITED_Z*COIN;//Total amount of atomic units mineable with full reward
-const uint64_t MONEY_SUPPLY_LOWSPEED_Z                       = REAL_COINS_LOWSPEED_Z*COIN;//Total amount of atomic units mineable with full reward
+const uint64_t MONEY_SUPPLY_LOWSPEED_Z                       = REAL_COINS_LOWSPEED_Z*COIN;//Total amount of atomic units mineable with limited reward
 const size_t   RUSH_BLOCKS_Z                                 = 1000;//Premium rewarded blocks count: ZZP=500, SLD=1000
 const uint64_t RUSH_REWARD_Z                                 = (UINT64_C(100)*COIN);//Reward for a premium block: ZZP=200000, SLD=100
 const uint64_t COMMON_REWARD_Z                               = (UINT64_C(1)*COIN);//Reward for an ordinary block: ZZP=1000, SLD=1
@@ -203,6 +203,9 @@ const std::initializer_list<CheckpointData> CHECKPOINTS = {
 	{ 650000,   "5a94c7f078099866ecaf2f8512692be48b1bff63685409e17ab1c09b3d701223" },
 	{ 675000,   "c35bd4f1b8ac5f0c876855c28d463d39bea9721ca651d55f1dad32b7ac37a228" },
 	{ 700000,   "f04a589aba3ab4104fd29d0aa1429e5e28ae25c63f90b7eefc489433dd6c6a6b" },
+	{ 717969,   "a13f7f9871c7ed4d178e4aecbd64436ecb4bd888470034a508fee791907a6f79" },
+	{ 725000,   "5e3f2475e31ec7d3eff5eb6e3d2b55755d5f3a9181f0631cf2d59d2fee8b31c8" },
+	{ 740622,   "db434659e95bad3b00968bb0e16852bbbc59d0e208c0e2865d2f37e424c4530c" },
 
 };
 
