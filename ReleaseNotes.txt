@@ -1,6 +1,8 @@
 Oxygen version:
+ Build #47
+  - wallet: read-olny wallets;
  Build #46
-  - core: critical checkpoins;
+  - auxiliary: critical checkpoins;
  Build #45
   - core: new mining curve 2.5M - 10M added;
 

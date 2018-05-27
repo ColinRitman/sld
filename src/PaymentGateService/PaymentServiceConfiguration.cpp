@@ -20,7 +20,7 @@ Configuration::Configuration() {
   daemonize = false;
   registerService = false;
   unregisterService = false;
-  logFile = "payment_gate.log";
+  logFile = "sld_payments.log";
   testnet = false;
   printAddresses = false;
   logLevel = Logging::INFO;

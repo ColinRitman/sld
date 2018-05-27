@@ -24,7 +24,7 @@
 #include <errno.h>
 #endif
 
-#define SERVICE_NAME "Payment Gate"
+#define SERVICE_NAME "SLD Payments"
 
 PaymentGateService* ppg;
 
