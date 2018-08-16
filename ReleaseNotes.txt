@@ -1,4 +1,6 @@
 Oxygen version:
+ Build #48
+  - payment service: minor improvements;
  Build #47
   - wallet: read-olny wallets;
  Build #46

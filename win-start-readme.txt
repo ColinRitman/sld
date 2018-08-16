@@ -7,7 +7,7 @@ this archive contains several apps and batch files.
 sldd.exe - coin's daemon
 sldw.exe - wallet app
 sldm.exe - CPU solo miner app
-sldp.exe - payments app for exchanges
+sldp.exe - payments gate app for exchanges
 
 new-wallet.bat - batch file to generate new wallet
 daemon.bat - batch file to start coin's daemon
@@ -21,7 +21,17 @@ Save.
 Don't start daemon, but run new-wallet.bat instead.
 You will get new wallet file with password supplied as result.
 
-WARINING - backup *.wallet file ASAP to another pc, remote location of flash drive.
+***** WARININGS *****
+
+a. 
+Backup *.wallet file ASAP to another pc, remote location of flash drive.
+
+b.
+*.wallet.backup.txt file will be created in the working folder along with your new wallet.
+This file contains backup copy of your wallet and wallet password.
+Store this file in safe place or print it and delete it from working folder, empty recycle bin as well.
+
+*********************
 
 2 - Second - edit miner batch file
 
@@ -41,7 +51,6 @@ Save.
 Clear cache if you used test version of daemon.
 To do this, press [Win+R] key, type %APPDATA%, and delete sld folder if you have one.
 
-Wait for 31-NOV-2017 12:00 GMT.
 Run daemon.bat.
 Wait to full sync.
 
