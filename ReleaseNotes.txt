@@ -1,4 +1,6 @@
 Oxygen version:
+ Build #49
+  - core: alternative blocks age limitation;
  Build #48
   - payment service: minor improvements;
  Build #47

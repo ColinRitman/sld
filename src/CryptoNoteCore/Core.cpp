@@ -978,13 +978,13 @@ uint64_t core::depositInterestAtHeight(size_t height) const {
 
 bool core::handleIncomingTransaction(const Transaction& tx, const Crypto::Hash& txHash, size_t blobSize, tx_verification_context& tvc, bool keptByBlock) {
   if (!check_tx_syntax(tx)) {
-    logger(INFO) << "WRONG TRANSACTION BLOB, Failed to check tx " << txHash << " syntax, rejected";
+    logger(INFO, RED) << "WRONG TRANSACTION BLOB, Failed to check tx " << txHash << " syntax, rejected";
     tvc.m_verifivation_failed = true;
     return false;
   }
 
   if (!check_tx_semantic(tx, keptByBlock)) {
-    logger(INFO) << "WRONG TRANSACTION BLOB, Failed to check tx " << txHash << " semantic, rejected";
+    logger(INFO, RED) << "WRONG TRANSACTION BLOB, Failed to check tx " << txHash << " semantic, rejected";
     tvc.m_verifivation_failed = true;
     return false;
   }
@@ -992,12 +992,12 @@ bool core::handleIncomingTransaction(const Transaction& tx, const Crypto::Hash& 
   bool r = add_new_tx(tx, txHash, blobSize, tvc, keptByBlock);
   if (tvc.m_verifivation_failed) {
     if (!tvc.m_tx_fee_too_small) {
-      logger(ERROR) << "Transaction verification failed: " << txHash;
+      logger(ERROR, RED) << "Transaction verification failed: " << txHash;
     } else {
-      logger(INFO) << "Transaction verification failed: " << txHash;
+      logger(INFO, RED) << "Transaction verification failed: " << txHash;
     }
   } else if (tvc.m_verifivation_impossible) {
-    logger(ERROR) << "Transaction verification impossible: " << txHash;
+    logger(ERROR, RED) << "Transaction verification impossible: " << txHash;
   }
 
   if (tvc.m_added_to_pool) {

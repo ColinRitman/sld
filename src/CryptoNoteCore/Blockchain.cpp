@@ -998,16 +998,18 @@ bool Blockchain::complete_timestamps_vector(uint64_t start_top_height, std::vect
 }
 
 bool Blockchain::handle_alternative_block(const Block& b, const Crypto::Hash& id, block_verification_context& bvc, bool sendNewAlternativeBlockMessage) {
+	
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
 
   auto block_height = get_block_height(b);
+  
   if (block_height == 0) {
     logger(ERROR, BRIGHT_RED) <<
       "Block with id: " << Common::podToHex(id) << " (as alternative) have wrong miner transaction";
     bvc.m_verifivation_failed = true;
     return false;
   }
-
+///////////////////////////////////1234
   if (!m_checkpoints.is_alternative_block_allowed(getCurrentBlockchainHeight(), block_height)) {
     logger(TRACE) << "Block with id: " << id << std::endl <<
       " can't be accepted for alternative chain, block height: " << block_height << std::endl <<
@@ -1015,6 +1017,7 @@ bool Blockchain::handle_alternative_block(const Block& b, const Crypto::Hash& id
     bvc.m_verifivation_failed = true;
     return false;
   }
+///////////////////////////////////1234
 
   if (!checkBlockVersion(b, id)) {
     bvc.m_verifivation_failed = true;
@@ -1091,15 +1094,21 @@ bool Blockchain::handle_alternative_block(const Block& b, const Crypto::Hash& id
 
     // Always check PoW for alternative blocks
     m_is_in_checkpoint_zone = false;
+	
     difficulty_type current_diff = get_next_difficulty_for_alternative_chain(alt_chain, bei);
+	
     if (!(current_diff)) { logger(ERROR, BRIGHT_RED) << "!!!!!!! DIFFICULTY OVERHEAD !!!!!!!"; return false; }
+	
     Crypto::Hash proof_of_work = NULL_HASH;
+	
     if (!m_currency.checkProofOfWork(m_cn_context, bei.bl, current_diff, proof_of_work)) {
       logger(INFO, BRIGHT_RED) <<
         "Block with id: " << id
         << ENDL << " for alternative chain, have not enough proof of work: " << proof_of_work
         << ENDL << " expected difficulty: " << current_diff;
+		
       bvc.m_verifivation_failed = true;
+	  
       return false;
     }
 
@@ -1140,10 +1149,12 @@ bool Blockchain::handle_alternative_block(const Block& b, const Crypto::Hash& id
       return r;
     } else if (m_blocks.back().cumulative_difficulty < bei.cumulative_difficulty) //check if difficulty bigger then in main chain
     {
-      //do reorganize!
-      logger(INFO, BRIGHT_GREEN) <<
-        "###### REORGANIZE on height: " << alt_chain.front()->second.height << " of " << m_blocks.size() - 1 << " with cum_difficulty " << m_blocks.back().cumulative_difficulty
-        << ENDL << " alternative blockchain size: " << alt_chain.size() << " with cum_difficulty " << bei.cumulative_difficulty;
+		//do reorganize!
+		logger(INFO, BRIGHT_GREEN) <<
+			"START REORGANIZE on height: " << alt_chain.front()->second.height << " of " << m_blocks.size() - 1 << " with cum_difficulty " << m_blocks.back().cumulative_difficulty << ENDL;
+		logger(INFO, BLUE) <<
+			"ALTERNATIVE blockchain size: " << alt_chain.size() << " with cum_difficulty " << bei.cumulative_difficulty << ENDL;
+		
       bool r = switch_to_alternative_blockchain(alt_chain, false);
       if (r) {
         bvc.m_added_to_main_chain = true;
@@ -1154,11 +1165,23 @@ bool Blockchain::handle_alternative_block(const Block& b, const Crypto::Hash& id
       return r;
     } else 
 		{
-			logger(INFO, BRIGHT_CYAN) << ">->-> BLOCK ADDED AS ALTERNATIVE ON HEIGHT " << bei.height << ENDL;
-			logger(INFO, YELLOW) << "ID:\t" << id << ENDL;
-			logger(INFO, YELLOW) << "PoW:\t" << proof_of_work << ENDL;
-			logger(INFO, YELLOW) << "Diff:\t" << current_diff << ENDL;
+			logger(INFO, BRIGHT_CYAN) << "BLOCK ADDED AS ALTERNATIVE" << ENDL;
+			logger(INFO, YELLOW) << "ID:\t\t" << id << ENDL;
+			logger(INFO, BRIGHT_YELLOW) << "Block Height:\t" << bei.height << ENDL;
+			logger(INFO, YELLOW) << "Chain Height:\t" << getCurrentBlockchainHeight() << ENDL;
+			logger(INFO, YELLOW) << "PoW:\t\t" << proof_of_work << ENDL;
+			logger(INFO, YELLOW) << "Diff:\t\t" << current_diff << ENDL;
+			
+			uint64_t h_delta = 0;
+			h_delta = getCurrentBlockchainHeight() - bei.height;
+			
+			if (h_delta > parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW) 
+				logger(INFO, BRIGHT_RED) << "51% ATTACK, Delta is " << h_delta << ENDL;
+			else
+				logger(INFO, YELLOW) << "Height Delta:\t" << h_delta << ENDL;
 
+			
+			
 			if (sendNewAlternativeBlockMessage) 
 			{
 				sendMessage(BlockchainMessage(NewAlternativeBlockMessage(id)));
@@ -1169,7 +1192,7 @@ bool Blockchain::handle_alternative_block(const Block& b, const Crypto::Hash& id
     //block orphaned
     bvc.m_marked_as_orphaned = true;
     logger(INFO, BRIGHT_RED) <<
-      "Block recognized as orphaned and rejected, id = " << id;
+      "Alternative block recognized as orphaned and rejected, id = " << id;
   }
 
   return true;

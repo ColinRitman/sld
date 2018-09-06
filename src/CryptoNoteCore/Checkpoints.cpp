@@ -59,10 +59,23 @@ bool Checkpoints::check_block(uint32_t  height, const Crypto::Hash &h) const {
 //---------------------------------------------------------------------------
 bool Checkpoints::is_alternative_block_allowed(uint32_t  blockchain_height,
                                                uint32_t  block_height) const {
-  if (0 == block_height)
-    return false;
+	if (0 == block_height) return false;
 
+	if (blockchain_height>=1500000)
+	{
+		if (block_height<blockchain_height-parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW) return false;	  
+	}
+	else 
+	{
+		if (block_height<blockchain_height-parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW) 
+		{
+			logger(Logging::INFO, Logging::CYAN) 
+				<< "!!!!! BLOCK WILL BE REJECTED AFTER #1500000 FORK, DELTA = " << blockchain_height-block_height;
+		}
+	}  
+	  
   auto it = m_points.upper_bound(blockchain_height);
+  
   // Is blockchain_height before the first checkpoint?
   if (it == m_points.begin())
     return true;
@@ -71,4 +84,5 @@ bool Checkpoints::is_alternative_block_allowed(uint32_t  blockchain_height,
   uint32_t  checkpoint_height = it->first;
   return checkpoint_height < block_height;
 }
+
 }
