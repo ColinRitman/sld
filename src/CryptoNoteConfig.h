@@ -21,7 +21,7 @@ const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT            = 60 * 60 * 2;
 
 const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW             = 30;
 
-const uint64_t MONEY_SUPPLY                                  = static_cast<uint64_t>(-1);//Total amount of atomic units to be emitted
+const uint64_t MONEY_SUPPLY                                  = static_cast<uint64_t>(-1);//Total amount of atomic units to be emitted.
 
 const size_t   CRYPTONOTE_REWARD_BLOCKS_WINDOW               = 100;
 const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE     = 1048576; //size of block (bytes) after which reward for block calculated using block size
@@ -230,6 +230,7 @@ const std::initializer_list<CheckpointData> CHECKPOINTS = {
 	{ 1250000,   "171f1abd5dc48935d1b8a9b3f6a1e68f8977a7debe22d7db0d92d534614597f9" },
 	{ 1275000,   "75ab22e2130aee49440f63f31f2e3eb5a7323072d5f0228caf3d4dec4dfcd606" },
 	{ 1300000,   "ba599fd1c2f37dfbfb4cb67e9ab4930809af07301acc04fdcf0f3cc114a0deb5" },
+	{ 1347200,   "0e6d78a9992fd0f2622f260e140c7b229cc9e005219182178a84f08b981a764b" },
 
 };
 
