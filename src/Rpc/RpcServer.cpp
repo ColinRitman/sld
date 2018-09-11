@@ -176,17 +176,11 @@ bool RpcServer::processJsonRpcRequest(const HttpRequest& request, HttpResponse& 
 }
 //$$$$
 bool RpcServer::set_public_node(const bool _is_restricted) {
-  m_public_node = _is_restricted;
-  if (m_public_node) 
-	  std::cout 
-			<< std::endl 
-			<< magenta
-			<< "Public mode activated ... ... ..." 
-			<< grey
-			<< std::endl 
-			<< std::endl;
-
-  return true;
+	m_public_node = _is_restricted;
+	
+	if (m_public_node) 
+		logger(INFO, MAGENTA) << "Public mode activated" << std::endl;
+	return true;
 }
 //$$$$
 bool RpcServer::isCoreReady() {

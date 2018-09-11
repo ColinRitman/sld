@@ -20,35 +20,33 @@ using namespace Logging;
 using namespace Common;
 
 namespace {
+	std::string appendPath(const std::string& path, const std::string& fileName) {
+		std::string result = path;
+		if (!result.empty()) {
+			result += '/';
+		}
 
-std::string appendPath(const std::string& path, const std::string& fileName) {
-  std::string result = path;
-  if (!result.empty()) {
-    result += '/';
-  }
-
-  result += fileName;
-  return result;
-}
-
+		result += fileName;
+		return result;
+	}
 }
 
 namespace std {
-bool operator<(const Crypto::Hash& hash1, const Crypto::Hash& hash2) {
-  return memcmp(&hash1, &hash2, Crypto::HASH_SIZE) < 0;
-}
+	bool operator<(const Crypto::Hash& hash1, const Crypto::Hash& hash2) {
+		return memcmp(&hash1, &hash2, Crypto::HASH_SIZE) < 0;
+	}
 
-bool operator<(const Crypto::KeyImage& keyImage1, const Crypto::KeyImage& keyImage2) {
-  return memcmp(&keyImage1, &keyImage2, 32) < 0;
-}
+	bool operator<(const Crypto::KeyImage& keyImage1, const Crypto::KeyImage& keyImage2) {
+		return memcmp(&keyImage1, &keyImage2, 32) < 0;
+	}
 }
 
 #define CURRENT_BLOCKCACHE_STORAGE_ARCHIVE_VER 3
 #define CURRENT_BLOCKCHAININDICES_STORAGE_ARCHIVE_VER 1
 
 namespace CryptoNote {
-class BlockCacheSerializer;
-class BlockchainIndicesSerializer;
+	class BlockCacheSerializer;
+	class BlockchainIndicesSerializer;
 }
 
 namespace CryptoNote {
@@ -447,8 +445,7 @@ bool Blockchain::init(const std::string& config_folder, bool load_existing) {
     if (!(firstBlockHash == m_currency.genesisBlockHash())) {
       logger(ERROR, BRIGHT_RED) << "Failed to init: genesis block mismatch. "
         "Probably you set --testnet flag with data "
-        "dir with non-test blockchain or another "
-        "network.";
+        "dir with non-test blockchain or another network.";
       return false;
     }
   }
@@ -823,7 +820,7 @@ bool Blockchain::switch_to_alternative_blockchain(std::list<blocks_ext_by_hash::
 
   sendMessage(BlockchainMessage(ChainSwitchMessage(std::move(blocksFromCommonRoot))));
 
-  logger(INFO, BRIGHT_GREEN) << "REORGANIZE SUCCESS! on height: " << split_height << ", new blockchain size: " << m_blocks.size();
+  logger(INFO, BRIGHT_CYAN) << "REORGANIZE SUCCESS on height: " << split_height << ", new blockchain size: " << m_blocks.size();
   return true;
 }
 
@@ -1150,9 +1147,9 @@ bool Blockchain::handle_alternative_block(const Block& b, const Crypto::Hash& id
     } else if (m_blocks.back().cumulative_difficulty < bei.cumulative_difficulty) //check if difficulty bigger then in main chain
     {
 		//do reorganize!
-		logger(INFO, BRIGHT_GREEN) <<
+		logger(INFO, BRIGHT_CYAN) <<
 			"START REORGANIZE on height: " << alt_chain.front()->second.height << " of " << m_blocks.size() - 1 << " with cum_difficulty " << m_blocks.back().cumulative_difficulty << ENDL;
-		logger(INFO, BLUE) <<
+		logger(INFO, CYAN) <<
 			"ALTERNATIVE blockchain size: " << alt_chain.size() << " with cum_difficulty " << bei.cumulative_difficulty << ENDL;
 		
       bool r = switch_to_alternative_blockchain(alt_chain, false);
@@ -1166,11 +1163,11 @@ bool Blockchain::handle_alternative_block(const Block& b, const Crypto::Hash& id
     } else 
 		{
 			logger(INFO, BRIGHT_CYAN) << "BLOCK ADDED AS ALTERNATIVE" << ENDL;
-			logger(INFO, YELLOW) << "ID:\t\t" << id << ENDL;
-			logger(INFO, BRIGHT_YELLOW) << "Block Height:\t" << bei.height << ENDL;
-			logger(INFO, YELLOW) << "Chain Height:\t" << getCurrentBlockchainHeight() << ENDL;
-			logger(INFO, YELLOW) << "PoW:\t\t" << proof_of_work << ENDL;
-			logger(INFO, YELLOW) << "Diff:\t\t" << current_diff << ENDL;
+			logger(INFO, BLUE) << "ID:\t\t" << id << ENDL;
+			logger(INFO, BRIGHT_BLUE) << "Block Height:\t" << bei.height << ENDL;
+			logger(INFO, BLUE) << "Chain Height:\t" << getCurrentBlockchainHeight() << ENDL;
+			logger(INFO, BLUE) << "PoW:\t\t" << proof_of_work << ENDL;
+			logger(INFO, BLUE) << "Diff:\t\t" << current_diff << ENDL;
 			
 			uint64_t h_delta = 0;
 			h_delta = getCurrentBlockchainHeight() - bei.height;
@@ -1178,7 +1175,7 @@ bool Blockchain::handle_alternative_block(const Block& b, const Crypto::Hash& id
 			if (h_delta > parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW) 
 				logger(INFO, BRIGHT_RED) << "51% ATTACK, Delta is " << h_delta << ENDL;
 			else
-				logger(INFO, YELLOW) << "Height Delta:\t" << h_delta << ENDL;
+				logger(INFO, CYAN) << "Height Delta:\t" << h_delta << ENDL;
 
 			
 			
@@ -1191,8 +1188,8 @@ bool Blockchain::handle_alternative_block(const Block& b, const Crypto::Hash& id
   } else {
     //block orphaned
     bvc.m_marked_as_orphaned = true;
-    logger(INFO, BRIGHT_RED) <<
-      "Alternative block recognized as orphaned and rejected, id = " << id;
+    logger(INFO, MAGENTA) <<
+      "Alternative block "<< id << "is rejected since lost the parent";
   }
 
   return true;
@@ -2466,8 +2463,8 @@ bool Blockchain::loadBlockchainIndices() {
     m_generatedTransactionsIndex.clear();
 
     for (uint32_t b = 0; b < m_blocks.size(); ++b) {
-      if (b % 1000 == 0) {
-        logger(INFO, BLUE) << "Height " << b << " of " << m_blocks.size();
+      if (b % 5000 == 0) {
+        logger(INFO, BLUE) << "# " << b << " of " << m_blocks.size();
       }
       const BlockEntry& block = m_blocks[b];
       m_timestampIndex.add(block.bl.timestamp, get_block_hash(block.bl));

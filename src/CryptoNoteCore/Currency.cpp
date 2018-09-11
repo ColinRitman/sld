@@ -724,7 +724,6 @@ difficulty_type Currency::nextDifficultyZawy(
     return nextDiffZ;
 }
 //******************************************************************************************************************
-//******************************************************************************************************************
 difficulty_type Currency::nextDifficulty(
 	std::vector<uint64_t> timestamps,
 	std::vector<difficulty_type> cumulativeDifficulties, 

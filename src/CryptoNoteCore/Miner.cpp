@@ -132,27 +132,26 @@ namespace CryptoNote
     return std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
   }
 
-  //-----------------------------------------------------------------------------------------------------
-  void miner::merge_hr()
-  {
-    if(m_last_hr_merge_time && is_mining()) {
-      m_current_hash_rate = m_hashes * 1000 / (millisecondsSinceEpoch() - m_last_hr_merge_time + 1);
-      std::lock_guard<std::mutex> lk(m_last_hash_rates_lock);
-      m_last_hash_rates.push_back(m_current_hash_rate);
-      if(m_last_hash_rates.size() > 19)
-        m_last_hash_rates.pop_front();
+//-----------------------------------------------------------------------------------------------------
+void miner::merge_hr(){
+	if(m_last_hr_merge_time && is_mining()) {
+	  m_current_hash_rate = m_hashes * 1000 / (millisecondsSinceEpoch() - m_last_hr_merge_time + 1);
+	  std::lock_guard<std::mutex> lk(m_last_hash_rates_lock);
+	  m_last_hash_rates.push_back(m_current_hash_rate);
+	  if(m_last_hash_rates.size() > 19)
+		m_last_hash_rates.pop_front();
 
-      if(m_do_print_hashrate) {
-        uint64_t total_hr = std::accumulate(m_last_hash_rates.begin(), m_last_hash_rates.end(), static_cast<uint64_t>(0));
-        float hr = static_cast<float>(total_hr)/static_cast<float>(m_last_hash_rates.size());
-        std::cout << "hashrate: " << std::setprecision(4) << std::fixed << hr << ENDL;
-      }
-    }
-    
-    m_last_hr_merge_time = millisecondsSinceEpoch();
-    m_hashes = 0;
-  }
+	  if(m_do_print_hashrate) {
+		uint64_t total_hr = std::accumulate(m_last_hash_rates.begin(), m_last_hash_rates.end(), static_cast<uint64_t>(0));
+		float hr = static_cast<float>(total_hr)/static_cast<float>(m_last_hash_rates.size());
+		std::cout << "hashrate: " << std::setprecision(4) << std::fixed << hr << ENDL;
+	  }
+	}
 
+	m_last_hr_merge_time = millisecondsSinceEpoch();
+	m_hashes = 0;
+}
+//-----------------------------------------------------------------------------------------------------
   bool miner::init(const MinerConfig& config) {
     if (!config.extraMessages.empty()) {
       std::string buff;
@@ -352,7 +351,8 @@ namespace CryptoNote
   //-----------------------------------------------------------------------------------------------------
   bool miner::worker_thread(uint32_t th_local_index)
   {
-    logger(INFO) << "Miner thread was started ["<< th_local_index << "]";
+    logger(INFO,MAGENTA) << "Miner thread was started ["<< th_local_index << "]";
+	
     uint32_t nonce = m_starter_nonce + th_local_index;
     difficulty_type local_diff = 0;
     uint32_t local_template_ver = 0;
@@ -396,7 +396,7 @@ namespace CryptoNote
         //we lucky!
         ++m_config.current_extra_message_index;
 
-        logger(INFO, BRIGHT_MAGENTA) << ";-) Found block for difficulty: " << local_diff;
+        logger(INFO, BRIGHT_MAGENTA) << "Found block for difficulty: " << local_diff;
 
         if(!m_handler.handle_block_found(b)) {
           --m_config.current_extra_message_index;
@@ -409,7 +409,7 @@ namespace CryptoNote
       nonce += m_threads_total;
       ++m_hashes;
     }
-    logger(INFO) << "Miner thread stopped ["<< th_local_index << "]";
+    logger(INFO,MAGENTA) << "Miner thread stopped ["<< th_local_index << "]";
     return true;
   }
   //-----------------------------------------------------------------------------------------------------
