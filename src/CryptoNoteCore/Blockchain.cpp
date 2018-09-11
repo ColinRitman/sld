@@ -1189,7 +1189,7 @@ bool Blockchain::handle_alternative_block(const Block& b, const Crypto::Hash& id
     //block orphaned
     bvc.m_marked_as_orphaned = true;
     logger(INFO, MAGENTA) <<
-      "Alternative block "<< id << "is rejected since lost the parent";
+      "Alternative block "<< id << " is rejected since lost the parent";
   }
 
   return true;
