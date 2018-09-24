@@ -150,14 +150,14 @@ bool RpcServer::processJsonRpcRequest(const HttpRequest& request, HttpResponse& 
 			{ "getblockheaderbyhash", { makeMemberMethod(&RpcServer::on_get_block_header_by_hash), false } },
 			{ "getblockheaderbyheight", { makeMemberMethod(&RpcServer::on_get_block_header_by_height), false } }
 		};
-	//bool RpcServer::on_blocks_list_json(const COMMAND_RPC_GET_BLOCKS_LIST::request& req, COMMAND_RPC_GET_BLOCKS_LIST::response& res)
+
 		auto it = jsonRpcHandlers.find(jsonRequest.getMethod());
 		if (it == jsonRpcHandlers.end()) {
-		  throw JsonRpcError(JsonRpc::errMethodNotFound);
+			throw JsonRpcError(JsonRpc::errMethodNotFound);
 		}
 
 		if (!it->second.allowBusyCore && !isCoreReady()) {
-		  throw JsonRpcError(CORE_RPC_ERROR_CODE_CORE_BUSY, "Core is busy");
+			throw JsonRpcError(CORE_RPC_ERROR_CODE_CORE_BUSY, "Core is busy");
 		}
 
 		it->second.handler(this, jsonRequest, jsonResponse);
