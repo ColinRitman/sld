@@ -39,6 +39,9 @@
 #include "Serialization/BinaryOutputStreamSerializer.h"
 #include "Serialization/SerializationOverloads.h"
 
+#include "Common/ConsoleTools.h"
+#include "zrainbow.h"
+
 using namespace Common;
 using namespace Logging;
 using namespace CryptoNote;
@@ -52,11 +55,12 @@ size_t get_random_index_with_fixed_probability(size_t max_index) {
   size_t x = Crypto::rand<size_t>() % (max_index + 1);
   return (x*x*x) / (max_index*max_index); //parabola \/
 }
-
-
+///////////////////////////////////////////////////////////////////////////////
 void addPortMapping(Logging::LoggerRef& logger, uint32_t port) {
-  // Add UPnP port mapping
-  logger(INFO) << "Attempting to add IGD port mapping.";
+	// Add UPnP port mapping
+	logger(INFO) 
+		<< "Attempting to add IGD port mapping via UPnP.";
+	
   int result;
   UPNPDev* deviceList = upnpDiscover(1000, NULL, NULL, 0, 0, &result);
   UPNPUrls urls;
@@ -87,11 +91,11 @@ void addPortMapping(Logging::LoggerRef& logger, uint32_t port) {
     logger(INFO) << "No IGD was found.";
   }
 }
-
+///////////////////////////////////////////////////////////////////////////////
 bool parse_peer_from_string(NetworkAddress& pe, const std::string& node_addr) {
-  return Common::parseIpAddressAndPort(pe.ip, pe.port, node_addr);
+	return Common::parseIpAddressAndPort(pe.ip, pe.port, node_addr);
 }
-
+///////////////////////////////////////////////////////////////////////////////
 }
 
 
@@ -110,16 +114,24 @@ namespace CryptoNote
     const command_line::arg_descriptor<std::vector<std::string> > arg_p2p_seed_node   = {"seed-node", "Connect to a node to retrieve peer addresses, and disconnect"};
     const command_line::arg_descriptor<bool> arg_p2p_hide_my_port   =    {"hide-my-port", "Do not announce yourself as peerlist candidate", false, true};
 
-    std::string print_peerlist_to_string(const std::list<PeerlistEntry>& pl) {
-      time_t now_time = 0;
-      time(&now_time);
-      std::stringstream ss;
-      ss << std::setfill('0') << std::setw(8) << std::hex << std::noshowbase;
-      for (const auto& pe : pl) {
-        ss << pe.id << "\t\t" << pe.adr << " \tlast_seen: " << Common::timeIntervalToString(now_time - pe.last_seen) << std::endl;
-      }
-      return ss.str();
-    }
+	std::string print_peerlist_to_string(const std::list<PeerlistEntry>& pl) {
+		
+		time_t now_time = 0;
+		time(&now_time);
+		std::stringstream ss;
+		
+		ss << std::setfill('0') << std::setw(8) << std::hex << std::noshowbase;
+		for (const auto& pe : pl) {
+			ss 
+				<< pe.id 
+				<< "\t" 
+				<< pe.adr 
+				<< " \tseen: " 
+				<< Common::timeIntervalToString(now_time - pe.last_seen) 
+				<< std::endl;
+		}
+		return ss.str();
+	}
   }
 
 
@@ -1189,48 +1201,96 @@ namespace CryptoNote
     rsp.peer_id = m_config.m_peer_id;
     return 1;
   }
-  //-----------------------------------------------------------------------------------
-  
+//-----------------------------------------------------------------------------------
   bool NodeServer::log_peerlist()
   {
     std::list<PeerlistEntry> pl_wite;
     std::list<PeerlistEntry> pl_gray;
+	
     m_peerlist.get_peerlist_full(pl_gray, pl_wite);
-    logger(INFO,BRIGHT_GREEN)  << "Peerlist white:" << ENDL << print_peerlist_to_string(pl_wite);
-    logger(INFO,BRIGHT_YELLOW) << "Peerlist gray:" << ENDL << print_peerlist_to_string(pl_gray);
+	
+    std::cout
+		<< ENDL 
+		<< green
+		<< "Peerlist white:" 
+		<< grey
+		<< ENDL 
+		<< print_peerlist_to_string(pl_wite)
+		<< ENDL;
+		
+    std::cout
+		<< ENDL 
+		<< khaki
+		<< "Peerlist gray:" 
+		<< grey
+		<< ENDL 
+		<< print_peerlist_to_string(pl_gray)
+		<< ENDL;
+
     return true;
   }
-  //-----------------------------------------------------------------------------------
-  
-  bool NodeServer::log_connections() {
-    logger(INFO) << "Connections: \r\n" << print_connections_container() ;
-    return true;
-  }
-  //-----------------------------------------------------------------------------------
-  
-  std::string NodeServer::print_connections_container() {
+///////////////////////////////////////////////////////////////////////////////
+bool NodeServer::log_alive(){
+	std::list<PeerlistEntry> pl_wite;
+	std::list<PeerlistEntry> pl_gray;
 
-    std::stringstream ss;
+	m_peerlist.get_peerlist_full(pl_gray, pl_wite);
+	
+    std::cout
+		<< ENDL 
+		<< lime
+		<< "Active peers:" 
+		<< ENDL 
+		<< green
+		<< ENDL 
+		<< print_peerlist_to_string(pl_wite)
+		<< grey
+		<< ENDL;
+	return true;
+}
+///////////////////////////////////////////////////////////////////////////////
+bool NodeServer::log_connections() {
+    std::cout
+		<< ENDL 
+		<< lime
+		<< "Connections:" 
+		<< ENDL 
+		<< green
+		<< ENDL 
+		<< print_connections_container()
+		<< grey
+		<< ENDL;
 
-    for (const auto& cntxt : m_connections) {
-      ss << Common::ipAddressToString(cntxt.second.m_remote_ip) << ":" << cntxt.second.m_remote_port
-        << " \t\tpeer_id " << cntxt.second.peerId
-        << " \t\tconn_id " << cntxt.second.m_connection_id << (cntxt.second.m_is_income ? " INC" : " OUT")
-        << std::endl;
-    }
+	return true;
+}
+///////////////////////////////////////////////////////////////////////////////
+std::string NodeServer::print_connections_container() {
 
-    return ss.str();
-  }
-  //-----------------------------------------------------------------------------------
-  
-  void NodeServer::on_connection_new(P2pConnectionContext& context)
+	std::stringstream ss;
+
+	for (const auto& cntxt : m_connections) {
+		ss 
+			<< Common::ipAddressToString(cntxt.second.m_remote_ip) 
+			<< ":" 
+			<< cntxt.second.m_remote_port
+			<< " \t\tpeer_id " 
+			<< cntxt.second.peerId
+			<< " \t\tconn_id " 
+			<< cntxt.second.m_connection_id 
+			<< (cntxt.second.m_is_income ? " INC" : " OUT")
+			<< std::endl;
+	}
+
+	return ss.str();
+}
+///////////////////////////////////////////////////////////////////////////////
+void NodeServer::on_connection_new(P2pConnectionContext& context)
   {
     logger(TRACE) << context << "NEW CONNECTION";
     m_payload_handler.onConnectionOpened(context);
   }
-  //-----------------------------------------------------------------------------------
-  
-  void NodeServer::on_connection_close(P2pConnectionContext& context)
+///////////////////////////////////////////////////////////////////////////////
+void NodeServer::on_connection_close(P2pConnectionContext& context)
   {
     logger(TRACE) << context << "CLOSE CONNECTION";
     m_payload_handler.onConnectionClosed(context);

@@ -1,4 +1,8 @@
 Oxygen version:
+ Build #50
+  - daemon: alive command prints alive peers list;
+  - daemon: connects command refined;
+  - daemon: peers command refined;
  Build #49
   - core: alternative blocks age limitation;
  Build #48

@@ -675,20 +675,19 @@ bool core::update_miner_block_template() {
 bool core::on_idle() {
 	if (!m_starter_message_showed) {
 	  
-	logger(INFO) 
-		<< ENDL 
-		<< "======================================================================" << ENDL 
-		<< "The daemon will start synchronizing with the network." << ENDL 
-		<< "It may take up to several hours." << ENDL 
-		<< ENDL
-		<< "You can set the level of process detailization through \"log 0..4\"" << ENDL
-		<< "command, where 0 is no details and 4 is very verbose." << ENDL
-		<< ENDL
-		<< "Use \"help\" command to see the list of available commands." << ENDL
-		<< ENDL
-		<< "If you need to interrupt the process, use \"exit\" command."<< ENDL
-		<< "Otherwise, the current progress won't be saved." << ENDL 
-		<< "======================================================================";
+	logger(INFO, BRIGHT_GREEN) << "======================================================================" << ENDL; 
+	logger(INFO, BRIGHT_GREEN) << "The daemon will start synchronizing with the network." << ENDL; 
+	logger(INFO, BRIGHT_GREEN) << "It may take up to several hours." << ENDL; 
+	logger(INFO, BRIGHT_GREEN) << ENDL;
+	logger(INFO, BRIGHT_GREEN) << "You can set the level of process detailization through \"log 0..4\"" << ENDL;
+	logger(INFO, BRIGHT_GREEN) << "command, where 0 is no details and 4 is very verbose." << ENDL;
+	logger(INFO, BRIGHT_GREEN) << ENDL;
+	logger(INFO, BRIGHT_GREEN) << "Use \"help\" command to see the list of available commands." << ENDL;
+	logger(INFO, BRIGHT_GREEN) << ENDL;
+	logger(INFO, BRIGHT_GREEN) << "If you need to interrupt the process, use \"exit\" command."<< ENDL;
+	logger(INFO, BRIGHT_GREEN) << "Otherwise, the current progress won't be saved." << ENDL; 
+	logger(INFO, BRIGHT_GREEN) << "======================================================================";
+		
 	m_starter_message_showed = true;
 	
 	}

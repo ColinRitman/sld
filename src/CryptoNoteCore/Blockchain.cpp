@@ -1279,11 +1279,11 @@ bool Blockchain::handle_alternative_block(const Block& b, const Crypto::Hash& id
 					<< bei.height 
 					<< " = " 
 					<< h_delta 
-					<< " !!! AHTUNG !!!"
+					<< " !!! AHTUNG BLJAD!!!"
 					<< ENDL;
 			else
 				logger(INFO, BRIGHT_BLUE) 
-					<< "Height: Chain - Block = Delta\t" 
+					<< "Chain Top - Block Height = Delta "
 					<< getCurrentBlockchainHeight() 
 					<< " - " 
 					<< bei.height 
