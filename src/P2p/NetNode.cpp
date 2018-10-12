@@ -60,36 +60,45 @@ void addPortMapping(Logging::LoggerRef& logger, uint32_t port) {
 	// Add UPnP port mapping
 	logger(INFO) 
 		<< "Attempting to add IGD port mapping via UPnP.";
-	
-  int result;
-  UPNPDev* deviceList = upnpDiscover(1000, NULL, NULL, 0, 0, &result);
-  UPNPUrls urls;
-  IGDdatas igdData;
-  char lanAddress[64];
-  result = UPNP_GetValidIGD(deviceList, &urls, &igdData, lanAddress, sizeof lanAddress);
-  freeUPNPDevlist(deviceList);
-  if (result != 0) {
-    if (result == 1) {
-      std::ostringstream portString;
-      portString << port;
-      if (UPNP_AddPortMapping(urls.controlURL, igdData.first.servicetype, portString.str().c_str(),
-        portString.str().c_str(), lanAddress, CryptoNote::CRYPTONOTE_TICKER, "TCP", 0, "0") != 0) {
-        logger(ERROR) << "UPNP_AddPortMapping failed.";
-      } else {
-        logger(INFO, BRIGHT_GREEN) << "Added IGD port mapping.";
-      }
-    } else if (result == 2) {
-      logger(INFO) << "IGD was found but reported as not connected.";
-    } else if (result == 3) {
-      logger(INFO) << "UPnP device was found but not recoginzed as IGD.";
-    } else {
-      logger(ERROR) << "UPNP_GetValidIGD returned an unknown result code.";
-    }
 
-    FreeUPNPUrls(&urls);
-  } else {
-    logger(INFO) << "No IGD was found.";
-  }
+	int result;
+
+	UPNPDev* deviceList = upnpDiscover(1000, NULL, NULL, 0, 0, &result);
+	UPNPUrls urls;
+	IGDdatas igdData;
+
+	char lanAddress[64];
+
+	result = UPNP_GetValidIGD(deviceList, &urls, &igdData, lanAddress, sizeof lanAddress);
+	freeUPNPDevlist(deviceList);
+  
+	if (result != 0) {
+		if (result == 1) {
+			std::ostringstream portString;
+			portString << port;
+			
+			if (UPNP_AddPortMapping(urls.controlURL, igdData.first.servicetype, portString.str().c_str(), portString.str().c_str(), lanAddress, CryptoNote::CRYPTONOTE_TICKER, "TCP", 0, "0") != 0) {
+				logger(ERROR) 
+					<< "UPNP_AddPortMapping failed.";
+			} else {
+				logger(INFO, BRIGHT_GREEN) << "Added IGD port mapping.";
+			}
+		} else if (result == 2) {
+			logger(INFO) 
+				<< "IGD was found but reported as not connected.";
+		} else if (result == 3) {
+			logger(INFO) 
+				<< "UPnP device was found but not recoginzed as IGD.";
+		} else {
+			logger(ERROR) 
+				<< "UPNP_GetValidIGD returned an unknown result code.";
+		}
+
+		FreeUPNPUrls(&urls);
+	} else {
+		logger(INFO) 
+			<< "No IGD was found.";
+	}
 }
 ///////////////////////////////////////////////////////////////////////////////
 bool parse_peer_from_string(NetworkAddress& pe, const std::string& node_addr) {
@@ -627,30 +636,31 @@ namespace CryptoNote
 
     return true;
   }
+///////////////////////////////////////////////////////////////////////////////
+bool NodeServer::handleTimedSyncResponse(const BinaryArray& in, P2pConnectionContext& context) {
+	COMMAND_TIMED_SYNC::response rsp;
+	
+	if (!LevinProtocol::decode<COMMAND_TIMED_SYNC::response>(in, rsp)) {
+		return false;
+	}
 
-  bool NodeServer::handleTimedSyncResponse(const BinaryArray& in, P2pConnectionContext& context) {
-    COMMAND_TIMED_SYNC::response rsp;
-    if (!LevinProtocol::decode<COMMAND_TIMED_SYNC::response>(in, rsp)) {
-      return false;
-    }
+	if (!handle_remote_peerlist(rsp.local_peerlist, rsp.local_time, context)) {
+		logger(Logging::TRACE) << context << "COMMAND_TIMED_SYNC: failed to handle_remote_peerlist(...), closing connection.";
+		return false;
+	}
 
-    if (!handle_remote_peerlist(rsp.local_peerlist, rsp.local_time, context)) {
-      logger(Logging::ERROR) << context << "COMMAND_TIMED_SYNC: failed to handle_remote_peerlist(...), closing connection.";
-      return false;
-    }
+	if (!context.m_is_income) {
+		m_peerlist.set_peer_just_seen(context.peerId, context.m_remote_ip, context.m_remote_port);
+	}
 
-    if (!context.m_is_income) {
-      m_peerlist.set_peer_just_seen(context.peerId, context.m_remote_ip, context.m_remote_port);
-    }
+	if (!m_payload_handler.process_payload_sync_data(rsp.payload_data, context, false)) {
+		return false;
+	}
 
-    if (!m_payload_handler.process_payload_sync_data(rsp.payload_data, context, false)) {
-      return false;
-    }
-
-    return true;
-  }
-
-  void NodeServer::forEachConnection(std::function<void(P2pConnectionContext&)> action) {
+	return true;
+}
+///////////////////////////////////////////////////////////////////////////////
+void NodeServer::forEachConnection(std::function<void(P2pConnectionContext&)> action) {
 
     // create copy of connection ids because the list can be changed during action
     std::vector<boost::uuids::uuid> connectionIds;
@@ -919,38 +929,39 @@ namespace CryptoNote
     return true;
   }
 
-  //-----------------------------------------------------------------------------------
-  bool NodeServer::fix_time_delta(std::list<PeerlistEntry>& local_peerlist, time_t local_time, int64_t& delta)
-  {
-    //fix time delta
-    time_t now = 0;
-    time(&now);
-    delta = now - local_time;
+///////////////////////////////////////////////////////////////////////////////
+bool NodeServer::fix_time_delta(std::list<PeerlistEntry>& local_peerlist, time_t local_time, int64_t& delta)
+{
+	//fix time delta
+	time_t now = 0;
+	time(&now);
+	delta = now - local_time;
 
-    BOOST_FOREACH(PeerlistEntry& be, local_peerlist)
-    {
-      if(be.last_seen > uint64_t(local_time))
-      {
-        logger(ERROR) << "FOUND FUTURE peerlist for entry " << be.adr << " last_seen: " << be.last_seen << ", local_time(on remote node):" << local_time;
-        return false;
-      }
-      be.last_seen += delta;
-    }
-    return true;
-  }
-
-  //-----------------------------------------------------------------------------------
- 
-  bool NodeServer::handle_remote_peerlist(const std::list<PeerlistEntry>& peerlist, time_t local_time, const CryptoNoteConnectionContext& context)
-  {
-    int64_t delta = 0;
-    std::list<PeerlistEntry> peerlist_ = peerlist;
-    if(!fix_time_delta(peerlist_, local_time, delta))
-      return false;
-    logger(Logging::TRACE) << context << "REMOTE PEERLIST: TIME_DELTA: " << delta << ", remote peerlist size=" << peerlist_.size();
-    logger(Logging::TRACE) << context << "REMOTE PEERLIST: " <<  print_peerlist_to_string(peerlist_);
-    return m_peerlist.merge_peerlist(peerlist_);
-  }
+	BOOST_FOREACH(PeerlistEntry& be, local_peerlist)
+	{
+		if(be.last_seen > uint64_t(local_time))
+		{
+			logger(TRACE) << "FOUND FUTURE peerlist for entry " << be.adr << " last_seen: " << be.last_seen << ", local_time(on remote node):" << local_time;
+			return false;
+		}
+		be.last_seen += delta;
+	}
+	return true;
+}
+///////////////////////////////////////////////////////////////////////////////
+bool NodeServer::handle_remote_peerlist(const std::list<PeerlistEntry>& peerlist, time_t local_time, const CryptoNoteConnectionContext& context)
+{
+	int64_t delta = 0;
+	std::list<PeerlistEntry> peerlist_ = peerlist;
+	
+	if(!fix_time_delta(peerlist_, local_time, delta))
+		return false;
+	
+	logger(Logging::TRACE) << context << "REMOTE PEERLIST: TIME_DELTA: " << delta << ", remote peerlist size=" << peerlist_.size();
+	logger(Logging::TRACE) << context << "REMOTE PEERLIST: " <<  print_peerlist_to_string(peerlist_);
+	
+	return m_peerlist.merge_peerlist(peerlist_);
+}
   //-----------------------------------------------------------------------------------
   
   bool NodeServer::get_local_node_data(basic_node_data& node_data)
