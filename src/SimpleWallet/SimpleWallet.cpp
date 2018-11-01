@@ -1497,18 +1497,41 @@ void simple_wallet::externalTransactionCreated(CryptoNote::TransactionId transac
 			logPrefix << get_tx_time_str(txInfo) << " @ " << txInfo.blockHeight;
 		}
 
-	if (txInfo.totalAmount >= 0) 
-		{
-			std::cout << green <<
-			logPrefix.str() << " = " << Common::podToHex(txInfo.hash) <<
-			" +" << m_currency.formatAmount(txInfo.totalAmount) << std::endl << grey;
+	if (txInfo.totalAmount >= 0){//debit aka deposit 		
+		if (txInfo.totalAmount >= 100000000){ //highlight amounts not less than 1.00
+			std::cout 
+				<< lime 
+				<< logPrefix.str() 
+				<< " = " 
+				<< Common::podToHex(txInfo.hash) 
+				<< " +" 
+				<< m_currency.formatAmount(txInfo.totalAmount) 
+				<< std::endl 
+				<< grey;
 		} 
-	else 
-		{
-			std::cout << maroon <<
-			logPrefix.str() << " = " << Common::podToHex(txInfo.hash) <<
-			" -" << m_currency.formatAmount(static_cast<uint64_t>(-txInfo.totalAmount)) << std::endl << grey;
+		else {
+			std::cout 
+				<< green 
+				<< logPrefix.str() 
+				<< " = " 
+				<< Common::podToHex(txInfo.hash) 
+				<< " +" 
+				<< m_currency.formatAmount(txInfo.totalAmount) 
+				<< std::endl 
+				<< grey;
 		}
+	} 
+	else { //credit aka withdraw
+		std::cout 
+		<< maroon 
+		<< logPrefix.str() 
+		<< " = " 
+		<< Common::podToHex(txInfo.hash) 
+		<< " -" 
+		<< m_currency.formatAmount(static_cast<uint64_t>(-txInfo.totalAmount)) 
+		<< std::endl 
+		<< grey;
+	}
 //$$$$
 	if (txInfo.messages.size() > 0) 
 	{
