@@ -154,15 +154,15 @@ namespace CryptoNote {
 
     //check key images for transaction if it is not kept by block
     if (!keptByBlock) {
-		
-		std::lock_guard<std::recursive_mutex> lock(m_transactions_lock);
-	  
-		if (haveSpentInputs(tx)) {
-			
-			logger(INFO, RED) << "Transaction with id = " << id << " used already spent inputs";
-			
+		std::lock_guard<std::recursive_mutex> lock(m_transactions_lock);	
+		if (haveSpentInputs(tx)) {			
+			logger(INFO, RED) 
+				<< "Transaction with id = " 
+				<< id 
+				<< " used already spent inputs";
+
 			tvc.m_verifivation_failed = true;
-			
+
 			return false;
 		}
     }

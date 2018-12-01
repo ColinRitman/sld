@@ -733,5 +733,4 @@ bool CryptoNoteProtocolHandler::removeObserver(ICryptoNoteProtocolObserver* obse
   return m_observerManager.remove(observer);                                       
 }                                                                                  
                                                                                    
-};                                                                                 
-                                                                                   
+};                                                                                                                                                                    

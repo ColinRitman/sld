@@ -25,7 +25,6 @@
 #include <System/Dispatcher.h>
 #include <System/Ipv4Address.h>
 #include "crypto/electrum-words.h"
-
 namespace CryptoNote
 {
 	class simple_wallet : 

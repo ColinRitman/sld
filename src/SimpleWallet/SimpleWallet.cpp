@@ -3,6 +3,8 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include "rulez.h"
+
 #include "SimpleWallet.h"
 
 #include <ctime>
@@ -630,7 +632,7 @@ bool processServerAliasResponse(const std::string& response, std::string& addres
       return false;
     }
 
-    auto xdnIt = rootIt->second[0].getObject().find("sld");
+    auto xdnIt = rootIt->second[0].getObject().find(CRYPTONOTE_ASSET_TICKER);
     if (xdnIt == rootIt->second[0].getObject().end()) {
       return false;
     }
@@ -885,7 +887,7 @@ bool simple_wallet::init(const boost::program_options::variables_map& vm)
 			return false;
 		}
 
-    std::cout << "Specify wallet file name (e.g., sld-first.wallet).\n";
+    std::cout << "Specify wallet file name (e.g., "<< CRYPTONOTE_ASSET_TICKER <<"-first.wallet).\n";
     std::string userInput;
     do {
       std::cout << "Wallet file name: ";
@@ -1497,7 +1499,7 @@ void simple_wallet::externalTransactionCreated(CryptoNote::TransactionId transac
 			logPrefix << get_tx_time_str(txInfo) << " @ " << txInfo.blockHeight;
 		}
 
-	if (txInfo.totalAmount >= 0){//debit aka deposit 		
+	if (txInfo.totalAmount >= 0){//debit aka deposit
 		if (txInfo.totalAmount >= 100000000){ //highlight amounts not less than 1.00
 			std::cout 
 				<< lime 

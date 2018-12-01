@@ -2595,7 +2595,7 @@ bool Blockchain::loadBlockchainIndices() {
     m_generatedTransactionsIndex.clear();
 
     for (uint32_t b = 0; b < m_blocks.size(); ++b) {
-      if (b % 5000 == 0) {
+      if (b % 10000 == 0) {
         logger(INFO, BLUE) << "# " << b << " of " << m_blocks.size();
       }
       const BlockEntry& block = m_blocks[b];

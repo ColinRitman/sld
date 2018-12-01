@@ -70,21 +70,7 @@ if (block_height<blockchain_height-parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WIN
 			
 		return false;
 	}
-		
-/*
-	if (blockchain_height>=1500000)
-	{
-		if (block_height<blockchain_height-parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW) return false;	  
-	}
-	else 
-	{
-		if (block_height<blockchain_height-parameters::CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW) 
-		{
-			logger(Logging::INFO, Logging::CYAN) 
-				<< "!!!!! BLOCK WILL BE REJECTED AFTER #1500000 FORK, DELTA = " << blockchain_height-block_height;
-		}
-	}  
-*/	  
+		  
   auto it = m_points.upper_bound(blockchain_height);
   
   // Is blockchain_height before the first checkpoint?

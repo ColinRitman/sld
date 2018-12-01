@@ -3,10 +3,14 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include "rulez.h"
+
 #include "version.h"
 
 #include <boost/filesystem.hpp>
 #include <boost/program_options.hpp>
+
+#include "CryptoNoteConfig.h"
 
 #include "DaemonCommandsHandler.h"
 
@@ -27,6 +31,9 @@
 
 #include "Logging/ConsoleLogger.h"
 #include <Logging/LoggerManager.h>
+
+#include "zrainbow.h"
+
 
 #if defined(WIN32)
 #include <crtdbg.h>
@@ -84,20 +91,20 @@ JsonValue buildLoggerConfiguration(Level level, const std::string& logfile) {
 }
 
 void renameDataDir() {
-  std::string SoldoDir = Tools::getDefaultDataDirectory();
-  boost::filesystem::path SoldoDirPath(SoldoDir);
-  if (boost::filesystem::exists(SoldoDirPath)) {
+  std::string AppDir = Tools::getDefaultDataDirectory();
+  boost::filesystem::path AppDirPath(AppDir);
+  if (boost::filesystem::exists(AppDirPath)) {
     return;
   }
 
-  std::string dataDirPrefix = SoldoDir.substr(0, SoldoDir.size() + 1 - sizeof(CRYPTONOTE_TICKER));
+  std::string dataDirPrefix = AppDir.substr(0, AppDir.size() + 1 - sizeof(CRYPTONOTE_TICKER));
 }
 
 int main(int argc, char* argv[])
 {
 
 #ifdef WIN32
-  _CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
+	_CrtSetDbgFlag ( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 #endif
 
   LoggerManager logManager;
@@ -139,6 +146,7 @@ int main(int argc, char* argv[])
       {
         std::cout << CryptoNote::CRYPTONOTE_NAME << " " << PROJECT_VERSION_LONG << ENDL << ENDL;
         std::cout << desc_options << std::endl;
+        	
         return false;
       }
 
@@ -187,7 +195,7 @@ int main(int argc, char* argv[])
 
     if (command_line_preprocessor(vm, logger)) {
       return 0;
-    }
+	  }
 
     logger(INFO) << "Module folder: " << argv[0];
 

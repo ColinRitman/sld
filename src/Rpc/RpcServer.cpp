@@ -3,6 +3,8 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include "rulez.h"
+
 #include "RpcServer.h"
 
 #include <future>
@@ -334,8 +336,8 @@ bool RpcServer::onGetPoolChangesLite(const COMMAND_RPC_GET_POOL_CHANGES_LITE::re
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 bool RpcServer::on_get_blockchain_settings(const COMMAND_RPC_GET_BLOCKCHAIN_SETTINGS::request& req, COMMAND_RPC_GET_BLOCKCHAIN_SETTINGS::response& res) {
-  res.base_coin.name = "soldo";
-  res.base_coin.git = "https://github.com/monselice/sld.git";
+  res.base_coin.name = CRYPTONOTE_ASSET_APP;
+  res.base_coin.git = GITHUB_URL;
 
   res.core.DIFFICULTY_TARGET = m_core.getCurrency().difficultyTarget();
   res.core.CRYPTONOTE_DISPLAY_DECIMAL_POINT = m_core.getCurrency().numberOfDecimalPlaces();
@@ -509,7 +511,7 @@ bool RpcServer::on_blocks_list_json(const COMMAND_RPC_GET_BLOCKS_LIST::request& 
 		};
 	}
 
-	uint32_t print_blocks_count = 30;
+	uint64_t print_blocks_count = 30;
 	uint32_t last_height = req.height - print_blocks_count;
 
 	if (req.height <= print_blocks_count)  {

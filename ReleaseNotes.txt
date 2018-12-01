@@ -1,4 +1,6 @@
 Oxygen version:
+ Build #52
+  - internal build - code refactoring;
  Build #51
   - wallet: highlight debit amounts not less than 1.00;
  Build #50
