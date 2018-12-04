@@ -29,7 +29,6 @@
 std::string SERVICE_NAME_STR = std::string(CRYPTONOTE_ASSET_NAME)+" Payments Gate";
 const char * SERVICE_NAME = SERVICE_NAME_STR.c_str();;
 
-
 PaymentGateService* ppg;
 
 #ifdef WIN32
