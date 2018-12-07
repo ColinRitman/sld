@@ -1498,9 +1498,17 @@ void simple_wallet::externalTransactionCreated(CryptoNote::TransactionId transac
 		{
 			logPrefix << get_tx_time_str(txInfo) << " @ " << txInfo.blockHeight;
 		}
-
+	
+	uint64_t factor = 1;
+	
+//////////
+#ifdef SOLDO_CODEBASE
+	factor = 100;
+#endif
+//////////	
+		
 	if (txInfo.totalAmount >= 0){//debit aka deposit
-		if (txInfo.totalAmount >= 100000000){ //highlight amounts not less than 1.00
+		if (txInfo.totalAmount >= 10000000000/factor){ //highlight amounts not less than 1.00 in SLD and 100 otherwise
 			std::cout 
 				<< lime 
 				<< logPrefix.str() 
