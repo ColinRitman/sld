@@ -64,59 +64,59 @@ m_starter_message_showed(false) {
 	m_blockchain.addObserver(this);
 	m_mempool.addObserver(this);
 }
-//-----------------------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////
 core::~core() {
 	m_blockchain.removeObserver(this);
 }
-//-----------------------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////
 void core::set_cryptonote_protocol(i_cryptonote_protocol* pprotocol) {
 	if (pprotocol)
 		m_pprotocol = pprotocol;
 	else
 		m_pprotocol = &m_protocol_stub;
 }
-//-----------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////
 void core::set_checkpoints(Checkpoints&& chk_pts) {
 	m_blockchain.setCheckpoints(std::move(chk_pts));
 }
-//-----------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////
 void core::init_options(boost::program_options::options_description& /*desc*/) {
 }
-//-----------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////
 bool core::handle_command_line(const boost::program_options::variables_map& vm) {
 	m_config_folder = command_line::get_arg(vm, command_line::arg_data_dir);
 	return true;
 }
-//-----------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////
 uint32_t core::get_current_blockchain_height() {
 	return m_blockchain.getCurrentBlockchainHeight();
 }
-//-----------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////
 void core::get_blockchain_top(uint32_t& height, Crypto::Hash& top_id) {
 	assert(m_blockchain.getCurrentBlockchainHeight() > 0);
 	top_id = m_blockchain.getTailId(height);
 }
-//-----------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////
 bool core::get_blocks(uint32_t start_offset, uint32_t count, std::list<Block>& blocks, std::list<Transaction>& txs) {
 	return m_blockchain.getBlocks(start_offset, count, blocks, txs);
 }
-//-----------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////
 bool core::get_blocks(uint32_t start_offset, uint32_t count, std::list<Block>& blocks) {
 	return m_blockchain.getBlocks(start_offset, count, blocks);
 } 
-//-----------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////
 void core::getTransactions(const std::vector<Crypto::Hash>& txs_ids, std::list<Transaction>& txs, std::list<Crypto::Hash>& missed_txs, bool checkTxPool) {
 	m_blockchain.getTransactions(txs_ids, txs, missed_txs, checkTxPool);
 }
-//-----------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////
 bool core::get_alternative_blocks(std::list<Block>& blocks) {
 	return m_blockchain.getAlternativeBlocks(blocks);
 }
-//-----------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////
 size_t core::get_alternative_blocks_count() {
 	return m_blockchain.getAlternativeBlocksCount();
 }
-//-----------------------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////
 bool core::init(const CoreConfig& config, const MinerConfig& minerConfig, bool load_existing) {
 	
 	m_config_folder = config.configFolder;
@@ -128,26 +128,26 @@ bool core::init(const CoreConfig& config, const MinerConfig& minerConfig, bool l
 	if (!(r)) { logger(ERROR, BRIGHT_RED) << "Failed to initialize blockchain storage"; return false; }
 
 	r = m_miner->init(minerConfig);
-	if (!(r)) { logger(ERROR, BRIGHT_RED) << "Failed to initialize blockchain storage"; return false; }
+	if (!(r)) { logger(ERROR, BRIGHT_RED) << "Failed to initialize miner"; return false; }
 
 	return load_state_data();
 }
-//-----------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////
 bool core::set_genesis_block(const Block& b) {
 	return m_blockchain.resetAndSetGenesisBlock(b);
 }
-//-----------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////
 bool core::load_state_data() {
 	return true;
 }
-//-----------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////
 bool core::deinit() {
 	m_miner->stop();
 	m_mempool.deinit();
 	m_blockchain.deinit();
 	return true;
 }
-//-----------------------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////////
 size_t core::addChain(const std::vector<const IBlock*>& chain) {
 	size_t blocksCounter = 0;
 
@@ -514,25 +514,32 @@ void core::getPoolChanges(const std::vector<Crypto::Hash>& knownTxsIds, std::vec
 	m_mempool.getTransactions(addedTxsIds, addedTxs, misses);
 	assert(misses.empty());
 }
-//-----------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
 bool core::handle_incoming_block_blob(const BinaryArray& block_blob, block_verification_context& bvc, bool control_miner, bool relay_block) {
 	
 	if (block_blob.size() > m_currency.maxBlockBlobSize()) {
-		logger(INFO) << "WRONG BLOCK BLOB, too big size " << block_blob.size() << ", rejected";
+		logger(INFO) 
+			<< "WRONG BLOCK BLOB, too big size " 
+			<< block_blob.size() 
+			<< ", rejected";
+			
 		bvc.m_verifivation_failed = true;
 		return false;
 	}
 
 	Block b;
+	
 	if (!fromBinaryArray(b, block_blob)) {
-		logger(INFO) << "Failed to parse and validate new block";
+		logger(INFO) 
+			<< "Failed to parse and validate new block";
+			
 		bvc.m_verifivation_failed = true;
 		return false;
 	}
 
 	return handle_incoming_block(b, bvc, control_miner, relay_block);
 }
-//-----------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
 bool core::handle_incoming_block(const Block& b, block_verification_context& bvc, bool control_miner, bool relay_block) {
 	
 	if (control_miner) {
@@ -546,6 +553,7 @@ bool core::handle_incoming_block(const Block& b, block_verification_context& bvc
 	}
 
 	if (relay_block && bvc.m_added_to_main_chain) {
+		
 		std::list<Crypto::Hash> missed_txs;
 		std::list<Transaction> txs;
 		m_blockchain.getTransactions(b.transactionHashes, txs, missed_txs);
@@ -582,7 +590,9 @@ bool core::handle_incoming_block(const Block& b, block_verification_context& bvc
 			for (auto& tx : txs) {
 				arg.b.txs.push_back(asString(toBinaryArray(tx)));
 			}
-
+/////			
+			logger(INFO, MAGENTA) << "New block is broadcasting to the network with ID: " << arg.current_blockchain_height; 
+////
 			m_pprotocol->relay_block(arg);
 		}
 	}

@@ -103,7 +103,6 @@ bool Currency::generateGenesisBlock() {
 
   return true;
 }
-
 ////////////////////////////////////////////////////////////////////////////
 uint64_t Currency::baseRewardFunction(uint64_t alreadyGeneratedCoins, uint32_t height, const Crypto::Hash last_BlockHash) const 
 {

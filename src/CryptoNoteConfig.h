@@ -136,8 +136,8 @@ namespace CryptoNote
 	const int      P2P_DEFAULT_PORT                              = 33711;//ZZP=33721, SLD=33711
 	const int      RPC_DEFAULT_PORT                              = 33712;//ZZP=33722, SLD=33712
 
-	const size_t   P2P_LOCAL_WHITE_PEERLIST_LIMIT                =  512;
-	const size_t   P2P_LOCAL_GRAY_PEERLIST_LIMIT                 =  2048;
+	const size_t   P2P_LOCAL_WHITE_PEERLIST_LIMIT                =  4096;
+	const size_t   P2P_LOCAL_GRAY_PEERLIST_LIMIT                 =  1024;
 
 	const size_t   P2P_CONNECTION_MAX_WRITE_BUFFER_SIZE          = 64 * 1024 * 1024; // 64 MB
 	const uint32_t P2P_DEFAULT_CONNECTIONS_COUNT                 = 8;
@@ -146,7 +146,7 @@ namespace CryptoNote
 	const uint32_t P2P_DEFAULT_PACKET_MAX_SIZE                   = 50000000;      // 50000000 bytes maximum packet size
 	const uint32_t P2P_DEFAULT_PEERS_IN_HANDSHAKE                = 64;
 	const uint32_t P2P_DEFAULT_CONNECTION_TIMEOUT                = 5000;          // 5 seconds
-	const uint32_t P2P_DEFAULT_PING_CONNECTION_TIMEOUT           = 2000;          // 2 seconds
+	const uint32_t P2P_DEFAULT_PING_CONNECTION_TIMEOUT           = 5000;          // 5 seconds
 	const uint64_t P2P_DEFAULT_INVOKE_TIMEOUT                    = 60 * 2 * 1000; // 2 minutes
 	const size_t   P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT          = 5000;          // 5 seconds
 	const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "ab99e468743e62c86e6d07a0db4f26db5fa6c46dc2ee899b459b3a205385d460";
@@ -240,7 +240,9 @@ __attribute__((unused))
 		{ 1600000,   "4795871ac6bf532c51dd0a926eca74c955a6ce92d29c29c398a5b7ed112354c0" },
 		{ 1650000,   "557858bf30fc4dfe0f8b3f2ff73af50d58681e9b7223da20307cc59104569a58" },
 		{ 1700000,   "30a34beb9792957e28eec0edb2e88ac2a954234812ded5629dcee7741c6eb307" },
-		{ 1747240,   "436f2ad1fd24d9678820fa1ad63e6f46fb30c45c87d89568b8e0770ba7dc42e5" },
+		{ 1800000,   "3f20d85f6f6d411df6c12fb91cf10e2e293e57f84598a538e51fdf0bef1d9938" },
+		{ 1900000,   "91985628883304ca2777d515424cb15c4e45848293294b8edda41b2d3fafc840" },
+//		{ 2000000,   "" },		
 	};
 
 } // CryptoNote

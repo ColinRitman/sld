@@ -279,35 +279,49 @@ void P2pNode::makeExpectedConnectionsCount(const PeerlistManager::Peerlist& peer
     }
   }
 }
-
+///////////////////////////////////////////////////////////////////////////////
 bool P2pNode::makeNewConnectionFromPeerlist(const PeerlistManager::Peerlist& peerlist) {
-  size_t peerIndex;
-  PeerIndexGenerator idxGen(std::min<uint64_t>(peerlist.count() - 1, m_cfg.getPeerListConnectRange()));
+	
+	size_t peerIndex;
+	PeerIndexGenerator idxGen(std::min<uint64_t>(peerlist.count() - 1, m_cfg.getPeerListConnectRange()));
 
-  for (size_t tryCount = 0; idxGen.generate(peerIndex) && tryCount < m_cfg.getPeerListGetTryCount(); ++tryCount) {
-    PeerlistEntry peer;
-    if (!peerlist.get(peer, peerIndex)) {
-      logger(WARNING) << "Failed to get peer from list, idx = " << peerIndex;
-      continue;
-    }
+	for (size_t tryCount = 0; idxGen.generate(peerIndex) && tryCount < m_cfg.getPeerListGetTryCount(); ++tryCount) {
+		
+		PeerlistEntry peer;
+		
+		if (!peerlist.get(peer, peerIndex)) {
+			
+			logger(WARNING) 
+				<< "Failed to get peer from list, idx = " 
+				<< peerIndex;
+				
+			continue;
+		}
 
-    if (isPeerUsed(peer)) {
-      continue;
-    }
+		if (isPeerUsed(peer)) {
+			continue;
+		}
 
-    logger(DEBUGGING) << "Selected peer: [" << peer.id << " " << peer.adr << "] last_seen: " <<
-      (peer.last_seen ? Common::timeIntervalToString(time(NULL) - peer.last_seen) : "never");
+		logger(DEBUGGING) 
+			<< "Selected peer: [" 
+			<< peer.id 
+			<< " " 
+			<< peer.adr 
+			<< "] last_seen: " 
+			<< (peer.last_seen ? Common::timeIntervalToString(time(NULL) - peer.last_seen) : "never");
 
-    auto conn = tryToConnectPeer(peer.adr);
-    if (conn.get()) {
-      enqueueConnection(createProxy(std::move(conn)));
-      return true;
-    }
-  }
+		auto conn = tryToConnectPeer(peer.adr);
+		
+		if (conn.get()) {
+			enqueueConnection(createProxy(std::move(conn)));
+			return true;
+		}
+	}
 
-  return false;
+	return false;
 }
-  
+///////////////////////////////////////////////////////////////////////////////
+ 
 void P2pNode::preprocessIncomingConnection(ContextPtr ctx) {
   try {
     logger(DEBUGGING) << *ctx << "preprocessIncomingConnection";

@@ -995,7 +995,7 @@ bool Blockchain::complete_timestamps_vector(uint64_t start_top_height, std::vect
 }
 ///////////////////////////////////////////////////////////////////////////////
 bool Blockchain::handle_alternative_block(const Block& b, const Crypto::Hash& id, block_verification_context& bvc, bool sendNewAlternativeBlockMessage) {
-	
+
 	std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
 
 	auto block_height = get_block_height(b);
@@ -1306,7 +1306,6 @@ bool Blockchain::handle_alternative_block(const Block& b, const Crypto::Hash& id
 			<< id 
 			<< " is rejected since lost the parent";
 	}
-
 	return true;
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -1928,21 +1927,30 @@ bool Blockchain::addNewBlock(const Block& bl_, block_verification_context& bvc) 
     std::lock_guard<decltype(m_blockchain_lock)> bcLock(m_blockchain_lock);
 
     if (haveBlock(id)) {
-      logger(TRACE) << "block with id = " << id << " already exists";
+		
+      logger(TRACE) 
+		<< "block with id = " 
+		<< id 
+		<< " already exists";
+		
       bvc.m_already_exists = true;
       return false;
     }
 
     //check that block refers to chain tail
     if (!(bl.previousBlockHash == getTailId())) {
-      //chain switching or wrong block
-      bvc.m_added_to_main_chain = false;
-      add_result = handle_alternative_block(bl, id, bvc);
+		
+		//chain switching or wrong block
+		bvc.m_added_to_main_chain = false;
+		add_result = handle_alternative_block(bl, id, bvc);
+		
     } else {
-      add_result = pushBlock(bl, bvc);
-      if (add_result) {
-        sendMessage(BlockchainMessage(NewBlockMessage(id)));
-      }
+		//incoming block refers to parent at our chain tail (last block)
+		add_result = pushBlock(bl, bvc);
+		
+		if (add_result) {
+			sendMessage(BlockchainMessage(NewBlockMessage(id)));
+		}
     }
   }
 
