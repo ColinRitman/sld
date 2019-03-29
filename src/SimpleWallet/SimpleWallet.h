@@ -139,17 +139,17 @@ namespace CryptoNote
 
 				void update(uint64_t height, bool force = false)
 				{
-				auto current_time = std::chrono::system_clock::now();
-				if (std::chrono::seconds(m_simple_wallet.currency().difficultyTarget() / 2) < current_time - m_blockchain_height_update_time ||
-					m_blockchain_height <= height) {
-				  update_blockchain_height();
-				  m_blockchain_height = (std::max)(m_blockchain_height, height);
-				}
+					auto current_time = std::chrono::system_clock::now();
+					
+					if (std::chrono::seconds(m_simple_wallet.currency().difficultyTarget() / 2) < current_time - m_blockchain_height_update_time || m_blockchain_height <= height) {
+						update_blockchain_height();
+						m_blockchain_height = (std::max)(m_blockchain_height, height);
+					}
 
-				if (std::chrono::milliseconds(1) < current_time - m_print_time || force) {
-				  std::cout << "Height " << height << " of " << m_blockchain_height << '\r';
-				  m_print_time = current_time;
-				}
+					if (std::chrono::milliseconds(1) < current_time - m_print_time || force) {
+						std::cout << "Height " << height << " of " << m_blockchain_height << '\r';
+						m_print_time = current_time;
+					}
 				}
 
 			private:

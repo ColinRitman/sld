@@ -139,16 +139,16 @@ namespace CryptoNote
 	const size_t   P2P_LOCAL_WHITE_PEERLIST_LIMIT                =  4096;
 	const size_t   P2P_LOCAL_GRAY_PEERLIST_LIMIT                 =  1024;
 
-	const size_t   P2P_CONNECTION_MAX_WRITE_BUFFER_SIZE          = 64 * 1024 * 1024; // 64 MB
+	const size_t   P2P_CONNECTION_MAX_WRITE_BUFFER_SIZE          = 128 * 1024 * 1024; // 64 MB
 	const uint32_t P2P_DEFAULT_CONNECTIONS_COUNT                 = 8;
-	const size_t   P2P_DEFAULT_WHITELIST_CONNECTIONS_PERCENT     = 70;
+	const size_t   P2P_DEFAULT_WHITELIST_CONNECTIONS_PERCENT     = 85;
 	const uint32_t P2P_DEFAULT_HANDSHAKE_INTERVAL                = 300;           // seconds
 	const uint32_t P2P_DEFAULT_PACKET_MAX_SIZE                   = 50000000;      // 50000000 bytes maximum packet size
 	const uint32_t P2P_DEFAULT_PEERS_IN_HANDSHAKE                = 64;
-	const uint32_t P2P_DEFAULT_CONNECTION_TIMEOUT                = 5000;          // 5 seconds
-	const uint32_t P2P_DEFAULT_PING_CONNECTION_TIMEOUT           = 5000;          // 5 seconds
+	const uint32_t P2P_DEFAULT_CONNECTION_TIMEOUT                = 10000;          // 10 seconds
+	const uint32_t P2P_DEFAULT_PING_CONNECTION_TIMEOUT           = 10000;          // 10 seconds
 	const uint64_t P2P_DEFAULT_INVOKE_TIMEOUT                    = 60 * 2 * 1000; // 2 minutes
-	const size_t   P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT          = 5000;          // 5 seconds
+	const size_t   P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT          = 10000;          // 10 seconds
 	const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "ab99e468743e62c86e6d07a0db4f26db5fa6c46dc2ee899b459b3a205385d460";
 
 	const std::initializer_list<const char*> SEED_NODES = {
@@ -246,6 +246,8 @@ __attribute__((unused))
 		{ 2100000,   "dbcf59b83513208f7bf2ba21474db7bbbbdadc2c6d0247e36a7bd2d44e020d73" },		
 		{ 2200000,   "df5e5b72e32289844d49b51051979747dabd72434821ea8ff4bc661afe2fc868" },		
 		{ 2222222,   "ae10829f494d65a2833d6691bb623bd5b33295dcee1d8507f70ffa4b183f09ee" },		
+		{ 2244777,   "f484503e702a3ff8a5054a3ab2f32655327425ad2929bcb0328224a75705beaf" },		
+		{ 2248722,   "809665f27a3604d81daf6a86c2a545af6b0f78ac3a00da82152337cccb137147" },		
 	};
 
 } // CryptoNote
