@@ -308,10 +308,12 @@ m_currency(currency),
 m_tx_pool(tx_pool),
 m_current_block_cumul_sz_limit(0),
 m_is_in_checkpoint_zone(false),
-m_checkpoints(logger),
-m_upgradeDetectorV2(currency, m_blocks, BLOCK_MAJOR_VERSION_2, logger),
-m_upgradeDetectorV3(currency, m_blocks, BLOCK_MAJOR_VERSION_3, logger),
-m_upgradeDetectorV4(currency, m_blocks, BLOCK_MAJOR_VERSION_4, logger) {
+m_checkpoints(logger)
+//m_checkpoints(logger),
+//m_upgradeDetectorV2(currency, m_blocks, BLOCK_MAJOR_VERSION_2, logger),
+//m_upgradeDetectorV3(currency, m_blocks, BLOCK_MAJOR_VERSION_3, logger),
+//m_upgradeDetectorV4(currency, m_blocks, BLOCK_MAJOR_VERSION_4, logger) 
+{
 
   m_outputs.set_deleted_key(0);
   m_multisignatureOutputs.set_deleted_key(0);
@@ -449,7 +451,7 @@ bool Blockchain::init(const std::string& config_folder, bool load_existing) {
       return false;
     }
   }
-
+/*
   if (!m_upgradeDetectorV2.init()) {
     logger(ERROR, BRIGHT_RED) << "Failed to initialize upgrade detector";
     return false;
@@ -464,7 +466,7 @@ bool Blockchain::init(const std::string& config_folder, bool load_existing) {
     logger(ERROR, BRIGHT_RED) << "Failed to initialize upgrade detector";
     return false;
   }
-
+*/
   update_next_comulative_size_limit();
 
   uint64_t timestamp_diff = time(NULL) - m_blocks.back().bl.timestamp;
@@ -715,7 +717,7 @@ difficulty_type Blockchain::difficultyAtHeight(uint64_t height) {
   const auto& previous = m_blocks[height - 1];
   return current.cumulative_difficulty - previous.cumulative_difficulty;
 }
-
+/*
 uint8_t Blockchain::get_block_major_version_for_height(uint64_t height) const {
   if (height > m_upgradeDetectorV4.upgradeHeight()) {
     return m_upgradeDetectorV4.targetVersion();
@@ -727,7 +729,17 @@ uint8_t Blockchain::get_block_major_version_for_height(uint64_t height) const {
     return BLOCK_MAJOR_VERSION_1;
   }
 }
+*/
 
+////////////////////////////////////////////////////////////////////////////
+uint8_t Blockchain::get_block_major_version_for_height(uint64_t height) const {
+  if (height > Z_FORK_BLOCK_3) 			{ return BLOCK_MAJOR_VERSION_4;
+  } else if (height > Z_FORK_BLOCK_2) 	{ return BLOCK_MAJOR_VERSION_3;
+  } else if (height > Z_FORK_BLOCK_1) 	{ return BLOCK_MAJOR_VERSION_2;
+  } else 								{ return BLOCK_MAJOR_VERSION_1;
+  }
+}
+////////////////////////////////////////////////////////////////////////////
 bool Blockchain::rollback_blockchain_switching(std::list<Block> &original_chain, size_t rollback_height) {
   std::lock_guard<decltype(m_blockchain_lock)> lk(m_blockchain_lock);
   // remove failed subchain
@@ -1826,7 +1838,7 @@ bool Blockchain::check_block_timestamp_main(const Block& b) {
 	uint64_t height = get_block_height(b);
 	uint64_t ts = m_currency.blockFutureTimeLimit();
 	
-	if (height >= TIMESTAMP_HACK_1_BLOCK_HEIGHT_Z) {
+	if (height >= Z_FORK_BLOCK_5) {
 		ts = TIMESTAMP_HACK_1_FUTURE_TIME_LIMIT_Z;
 	}	
 //$$$$	
@@ -1895,7 +1907,7 @@ bool Blockchain::checkRootBlockSize(const Block& b, const Crypto::Hash& blockHas
 
   return true;
 }
-
+////////////////////////////////////////////////////////////////////////////////
 bool Blockchain::checkCumulativeBlockSize(const Crypto::Hash& blockId, size_t cumulativeBlockSize, uint64_t height) {
   size_t maxBlockCumulativeSize = m_currency.maxBlockCumulativeSize(height);
   if (cumulativeBlockSize > maxBlockCumulativeSize) {
@@ -1907,7 +1919,7 @@ bool Blockchain::checkCumulativeBlockSize(const Crypto::Hash& blockId, size_t cu
 
   return true;
 }
-
+////////////////////////////////////////////////////////////////////////////////
 // Returns true, if cumulativeSize is calculated precisely, else returns false.
 bool Blockchain::getBlockCumulativeSize(const Block& block, size_t& cumulativeSize) {
   std::vector<Transaction> blockTxs;
@@ -1921,26 +1933,28 @@ bool Blockchain::getBlockCumulativeSize(const Block& block, size_t& cumulativeSi
 
   return missedTxs.empty();
 }
-
+////////////////////////////////////////////////////////////////////////////////
 // Precondition: m_blockchain_lock is locked.
 bool Blockchain::update_next_comulative_size_limit() {
-  size_t blockGrantedFullRewardZone =
-    get_block_major_version_for_height(getCurrentBlockchainHeight()) < parameters::UPGRADE_HEIGHT_V4 ?
-    parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1 :
-    m_currency.blockGrantedFullRewardZone();
+	
+	size_t blockGrantedFullRewardZone =
+		get_block_major_version_for_height(getCurrentBlockchainHeight()) < Z_FORK_BLOCK_3 ?
+		parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1 :
+		m_currency.blockGrantedFullRewardZone();
 
-  std::vector<size_t> sz;
-  get_last_n_blocks_sizes(sz, m_currency.rewardBlocksWindow());
+	std::vector<size_t> sz;
+	get_last_n_blocks_sizes(sz, m_currency.rewardBlocksWindow());
 
-  uint64_t median = Common::medianValue(sz);
-  if (median <= blockGrantedFullRewardZone) {
-    median = blockGrantedFullRewardZone;
-  }
+	uint64_t median = Common::medianValue(sz);
+	
+	if (median <= blockGrantedFullRewardZone) {
+		median = blockGrantedFullRewardZone;
+	}
 
-  m_current_block_cumul_sz_limit = median * 2;
-  return true;
+	m_current_block_cumul_sz_limit = median * 2;
+	return true;
 }
-
+////////////////////////////////////////////////////////////////////////////////
 bool Blockchain::addNewBlock(const Block& bl_, block_verification_context& bvc) {
   //copy block here to let modify block.target
   Block bl = bl_;
@@ -2180,9 +2194,10 @@ bool Blockchain::pushBlock(const Block& blockData, const std::vector<Transaction
 
   bvc.m_added_to_main_chain = true;
 
-  m_upgradeDetectorV2.blockPushed();
-  m_upgradeDetectorV3.blockPushed();
-  m_upgradeDetectorV4.blockPushed();
+//  m_upgradeDetectorV2.blockPushed();
+//  m_upgradeDetectorV3.blockPushed();
+//  m_upgradeDetectorV4.blockPushed();
+
   update_next_comulative_size_limit();
 
   return true;
@@ -2270,9 +2285,9 @@ void Blockchain::popBlock(const Crypto::Hash& blockHash) {
 
   assert(m_blockIndex.size() == m_blocks.size());
 
-  m_upgradeDetectorV2.blockPopped();
-  m_upgradeDetectorV3.blockPopped();
-  m_upgradeDetectorV4.blockPopped();
+//  m_upgradeDetectorV2.blockPopped();
+//  m_upgradeDetectorV3.blockPopped();
+//  m_upgradeDetectorV4.blockPopped();
 }
 
 bool Blockchain::pushTransaction(BlockEntry& block, const Crypto::Hash& transactionHash, TransactionIndex transactionIndex) {

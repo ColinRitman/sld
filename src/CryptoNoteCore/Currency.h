@@ -67,12 +67,12 @@ public:
   uint64_t numberOfPeriodsToForgetTxDeletedFromPool() const { return m_numberOfPeriodsToForgetTxDeletedFromPool; }
 
   uint32_t upgradeHeight(uint8_t majorVersion) const;
-  unsigned int upgradeVotingThreshold() const { return m_upgradeVotingThreshold; }
-  uint32_t upgradeVotingWindow() const { return m_upgradeVotingWindow; }
-  uint32_t upgradeWindow() const { return m_upgradeWindow; }
-  uint32_t minNumberVotingBlocks() const { return (m_upgradeVotingWindow * m_upgradeVotingThreshold + 99) / 100; }
-  uint32_t maxUpgradeDistance() const { return 7 * m_upgradeWindow; }
-  uint32_t calculateUpgradeHeight(uint32_t voteCompleteHeight) const { return voteCompleteHeight + m_upgradeWindow; }
+//  unsigned int upgradeVotingThreshold() const { return m_upgradeVotingThreshold; }
+//  uint32_t upgradeVotingWindow() const { return m_upgradeVotingWindow; }
+//  uint32_t upgradeWindow() const { return m_upgradeWindow; }
+//  uint32_t minNumberVotingBlocks() const { return (m_upgradeVotingWindow * m_upgradeVotingThreshold + 99) / 100; }
+//  uint32_t maxUpgradeDistance() const { return 7 * m_upgradeWindow; }
+//  uint32_t calculateUpgradeHeight(uint32_t voteCompleteHeight) const { return voteCompleteHeight + m_upgradeWindow; }
 
   size_t fusionTxMaxSize() const { return m_fusionTxMaxSize; }
   size_t fusionTxMinInputCount() const { return m_fusionTxMinInputCount; }
@@ -180,12 +180,13 @@ private:
   uint64_t m_mempoolTxFromAltBlockLiveTime;
   uint64_t m_numberOfPeriodsToForgetTxDeletedFromPool;
 
-  uint32_t m_upgradeHeightV2;
-  uint32_t m_upgradeHeightV3;
-  uint32_t m_upgradeHeightV4;
-  unsigned int m_upgradeVotingThreshold;
-  uint32_t m_upgradeVotingWindow;
-  uint32_t m_upgradeWindow;
+//  uint32_t m_upgradeHeightV2;
+//  uint32_t m_upgradeHeightV3;
+//  uint32_t m_upgradeHeightV4;
+
+//  unsigned int m_upgradeVotingThreshold;
+//  uint32_t m_upgradeVotingWindow;
+//  uint32_t m_upgradeWindow;
 
   size_t m_fusionTxMaxSize;
   size_t m_fusionTxMinInputCount;
@@ -264,12 +265,13 @@ public:
   CurrencyBuilder& mempoolTxFromAltBlockLiveTime(uint64_t val) { m_currency.m_mempoolTxFromAltBlockLiveTime = val; return *this; }
   CurrencyBuilder& numberOfPeriodsToForgetTxDeletedFromPool(uint64_t val) { m_currency.m_numberOfPeriodsToForgetTxDeletedFromPool = val; return *this; }
 
-  CurrencyBuilder& upgradeHeightV2(uint32_t val) { m_currency.m_upgradeHeightV2 = val; return *this; }
-  CurrencyBuilder& upgradeHeightV3(uint32_t val) { m_currency.m_upgradeHeightV3 = val; return *this; }
-  CurrencyBuilder& upgradeHeightV4(uint32_t val) { m_currency.m_upgradeHeightV4 = val; return *this; }
-  CurrencyBuilder& upgradeVotingThreshold(unsigned int val);
-  CurrencyBuilder& upgradeVotingWindow(uint32_t val) { m_currency.m_upgradeVotingWindow = val; return *this; }
-  CurrencyBuilder& upgradeWindow(size_t val);
+//  CurrencyBuilder& upgradeHeightV2(uint32_t val) { m_currency.m_upgradeHeightV2 = val; return *this; }
+//  CurrencyBuilder& upgradeHeightV3(uint32_t val) { m_currency.m_upgradeHeightV3 = val; return *this; }
+//  CurrencyBuilder& upgradeHeightV4(uint32_t val) { m_currency.m_upgradeHeightV4 = val; return *this; }
+
+//  CurrencyBuilder& upgradeVotingThreshold(unsigned int val);
+//  CurrencyBuilder& upgradeVotingWindow(uint32_t val) { m_currency.m_upgradeVotingWindow = val; return *this; }
+//  CurrencyBuilder& upgradeWindow(size_t val);
 
   CurrencyBuilder& fusionTxMaxSize(size_t val) { m_currency.m_fusionTxMaxSize = val; return *this; }
   CurrencyBuilder& fusionTxMinInputCount(size_t val) { m_currency.m_fusionTxMinInputCount = val; return *this; }

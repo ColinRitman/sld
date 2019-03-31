@@ -307,7 +307,6 @@ bool core::add_new_tx(const Transaction& tx, const Crypto::Hash& tx_hash, size_t
 	return m_mempool.add_tx(tx, tx_hash, blob_size, tvc, keeped_by_block);
 }
 ///////////////////////////////////////////////////////////////////////////////
-
 bool core::get_block_template(Block& b, const AccountPublicAddress& adr, difficulty_type& diffic, uint32_t& height, const BinaryArray& ex_nonce) {
 	  size_t median_size;
 	  uint64_t already_generated_coins;
@@ -324,21 +323,19 @@ bool core::get_block_template(Block& b, const AccountPublicAddress& adr, difficu
 		b = boost::value_initialized<Block>();
 		b.majorVersion = m_blockchain.get_block_major_version_for_height(height);
 
-		if (b.majorVersion < BLOCK_MAJOR_VERSION_3) {
-			if (b.majorVersion == BLOCK_MAJOR_VERSION_1) {
-				b.minorVersion = m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_2) == UpgradeDetectorBase::UNDEF_HEIGHT ? BLOCK_MINOR_VERSION_1 : BLOCK_MINOR_VERSION_0;
-			} else {
-				b.minorVersion = m_currency.upgradeHeight(BLOCK_MAJOR_VERSION_3) == UpgradeDetectorBase::UNDEF_HEIGHT ? BLOCK_MINOR_VERSION_1 : BLOCK_MINOR_VERSION_0;
-			}
-		} else {
-			b.minorVersion = BLOCK_MINOR_VERSION_0;
+		b.minorVersion = BLOCK_MINOR_VERSION_0;
+
+		if (b.majorVersion >= BLOCK_MAJOR_VERSION_3) {
+
 			b.rootBlock.majorVersion = BLOCK_MAJOR_VERSION_1;
 			b.rootBlock.minorVersion = BLOCK_MINOR_VERSION_0;
 			b.rootBlock.transactionCount = 1;
 			TransactionExtraMergeMiningTag mm_tag = boost::value_initialized<decltype(mm_tag)>();
 
 			if (!appendMergeMiningTagToExtra(b.rootBlock.baseTransaction.extra, mm_tag)) {
-				logger(ERROR, BRIGHT_RED) << "Failed to append merge mining tag to extra of the root block miner transaction";
+				logger(ERROR, BRIGHT_RED) 
+					<< "Failed to append merge mining tag to extra of the root block miner transaction";
+					
 			return false;
 			}
 		}

@@ -1,7 +1,6 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+////////////////////////////////////////////////////////////////////////////////
 
 #include "Currency.h"
 #include <cctype>
@@ -16,12 +15,13 @@
 #include "CryptoNoteFormatUtils.h"
 #include "CryptoNoteTools.h"
 #include "TransactionExtra.h"
-#include "UpgradeDetector.h"
+//#include "UpgradeDetector.h"
 
 #include "Common/ConsoleTools.h"
 #include "zrainbow.h"
 
 #undef ERROR
+////////////////////////////////////////////////////////////////////////////////
 
 using namespace Logging;
 using namespace Common;
@@ -63,9 +63,9 @@ bool Currency::init() {
   }
 
   if (isTestnet()) {
-    m_upgradeHeightV2 = 0;
-    m_upgradeHeightV3 = static_cast<uint32_t>(-1);
-    m_upgradeHeightV4 = static_cast<uint32_t>(-1);
+//    m_upgradeHeightV2 = 0;
+//    m_upgradeHeightV3 = static_cast<uint32_t>(-1);
+//    m_upgradeHeightV4 = static_cast<uint32_t>(-1);
     m_blocksFileName = "testnet_" + m_blocksFileName;
     m_blocksCacheFileName = "testnet_" + m_blocksCacheFileName;
     m_blockIndexesFileName = "testnet_" + m_blockIndexesFileName;
@@ -218,7 +218,6 @@ uint64_t Currency::Lottery(const Crypto::Hash lbh) const
 	return factor;
 }
 ////////////////////////////////////////////////////////////////////////////
-
 size_t Currency::blockGrantedFullRewardZoneByBlockVersion(uint8_t blockMajorVersion) const {
 	if (blockMajorVersion >= BLOCK_MAJOR_VERSION_4) {
 		return m_blockGrantedFullRewardZone;
@@ -226,40 +225,45 @@ size_t Currency::blockGrantedFullRewardZoneByBlockVersion(uint8_t blockMajorVers
 		return CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1;
 	}
 }
-
+////////////////////////////////////////////////////////////////////////////////
 uint32_t Currency::upgradeHeight(uint8_t majorVersion) const {
   if (majorVersion == BLOCK_MAJOR_VERSION_2) {
-    return m_upgradeHeightV2;
+    return Z_FORK_BLOCK_1;
   } else if (majorVersion == BLOCK_MAJOR_VERSION_3) {
-    return m_upgradeHeightV3;
+    return Z_FORK_BLOCK_2;
   } else if (majorVersion == BLOCK_MAJOR_VERSION_4) {
-    return m_upgradeHeightV4;
+    return Z_FORK_BLOCK_3;
   } else {
     return static_cast<uint32_t>(-1);
   }
 }
-
+////////////////////////////////////////////////////////////////////////////////
 bool Currency::getBlockReward(size_t medianSize, size_t currentBlockSize, uint64_t alreadyGeneratedCoins,
   uint64_t fee, uint32_t height, uint64_t& reward, int64_t& emissionChange, const Crypto::Hash last_BlockHash) const {
-  assert(alreadyGeneratedCoins <= m_moneySupply);
+	  
+	assert(alreadyGeneratedCoins <= m_moneySupply);
 
-  uint64_t baseReward = baseRewardFunction(alreadyGeneratedCoins, height, last_BlockHash);
+	uint64_t baseReward = baseRewardFunction(alreadyGeneratedCoins, height, last_BlockHash);
+	size_t blockGrantedFullRewardZone = (height < Z_FORK_BLOCK_3) ? parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1 : m_blockGrantedFullRewardZone;
+	medianSize = std::max(medianSize, blockGrantedFullRewardZone);
+	
+	if (currentBlockSize > UINT64_C(2) * medianSize) {
+		logger(TRACE) 
+			<< "Block cumulative size is too big: " 
+			<< currentBlockSize 
+			<< ", expected less than " 
+			<< 2 * medianSize;
+		return false;
+	}
 
-  size_t blockGrantedFullRewardZone = (height < parameters::UPGRADE_HEIGHT_V4) ? parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1 : m_blockGrantedFullRewardZone;
-  medianSize = std::max(medianSize, blockGrantedFullRewardZone);
-  if (currentBlockSize > UINT64_C(2) * medianSize) {
-    logger(TRACE) << "Block cumulative size is too big: " << currentBlockSize << ", expected less than " << 2 * medianSize;
-    return false;
-  }
+	uint64_t penalizedBaseReward = getPenalizedAmount(baseReward, medianSize, currentBlockSize);
 
-  uint64_t penalizedBaseReward = getPenalizedAmount(baseReward, medianSize, currentBlockSize);
+	emissionChange = penalizedBaseReward;
+	reward = penalizedBaseReward + fee;
 
-  emissionChange = penalizedBaseReward;
-  reward = penalizedBaseReward + fee;
-
-  return true;
+	return true;
 }
-
+////////////////////////////////////////////////////////////////////////////////
 uint64_t Currency::calculateInterest(uint64_t amount, uint32_t term) const {
   assert(m_depositMinTerm <= term && term <= m_depositMaxTerm);
   assert(static_cast<uint64_t>(term)* m_depositMaxTotalRate > m_depositMinTotalRateFactor);
@@ -648,7 +652,7 @@ difficulty_type Currency::nextDifficultyOld(
 //#6
 	difficulty_type new_diff = (low + timeSpan - 1) / timeSpan;
 //std::cout << green << "DIFF BASE: " << new_diff << std::endl;
-	if (height>(parameters::UPGRADE_HEIGHT_V4+1)) 
+	if (height>(Z_FORK_BLOCK_3+1)) 
 		{
 		new_diff += new_diff*(
 			(parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY+height)/parameters::EXPECTED_NUMBER_OF_BLOCKS_PER_DAY);
@@ -656,8 +660,8 @@ difficulty_type Currency::nextDifficultyOld(
 //std::cout << maroon << "DIFF UPGR: " << new_diff << std::endl;		
 	return new_diff;
 }
-//******************************************************************************************************************
-//******************************************************************************************************************
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 difficulty_type Currency::nextDifficultyZawy(
 	std::vector<uint64_t> _timestamps,
 	std::vector<difficulty_type> _cumulativeDifficulties,
@@ -724,7 +728,7 @@ difficulty_type Currency::nextDifficultyZawy(
 //std::cout << khaki << "DIFF Z-" << _difficultyWindow << ": " << nextDiffZ << grey << std::endl;	
     return nextDiffZ;
 }
-//******************************************************************************************************************
+////////////////////////////////////////////////////////////////////////////////
 difficulty_type Currency::nextDifficulty(
 	std::vector<uint64_t> timestamps,
 	std::vector<difficulty_type> cumulativeDifficulties, 
@@ -733,7 +737,7 @@ difficulty_type Currency::nextDifficulty(
 //std::cout << grey << "HEIGHT = " << height << std::endl;
 	size_t ver = 1;
 
-	if (parameters::DIFFICULTY_FNC_VER < 2 && height < parameters::DIFFICULTY_ZAWY_START_BLOCK) {
+	if (parameters::DIFFICULTY_FNC_VER < 2 && height < Z_FORK_BLOCK_4) {
 		ver = 1;
 	}
 	else {
@@ -757,7 +761,7 @@ difficulty_type Currency::nextDifficulty(
 	
 	return 0;
 }		
-//******************************************************************************************************************
+////////////////////////////////////////////////////////////////////////////////
 bool Currency::checkProofOfWorkV1(Crypto::cn_context& context, const Block& block, difficulty_type currentDiffic,
   Crypto::Hash& proofOfWork) const {
   if (block.majorVersion > BLOCK_MAJOR_VERSION_2) {
@@ -812,7 +816,7 @@ bool Currency::checkProofOfWorkV2(Crypto::cn_context& context, const Block& bloc
 
   return true;
 }
-
+////////////////////////////////////////////////////////////////////////////////
 bool Currency::checkProofOfWork(Crypto::cn_context& context, const Block& block, difficulty_type currentDiffic, Crypto::Hash& proofOfWork) const {
   switch (block.majorVersion) {
   case BLOCK_MAJOR_VERSION_1:
@@ -826,7 +830,7 @@ bool Currency::checkProofOfWork(Crypto::cn_context& context, const Block& block,
   logger(ERROR, BRIGHT_RED) << "Unknown block major version: " << block.majorVersion << "." << block.minorVersion;
   return false;
 }
-
+////////////////////////////////////////////////////////////////////////////////
 size_t Currency::getApproximateMaximumInputCount(size_t transactionSize, size_t outputCount, size_t mixinCount) const {
   const size_t KEY_IMAGE_SIZE = sizeof(Crypto::KeyImage);
   const size_t OUTPUT_KEY_SIZE = sizeof(decltype(KeyOutput::key));
@@ -849,7 +853,7 @@ size_t Currency::getApproximateMaximumInputCount(size_t transactionSize, size_t 
 
   return (transactionSize - headerSize - outputsSize) / inputSize;
 }
-
+////////////////////////////////////////////////////////////////////////////////
 CurrencyBuilder::CurrencyBuilder(Logging::ILogger& log) : m_currency(log) {
   maxBlockNumber(parameters::CRYPTONOTE_MAX_BLOCK_NUMBER);
   maxBlockBlobSize(parameters::CRYPTONOTE_MAX_BLOCK_BLOB_SIZE);
@@ -893,12 +897,13 @@ CurrencyBuilder::CurrencyBuilder(Logging::ILogger& log) : m_currency(log) {
   mempoolTxFromAltBlockLiveTime(parameters::CRYPTONOTE_MEMPOOL_TX_FROM_ALT_BLOCK_LIVETIME);
   numberOfPeriodsToForgetTxDeletedFromPool(parameters::CRYPTONOTE_NUMBER_OF_PERIODS_TO_FORGET_TX_DELETED_FROM_POOL);
 
-  upgradeHeightV2(parameters::UPGRADE_HEIGHT_V2);
-  upgradeHeightV3(parameters::UPGRADE_HEIGHT_V3);
-  upgradeHeightV4(parameters::UPGRADE_HEIGHT_V4);
-  upgradeVotingThreshold(parameters::UPGRADE_VOTING_THRESHOLD);
-  upgradeVotingWindow(parameters::UPGRADE_VOTING_WINDOW);
-  upgradeWindow(parameters::UPGRADE_WINDOW);
+//  upgradeHeightV2(parameters::UPGRADE__HEIGHT_V2);
+//  upgradeHeightV3(parameters::UPGRADE__HEIGHT_V3);
+//  upgradeHeightV4(parameters::UPGRADE__HEIGHT_V4);
+
+//  upgradeVotingThreshold(parameters::UPGRADE_VOTING_THRESHOLD);
+//  upgradeVotingWindow(parameters::UPGRADE_VOTING_WINDOW);
+//  upgradeWindow(parameters::UPGRADE_WINDOW);
 
   fusionTxMaxSize(parameters::FUSION_TX_MAX_SIZE);
   fusionTxMinInputCount(parameters::FUSION_TX_MIN_INPUT_COUNT);
@@ -951,7 +956,7 @@ CurrencyBuilder& CurrencyBuilder::difficultyWindow(size_t val) {
   m_currency.m_difficultyWindow = val;
   return *this;
 }
-
+/*
 CurrencyBuilder& CurrencyBuilder::upgradeVotingThreshold(unsigned int val) {
   if (val <= 0 || val > 100) {
     throw std::invalid_argument("val at upgradeVotingThreshold()");
@@ -967,5 +972,5 @@ CurrencyBuilder& CurrencyBuilder::upgradeWindow(size_t val) {
   m_currency.m_upgradeWindow = val;
   return *this;
 }
-
+*/
 }

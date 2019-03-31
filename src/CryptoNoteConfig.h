@@ -1,5 +1,6 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
+////////////////////////////////////////////////////////////////////////////
 
 #include "rulez.h"
 
@@ -7,6 +8,7 @@
 
 #include <cstdint>
 #include <initializer_list>
+////////////////////////////////////////////////////////////////////////////
 
 namespace CryptoNote 
 {
@@ -52,7 +54,7 @@ namespace CryptoNote
 		static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDOW or DIFFICULTY_CUT");
 
 		const size_t   DIFFICULTY_FNC_VER                            = 0;//0=SLD, 2=ZZP
-		const uint32_t DIFFICULTY_ZAWY_START_BLOCK                   = 24000;//24000=SLD, 1=ZZP
+//		const uint32_t DIFFICULTY_ZAWY_START_BLOCK                   = 24000;//24000=SLD, 1=ZZP
 		const size_t   DIFFICULTY_ZAWY_WINDOW                        = 30;//30=SLD, 12=ZZP
 
 		const uint64_t DEPOSIT_MIN_AMOUNT                            = 1 * COIN;
@@ -80,14 +82,15 @@ namespace CryptoNote
 		const size_t   FUSION_TX_MIN_INPUT_COUNT                     = 12;
 		const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO              = 4;
 
-		const uint32_t UPGRADE_HEIGHT_V2                             = 2;
-		const uint32_t UPGRADE_HEIGHT_V3                             = 3;
-		const uint32_t UPGRADE_HEIGHT_V4                             = 4;
-		const unsigned UPGRADE_VOTING_THRESHOLD                      = 90;               // percent
-		const size_t   UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
-		const size_t   UPGRADE_WINDOW                                = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
-		static_assert(0 < UPGRADE_VOTING_THRESHOLD && UPGRADE_VOTING_THRESHOLD <= 100, "Bad UPGRADE_VOTING_THRESHOLD");
-		static_assert(UPGRADE_VOTING_WINDOW > 1, "Bad UPGRADE_VOTING_WINDOW");
+//		const uint32_t UPGRADE_HEIGHT_V2                             = 2;
+//		const uint32_t UPGRADE_HEIGHT_V3                             = 3;
+//		const uint32_t UPGRADE_HEIGHT_V4                             = 4;
+		
+//		const unsigned UPGRADE_VOTING_THRESHOLD                      = 90;               // percent
+//		const size_t   UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
+//		const size_t   UPGRADE_WINDOW                                = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
+//		static_assert(0 < UPGRADE_VOTING_THRESHOLD && UPGRADE_VOTING_THRESHOLD <= 100, "Bad UPGRADE_VOTING_THRESHOLD");
+//		static_assert(UPGRADE_VOTING_WINDOW > 1, "Bad UPGRADE_VOTING_WINDOW");
 
 		const char     CRYPTONOTE_BLOCKS_FILENAME[]                  = "chain.data";
 		const char     CRYPTONOTE_BLOCKINDEXES_FILENAME[]            = "idx.data";
@@ -98,7 +101,7 @@ namespace CryptoNote
 		const char     MINER_CONFIG_FILE_NAME[]                      = "common.json";
 	} // parameters
 
-	const uint64_t TIMESTAMP_HACK_1_BLOCK_HEIGHT_Z               = 377777;//400000=SLD, 1=ZZP
+//	const uint64_t TIMESTAMP_HACK_1_BLOCK_HEIGHT_Z               = 377777;//400000=SLD, 1=ZZP
 	const uint64_t TIMESTAMP_HACK_1_FUTURE_TIME_LIMIT_Z          = 60 * 7;//420 seconds/21 block = SLD
 
 	const uint64_t START_BLOCK_REWARD                            = (UINT64_C(320000) * parameters::COIN);
@@ -114,16 +117,32 @@ namespace CryptoNote
 	const uint32_t GENESIS_NONCE                                 = 24;
 	const char     GENESIS_WALLET_Z[]                            = "LaFwtcPWr5KhN5q1t5BYjxG6HqYph1x7B49AVdeWUewC1dMrFzXMuuJBo5YHQQRqQy7wRWQnctEcDY1eRQn76APPQycHeuj";
 
+// HISTORY OF FORKS IN ORDER OF HAPPENS ///////////////////////////////////////////////////////////////////////////////	
+	const uint64_t Z_FORK_BLOCK_1									= 2;//UPGRADE_HEIGHT_V2
+	const uint64_t Z_FORK_BLOCK_2									= 3;//UPGRADE_HEIGHT_V3
+	const uint64_t Z_FORK_BLOCK_3									= 4;//UPGRADE_HEIGHT_V4
+	const uint64_t Z_FORK_BLOCK_4									= 24000;//DIFFICULTY_ZAWY_START_BLOCK
+	const uint64_t Z_FORK_BLOCK_5									= 377777;//TIMESTAMP_HACK_1_BLOCK_HEIGHT_Z
+	const uint64_t Z_FORK_BLOCK_6									= 717969;// Reward reduced /*0.01/, two forks - Soldo and Goldo appeared
+	const uint64_t Z_FORK_BLOCK_7									= 0;// not happend yet
+	const uint64_t Z_FORK_BLOCK_8									= 0;// not happend yet
+	const uint64_t Z_FORK_BLOCK_9									= 0;// not happend yet
+	const uint64_t Z_FORK_BLOCK_10									= 0;// not happend yet
+	const uint64_t Z_FORK_BLOCK_11									= 0;// not happend yet
+	const uint64_t Z_FORK_BLOCK_12									= 0;// not happend yet
+	
 	//CRYPTONOTE_NETWORK is defined @ \P2p\P2pNetworks.h
 	//CRYPTONOTE_NETWORK = 24d91a1b-3aa0-6ddf-3eab-e0b4fb48f9e9
 	//const static boost::uuids::uuid CRYPTONOTE_NETWORK = { { 0x24, 0xD9, 0x1A, 0x1B, 0x3A, 0xA0, 0x6D, 0xDF, 0x3E, 0xAB, 0xE0, 0xB4, 0xFB, 0x48, 0xF9, 0xE9 } };
 
 	const uint8_t  TRANSACTION_VERSION_1                         =  1;
 	const uint8_t  TRANSACTION_VERSION_2                         =  2;
+	
 	const uint8_t  BLOCK_MAJOR_VERSION_1                         =  1;
 	const uint8_t  BLOCK_MAJOR_VERSION_2                         =  2;
 	const uint8_t  BLOCK_MAJOR_VERSION_3                         =  3;
 	const uint8_t  BLOCK_MAJOR_VERSION_4                         =  4;
+	
 	const uint8_t  BLOCK_MINOR_VERSION_0                         =  0;
 	const uint8_t  BLOCK_MINOR_VERSION_1                         =  1;
 
@@ -245,9 +264,13 @@ __attribute__((unused))
 		{ 2200000,   "df5e5b72e32289844d49b51051979747dabd72434821ea8ff4bc661afe2fc868" },		
 		{ 2222222,   "ae10829f494d65a2833d6691bb623bd5b33295dcee1d8507f70ffa4b183f09ee" },		
 		{ 2244777,   "f484503e702a3ff8a5054a3ab2f32655327425ad2929bcb0328224a75705beaf" },		
-		{ 2248722,   "809665f27a3604d81daf6a86c2a545af6b0f78ac3a00da82152337cccb137147" },		
+		{ 2253666,   "5916fda38f4b88988961bad743cd80abc4120e518f8e8a18a03104c74ae2b5f2" },		
+		{ 2257777,   "f01e8914fbcee5d5ad518a31f0dc4cb6715cbe161f6582bfce783b650c2ba76e" },		
 	};
 
 } // CryptoNote
 
 #define ALLOW_DEBUG_COMMANDS
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////

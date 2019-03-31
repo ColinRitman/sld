@@ -1,7 +1,6 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+////////////////////////////////////////////////////////////////////////////
 
 #include "CryptoNoteSerialization.h"
 
@@ -25,6 +24,7 @@
 #include "CryptoNoteFormatUtils.h"
 #include "CryptoNoteTools.h"
 #include "TransactionExtra.h"
+////////////////////////////////////////////////////////////////////////////
 
 using namespace Common;
 
@@ -605,7 +605,7 @@ void serialize(RootBlockSerializer& pbs, ISerializer& serializer) {
     serializer(hash, "");
   }
 }
-
+////////////////////////////////////////////////////////////////////////////
 void serializeBlockHeader(BlockHeader& header, ISerializer& serializer) {
   serializer(header.majorVersion, "major_version");
   if (header.majorVersion > BLOCK_MAJOR_VERSION_4) {
@@ -613,6 +613,7 @@ void serializeBlockHeader(BlockHeader& header, ISerializer& serializer) {
   }
 
   serializer(header.minorVersion, "minor_version");
+  
   if (header.majorVersion < BLOCK_MAJOR_VERSION_3) {
     serializer(header.timestamp, "timestamp");
     serializer(header.previousBlockHash, "prev_id");
@@ -621,11 +622,11 @@ void serializeBlockHeader(BlockHeader& header, ISerializer& serializer) {
     serializer(header.previousBlockHash, "prev_id");
   }
 }
-
+////////////////////////////////////////////////////////////////////////////
 void serialize(BlockHeader& header, ISerializer& serializer) {
   serializeBlockHeader(header, serializer);
 }
-
+////////////////////////////////////////////////////////////////////////////
 void serialize(Block& block, ISerializer& serializer) {
   serializeBlockHeader(block, serializer);
 
@@ -637,25 +638,25 @@ void serialize(Block& block, ISerializer& serializer) {
   serializer(block.baseTransaction, "miner_tx");
   serializer(block.transactionHashes, "tx_hashes");
 }
-
+////////////////////////////////////////////////////////////////////////////
 void serialize(AccountPublicAddress& address, ISerializer& serializer) {
   serializer(address.spendPublicKey, "m_spend_public_key");
   serializer(address.viewPublicKey, "m_view_public_key");
 }
-
+////////////////////////////////////////////////////////////////////////////
 void serialize(AccountKeys& keys, ISerializer& s) {
   s(keys.address, "m_account_address");
   s(keys.spendSecretKey, "m_spend_secret_key");
   s(keys.viewSecretKey, "m_view_secret_key");
 }
-
+////////////////////////////////////////////////////////////////////////////
 void doSerialize(TransactionExtraMergeMiningTag& tag, ISerializer& serializer) {
   uint64_t depth = static_cast<uint64_t>(tag.depth);
   serializer(depth, "depth");
   tag.depth = static_cast<size_t>(depth);
   serializer(tag.merkleRoot, "merkle_root");
 }
-
+////////////////////////////////////////////////////////////////////////////
 void serialize(TransactionExtraMergeMiningTag& tag, ISerializer& serializer) {
   if (serializer.type() == ISerializer::OUTPUT) {
     std::string field;
@@ -671,11 +672,15 @@ void serialize(TransactionExtraMergeMiningTag& tag, ISerializer& serializer) {
     doSerialize(tag, input);
   }
 }
-
+////////////////////////////////////////////////////////////////////////////
 void serialize(KeyPair& keyPair, ISerializer& serializer) {
   serializer(keyPair.secretKey, "secret_key");
   serializer(keyPair.publicKey, "public_key");
 }
-
+////////////////////////////////////////////////////////////////////////////
 
 } //namespace CryptoNote
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+
