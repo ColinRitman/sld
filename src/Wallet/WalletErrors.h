@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+///////////////////////////////////////////////////////////////////////////////
+
 
 #pragma once
 
@@ -106,10 +106,14 @@ private:
 inline std::error_code make_error_code(CryptoNote::error::WalletErrorCodes e) {
   return std::error_code(static_cast<int>(e), CryptoNote::error::WalletErrorCategory::INSTANCE);
 }
-
+///////////////////////////////////////////////////////////////////////////////
+/*
+//$$
 namespace std {
 
 template <>
 struct is_error_code_enum<CryptoNote::error::WalletErrorCodes>: public true_type {};
 
 }
+//$$
+*/

@@ -1,7 +1,5 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #pragma once
 
@@ -40,6 +38,9 @@ struct EllipticCurveScalar {
 
 	static SecretKey generate_keys_or_recover(PublicKey &pub, SecretKey &sec, const SecretKey& recovery_key, bool is_recovery);
 	friend SecretKey generate_keys_or_recover(PublicKey &pub, SecretKey &sec, const SecretKey& recovery_key, bool is_recovery);
+
+    static void generate_keys_from_seed(PublicKey &, SecretKey &, SecretKey &);
+    friend void generate_keys_from_seed(PublicKey &, SecretKey &, SecretKey &);
 	
     static void generate_keys(PublicKey &, SecretKey &);
     friend void generate_keys(PublicKey &, SecretKey &);
@@ -143,6 +144,12 @@ return crypto_ops::generate_keys_or_recover(pub, sec, recovery_key, is_recovery)
   inline bool check_skey(const SecretKey &key) {
     return crypto_ops::check_skey(key);
   }
+//$$
+// Generate a new key pair from a seed
+inline void generate_keys_from_seed(PublicKey &pub, SecretKey &sec, SecretKey &seed) {
+	crypto_ops::generate_keys_from_seed(pub, sec, seed);
+}
+//$$
   
   /* Check a public key. Returns true if it is valid, false otherwise.
    */

@@ -1,20 +1,25 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
 #include <cstdint>
 #include <fstream>
 #include <iomanip>
-#include <iostream>
+
+//#include <iostream>
+#ifdef __APPLE__
+    #include <iostream>
+#endif
+
 #include <list>
 #include <unordered_map>
 #include <string>
 #include <vector>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
+////////////////////////////////////////////////////////////////////////////
 
 template<class Key, class T> class SwappedMap {
 private:
@@ -360,3 +365,6 @@ template<class Key, class T> const std::pair<const Key, T>* SwappedMap<Key, T>::
   ++m_cacheMisses;
   return item;
 }
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////

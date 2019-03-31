@@ -61,7 +61,7 @@ namespace CryptoNote
     void requestMissingPoolTransactions(const CryptoNoteConnectionContext& context);
 
   private:
-    //----------------- commands handlers ----------------------------------------------
+    // commands handlers ------------
     int handle_notify_new_block(int command, NOTIFY_NEW_BLOCK::request& arg, CryptoNoteConnectionContext& context);
     int handle_notify_new_transactions(int command, NOTIFY_NEW_TRANSACTIONS::request& arg, CryptoNoteConnectionContext& context);
     int handle_request_get_objects(int command, NOTIFY_REQUEST_GET_OBJECTS::request& arg, CryptoNoteConnectionContext& context);
@@ -70,11 +70,12 @@ namespace CryptoNote
     int handle_response_chain_entry(int command, NOTIFY_RESPONSE_CHAIN_ENTRY::request& arg, CryptoNoteConnectionContext& context);
     int handleRequestTxPool(int command, NOTIFY_REQUEST_TX_POOL::request& arg, CryptoNoteConnectionContext& context);
 
-    //----------------- i_cryptonote_protocol ----------------------------------
+    // i_cryptonote_protocol 
     virtual void relay_block(NOTIFY_NEW_BLOCK::request& arg) override;
     virtual void relay_transactions(NOTIFY_NEW_TRANSACTIONS::request& arg) override;
 
-    //----------------------------------------------------------------------------------
+    ///////////////////////////////////////////////////////////////////////////////
+
     uint32_t get_current_blockchain_height();
     bool request_missing_objects(CryptoNoteConnectionContext& context, bool check_having_blocks);
     bool on_connection_synchronized();

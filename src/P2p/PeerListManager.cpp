@@ -84,23 +84,27 @@ PeerlistManager::PeerlistManager() :
   m_whitePeerlist(m_peers_white, CryptoNote::P2P_LOCAL_WHITE_PEERLIST_LIMIT),
   m_grayPeerlist(m_peers_gray, CryptoNote::P2P_LOCAL_GRAY_PEERLIST_LIMIT) {}
 
-//--------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool PeerlistManager::init(bool allow_local_ip)
 {
   m_allow_local_ip = allow_local_ip;
   return true;
 }
 
-//--------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 void PeerlistManager::trim_white_peerlist() {
   m_whitePeerlist.trim();
 }
-//--------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 void PeerlistManager::trim_gray_peerlist() {
   m_grayPeerlist.trim();
 }
 
-//--------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool PeerlistManager::merge_peerlist(const std::list<PeerlistEntry>& outer_bs)
 { 
   for(const PeerlistEntry& be : outer_bs) {
@@ -111,19 +115,22 @@ bool PeerlistManager::merge_peerlist(const std::list<PeerlistEntry>& outer_bs)
   trim_gray_peerlist();
   return true;
 }
-//--------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 
 bool PeerlistManager::get_white_peer_by_index(PeerlistEntry& p, size_t i) const {
   return m_whitePeerlist.get(p, i);
 }
 
-//--------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 
 bool PeerlistManager::get_gray_peer_by_index(PeerlistEntry& p, size_t i) const {
   return m_grayPeerlist.get(p, i);
 }
 
-//--------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 
 bool PeerlistManager::is_ip_allowed(uint32_t ip) const
 {
@@ -140,7 +147,8 @@ bool PeerlistManager::is_ip_allowed(uint32_t ip) const
 
   return true;
 }
-//--------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 
 bool PeerlistManager::get_peerlist_head(std::list<PeerlistEntry>& bs_head, uint32_t depth) const
 {
@@ -157,7 +165,8 @@ bool PeerlistManager::get_peerlist_head(std::list<PeerlistEntry>& bs_head, uint3
   }
   return true;
 }
-//--------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 
 bool PeerlistManager::get_peerlist_full(std::list<PeerlistEntry>& pl_gray, std::list<PeerlistEntry>& pl_white) const
 {
@@ -169,7 +178,8 @@ bool PeerlistManager::get_peerlist_full(std::list<PeerlistEntry>& pl_gray, std::
 
   return true;
 }
-//--------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 
 bool PeerlistManager::set_peer_just_seen(PeerIdType peer, uint32_t ip, uint32_t port)
 {
@@ -178,7 +188,8 @@ bool PeerlistManager::set_peer_just_seen(PeerIdType peer, uint32_t ip, uint32_t 
   addr.port = port;
   return set_peer_just_seen(peer, addr);
 }
-//--------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 
 bool PeerlistManager::set_peer_just_seen(PeerIdType peer, const NetworkAddress& addr)
 {
@@ -194,7 +205,8 @@ bool PeerlistManager::set_peer_just_seen(PeerIdType peer, const NetworkAddress& 
 
   return false;
 }
-//--------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 
 bool PeerlistManager::append_with_peer_white(const PeerlistEntry& ple)
 {
@@ -222,7 +234,8 @@ bool PeerlistManager::append_with_peer_white(const PeerlistEntry& ple)
   }
   return false;
 }
-//--------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 
 bool PeerlistManager::append_with_peer_gray(const PeerlistEntry& ple)
 {
@@ -252,7 +265,8 @@ bool PeerlistManager::append_with_peer_gray(const PeerlistEntry& ple)
   }
   return false;
 }
-//--------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 
 PeerlistManager::Peerlist& PeerlistManager::getWhite() { 
   return m_whitePeerlist; 

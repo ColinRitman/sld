@@ -1,13 +1,13 @@
-//#############################################################################
+////////////////////////////////////////////////////////////////////////////
 //zrainbow.h
-//(c) Zhe - zhe@@@soldo.in
+//(c) Zhe@Soldo Clan -> zhe@@@soldo.in
 //USAGE >>
 //
 //std::cout 
 //	<< grey << "@#$%&" << white << "@#$%&" << navy << "@#$%&" << green << "@#$%&" << teal << "@#$%&" << maroon 
 //	<< "@#$%&" << purple << "@#$%&" << blue << "@#$%&" << lime << "@#$%&" << cyan << "@#$%&" << red << "@#$%&" 
 //	<< magenta << "@#$%&" << khaki << "@#$%&" << yellow << "@#$%&" << std::endl;
-//#############################################################################
+////////////////////////////////////////////////////////////////////////////
 #pragma once
 
 #include <iosfwd>
@@ -34,91 +34,91 @@ enum colors_enum
 	Yellow      = FOREGROUND_RED   | FOREGROUND_GREEN | FOREGROUND_INTENSITY,
 };
 */
-//#############################################################################
+////////////////////////////////////////////////////////////////////////////
 inline std::ostream& grey(std::ostream &s)
 {
 	Common::Console::setTextColor(Common::Console::Color::White);
     return s;
 }
-//#############################################################################
+////////////////////////////////////////////////////////////////////////////
 inline std::ostream& white(std::ostream &s)
 {
 	Common::Console::setTextColor(Common::Console::Color::BrightWhite);
     return s;
 }
-//#############################################################################
+////////////////////////////////////////////////////////////////////////////
 inline std::ostream& navy(std::ostream &s)
 {
 	Common::Console::setTextColor(Common::Console::Color::Blue);
     return s;
 }
-//#############################################################################
+////////////////////////////////////////////////////////////////////////////
 inline std::ostream& green(std::ostream &s)
 {
 	Common::Console::setTextColor(Common::Console::Color::Green);
     return s;
 }
-//#############################################################################
+////////////////////////////////////////////////////////////////////////////
 inline std::ostream& teal(std::ostream &s)
 {
 	Common::Console::setTextColor(Common::Console::Color::Cyan);
     return s;
 }
-//#############################################################################
+////////////////////////////////////////////////////////////////////////////
 inline std::ostream& purple(std::ostream &s)
 {
 	Common::Console::setTextColor(Common::Console::Color::Magenta);
     return s;
 }
-//#############################################################################
+////////////////////////////////////////////////////////////////////////////
 inline std::ostream& maroon(std::ostream &s)
 {
 	Common::Console::setTextColor(Common::Console::Color::Red);
     return s;
 }
-//#############################################################################
+////////////////////////////////////////////////////////////////////////////
 inline std::ostream& blue(std::ostream &s)
 {
 	Common::Console::setTextColor(Common::Console::Color::BrightBlue);
     return s;
 }
-//#############################################################################
+////////////////////////////////////////////////////////////////////////////
 inline std::ostream& lime(std::ostream &s)
 {
 	Common::Console::setTextColor(Common::Console::Color::BrightGreen);
     return s;
 }
-//#############################################################################
+////////////////////////////////////////////////////////////////////////////
 inline std::ostream& cyan(std::ostream &s)
 {
 	Common::Console::setTextColor(Common::Console::Color::BrightCyan);
     return s;
 }
-//#############################################################################
+////////////////////////////////////////////////////////////////////////////
 inline std::ostream& red(std::ostream &s)
 {
 	Common::Console::setTextColor(Common::Console::Color::BrightRed);
     return s;
 }
-//#############################################################################
+////////////////////////////////////////////////////////////////////////////
 inline std::ostream& magenta(std::ostream &s)
 {
 	Common::Console::setTextColor(Common::Console::Color::BrightMagenta);
     return s;
 }
-//#############################################################################
+////////////////////////////////////////////////////////////////////////////
 inline std::ostream& khaki(std::ostream &s)
 {
 	Common::Console::setTextColor(Common::Console::Color::Yellow);
     return s;
 }
-//#############################################################################
+////////////////////////////////////////////////////////////////////////////
 inline std::ostream& yellow(std::ostream &s)
 {
 	Common::Console::setTextColor(Common::Console::Color::BrightYellow);
     return s;
 }
-//#############################################################################
+////////////////////////////////////////////////////////////////////////////
 
 /*
 struct color {

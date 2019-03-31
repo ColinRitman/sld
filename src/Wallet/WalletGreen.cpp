@@ -19,6 +19,7 @@
 
 #include "ITransaction.h"
 
+#include "Common/Base58.h"
 #include "Common/ScopeExit.h"
 #include "Common/ShuffleGenerator.h"
 #include "Common/StdInputStream.h"
@@ -240,7 +241,9 @@ WalletGreen::WalletGreen(System::Dispatcher& dispatcher, const Currency& currenc
   m_pendingBalance(0),
   m_transactionSoftLockTime(transactionSoftLockTime)
 {
-  m_upperTransactionSizeLimit = m_currency.blockGrantedFullRewardZone() * 2 - m_currency.minerTxBlobReservedSize();
+//$$
+//  m_upperTransactionSizeLimit = m_currency.blockGrantedFullRewardZone() * 2 - m_currency.minerTxBlobReservedSize();
+//
   m_readyEvent.set();
 }
 
@@ -1290,13 +1293,16 @@ void WalletGreen::sendTransaction(const CryptoNote::Transaction& cryptoNoteTrans
     throw std::system_error(ec);
   }
 }
-
+///////////////////////////////////////////////////////////////////////////////
 size_t WalletGreen::validateSaveAndSendTransaction(const ITransactionReader& transaction, const std::vector<WalletTransfer>& destinations, bool isFusion, bool send) {
-  BinaryArray transactionData = transaction.getTransactionData();
 
-  if (transactionData.size() > m_upperTransactionSizeLimit) {
-    throw std::system_error(make_error_code(error::TRANSACTION_SIZE_TOO_BIG));
-  }
+	BinaryArray transactionData = transaction.getTransactionData();
+//$$
+//	if (transactionData.size() > m_upperTransactionSizeLimit) {
+//$$
+	if (transactionData.size() > getMaxTxSize()) {	  
+		throw std::system_error(make_error_code(error::TRANSACTION_SIZE_TOO_BIG));
+	}
 
   CryptoNote::Transaction cryptoNoteTransaction;
   if (!fromBinaryArray(cryptoNoteTransaction, transactionData)) {
@@ -1317,8 +1323,9 @@ size_t WalletGreen::validateSaveAndSendTransaction(const ITransactionReader& tra
     try {
       removeUnconfirmedTransaction(transaction.getTransactionHash());
     } catch (...) {
-      // Ignore any exceptions. If rollback fails then the transaction is stored as unconfirmed and will be deleted after wallet relaunch
-      // during transaction pool synchronization
+      // Ignore any exceptions. 
+	  // If rollback fails then the transaction is stored as unconfirmed and 
+      // will be deleted after wallet relaunch during transaction pool synchronization
     }
   });
 
@@ -1335,7 +1342,7 @@ size_t WalletGreen::validateSaveAndSendTransaction(const ITransactionReader& tra
 
   return transactionId;
 }
-
+///////////////////////////////////////////////////////////////////////////////
 AccountKeys WalletGreen::makeAccountKeys(const WalletRecord& wallet) const {
   AccountKeys keys;
   keys.address.spendPublicKey = wallet.spendPublicKey;
@@ -2491,4 +2498,101 @@ void WalletGreen::deleteFromUncommitedTransactions(const std::vector<size_t>& de
   }
 }
 
+ 
+/* The blockchain events are sent to us from the blockchain synchronizer,
+   but they appear to not get executed on the dispatcher until the synchronizer
+   stops. After some investigation, it appears that we need to run this
+   archaic line of code to run other code on the dispatcher? */
+void WalletGreen::updateInternalCache() {
+    System::RemoteContext<void> updateInternalBC(m_dispatcher, [this] () {});
+    updateInternalBC.get();
+}
+///////////////////////////////////////////////////////////////////////////////
+size_t WalletGreen::getMaxTxSize()
+{
+    return 
+		CryptoNote::parameters::MAX_BLOCK_SIZE_INITIAL - 
+		CryptoNote::parameters::CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE;
+}
+///////////////////////////////////////////////////////////////////////////////
+bool WalletGreen::txIsTooLarge(const TransactionParameters& sendingTransaction)
+{
+  return getTxSize(sendingTransaction) > getMaxTxSize();
+}
+///////////////////////////////////////////////////////////////////////////////
+size_t WalletGreen::getTxSize(const TransactionParameters &sendingTransaction)
+{
+  System::EventLock lk(m_readyEvent);
+
+  throwIfNotInitialized();
+  throwIfTrackingMode();
+  throwIfStopped();
+
+  CryptoNote::AccountPublicAddress changeDestination = getChangeDestination(sendingTransaction.changeDestination, sendingTransaction.sourceAddresses);
+
+  std::vector<WalletOuts> wallets;
+  if (!sendingTransaction.sourceAddresses.empty()) {
+    wallets = pickWallets(sendingTransaction.sourceAddresses);
+  } else {
+    wallets = pickWalletsWithMoney();
+  }
+
+  PreparedTransaction preparedTransaction;
+  prepareTransaction(
+    std::move(wallets),
+    sendingTransaction.destinations,
+    sendingTransaction.fee,
+    sendingTransaction.mixIn,
+    sendingTransaction.extra,
+    sendingTransaction.unlockTimestamp,
+    sendingTransaction.donation,
+    changeDestination,
+    preparedTransaction);
+
+  BinaryArray transactionData = preparedTransaction.transaction->getTransactionData();
+  return transactionData.size();
+}
+///////////////////////////////////////////////////////////////////////////////
+void WalletGreen::clearCacheAndShutdown()
+{
+  if (m_walletsContainer.size() != 0) {
+    m_synchronizer.unsubscribeConsumerNotifications(m_viewPublicKey, this);
+  }
+
+  stopBlockchainSynchronizer();
+  m_blockchainSynchronizer.removeObserver(this);
+
+  clearCaches();
+
+  m_walletsContainer.clear();
+
+  shutdown();
+}
+///////////////////////////////////////////////////////////////////////////////
+void WalletGreen::createViewWallet(const std::string &password,
+                                   const std::string address,
+                                   const Crypto::SecretKey &viewSecretKey)
+{
+    CryptoNote::AccountPublicAddress publicKeys;
+    uint64_t prefix;
+
+    std::string data;
+
+    if (!(Tools::Base58::decode_addr(address, prefix, data) &&
+          fromBinaryArray(publicKeys, asBinaryArray(data)) &&
+          // ::serialization::parse_binary(data, adr) &&
+          check_key(publicKeys.spendPublicKey) &&
+          check_key(publicKeys.viewPublicKey)))
+    {
+        throw std::runtime_error("Failed to parse address!");
+    }
+
+    initializeWithViewKey(viewSecretKey, password);
+    createAddress(publicKeys.spendPublicKey);
+}
+///////////////////////////////////////////////////////////////////////////////
+
 } //namespace CryptoNote
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////

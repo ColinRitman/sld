@@ -42,6 +42,7 @@ namespace Crypto {
     sc_reduce32(reinterpret_cast<unsigned char*>(&res));
   }
   
+  
 //////////////////////////////////////////////////////////////////////  
 //generate public and secret keys from a random 256-bit integer or
 //recover from recovery_key if is_recovery = true
@@ -87,6 +88,16 @@ SecretKey crypto_ops::generate_keys_or_recover
     ge_scalarmult_base(&point, reinterpret_cast<unsigned char*>(&sec));
     ge_p3_tobytes(reinterpret_cast<unsigned char*>(&pub), &point);
   }
+//////////////////////////////////////////////////////////////////////  
+void crypto_ops::generate_keys_from_seed(PublicKey &pub, SecretKey &sec, SecretKey &seed) {
+	
+	ge_p3 point;
+	sec = seed;
+	
+	sc_reduce32(reinterpret_cast<unsigned char*>(&sec));
+	ge_scalarmult_base(&point, reinterpret_cast<unsigned char*>(&sec));
+	ge_p3_tobytes(reinterpret_cast<unsigned char*>(&pub), &point);
+}
 //////////////////////////////////////////////////////////////////////  
 bool crypto_ops::check_skey(const SecretKey &key) {
     ge_p3 point;

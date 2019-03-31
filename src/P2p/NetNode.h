@@ -138,7 +138,7 @@ namespace CryptoNote
 
     int handleCommand(const LevinProtocol::Command& cmd, BinaryArray& buff_out, P2pConnectionContext& context, bool& handled);
 
-    //----------------- commands handlers ----------------------------------------------
+    //----------------- commands handlers ----------------
     int handle_handshake(int command, COMMAND_HANDSHAKE::request& arg, COMMAND_HANDSHAKE::response& rsp, P2pConnectionContext& context);
     int handle_timed_sync(int command, COMMAND_TIMED_SYNC::request& arg, COMMAND_TIMED_SYNC::response& rsp, P2pConnectionContext& context);
     int handle_ping(int command, COMMAND_PING::request& arg, COMMAND_PING::response& rsp, P2pConnectionContext& context);
@@ -162,13 +162,14 @@ namespace CryptoNote
     void on_connection_new(P2pConnectionContext& context);
     void on_connection_close(P2pConnectionContext& context);
 
-    //----------------- i_p2p_endpoint -------------------------------------------------------------
+    //----------------- i_p2p_endpoint -
     virtual void relay_notify_to_all(int command, const BinaryArray& data_buff, const net_connection_id* excludeConnection) override;
     virtual bool invoke_notify_to_peer(int command, const BinaryArray& req_buff, const CryptoNoteConnectionContext& context) override;
     virtual void for_each_connection(std::function<void(CryptoNote::CryptoNoteConnectionContext&, PeerIdType)> f) override;
     virtual void externalRelayNotifyToAll(int command, const BinaryArray& data_buff) override;
 
-    //-----------------------------------------------------------------------------------------------
+    ///////////////////////////////////////////////////////////////////////////////
+
     bool handle_command_line(const boost::program_options::variables_map& vm);
     bool handleConfig(const NetNodeConfig& config);
     bool append_net_address(std::vector<NetworkAddress>& nodes, const std::string& addr);

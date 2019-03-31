@@ -134,7 +134,8 @@ std::ostream& get_response_schema_as_json(std::ostream& ss, response_schema &rs)
   return ss;
 }
 
-//---------------------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool print_COMMAND_REQUEST_STAT_INFO(const COMMAND_REQUEST_STAT_INFO::response &si) {
   std::cout << " ------ COMMAND_REQUEST_STAT_INFO ------ " << ENDL;
   std::cout << "Version:             " << si.version << ENDL;
@@ -150,7 +151,8 @@ bool print_COMMAND_REQUEST_STAT_INFO(const COMMAND_REQUEST_STAT_INFO::response &
   std::cout << "Top block id:        " << si.payload_info.top_block_id_str << ENDL;
   return true;
 }
-//---------------------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool print_COMMAND_REQUEST_NETWORK_STATE(const COMMAND_REQUEST_NETWORK_STATE::response &ns) {
   std::cout << " ------ COMMAND_REQUEST_NETWORK_STATE ------ " << ENDL;
   std::cout << "Peer id: " << ns.my_id << ENDL;
@@ -172,7 +174,8 @@ bool print_COMMAND_REQUEST_NETWORK_STATE(const COMMAND_REQUEST_NETWORK_STATE::re
 
   return true;
 }
-//---------------------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool handle_get_daemon_info(po::variables_map& vm) {
   if(!command_line::has_arg(vm, arg_rpc_port)) {
     std::cout << "ERROR: rpc port not set" << ENDL;
@@ -206,7 +209,8 @@ bool handle_get_daemon_info(po::variables_map& vm) {
 
   return true;
 }
-//---------------------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool handle_request_stat(po::variables_map& vm, PeerIdType peer_id) {
   if(!command_line::has_arg(vm, arg_priv_key)) {
     std::cout << "{" << ENDL << "  \"status\": \"ERROR: " << "secret key not set \"" << ENDL << "}";
@@ -309,7 +313,8 @@ bool handle_request_stat(po::variables_map& vm, PeerIdType peer_id) {
   return true;
 }
 
-//---------------------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool generate_and_print_keys() {
   Crypto::PublicKey pk;
   Crypto::SecretKey sk;

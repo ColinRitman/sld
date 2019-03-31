@@ -49,7 +49,8 @@ DaemonCommandsHandler::DaemonCommandsHandler(CryptoNote::core& core, CryptoNote:
   m_consoleHandler.setHandler("log", boost::bind(&DaemonCommandsHandler::set_log, this, _1), "Set log <level> - Change current log level, <level> is a number 0-4");
 }
 
-//--------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 std::string DaemonCommandsHandler::get_commands_str()
 {
   std::stringstream ss;
@@ -62,19 +63,22 @@ std::string DaemonCommandsHandler::get_commands_str()
   return ss.str();
 }
 
-//--------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool DaemonCommandsHandler::exit(const std::vector<std::string>& args) {
   m_consoleHandler.requestStop();
   m_srv.sendStopSignal();
   return true;
 }
 
-//--------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool DaemonCommandsHandler::help(const std::vector<std::string>& args) {
   std::cout << get_commands_str() << ENDL;
   return true;
 }
-//--------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool DaemonCommandsHandler::print_pl(const std::vector<std::string>& args) {
   m_srv.log_peerlist();
   return true;
@@ -96,13 +100,15 @@ bool DaemonCommandsHandler::show_hr(const std::vector<std::string>& args)
   }
   return true;
 }
-//--------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool DaemonCommandsHandler::hide_hr(const std::vector<std::string>& args)
 {
   m_core.get_miner().do_print_hashrate(false);
   return true;
 }
-//--------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool DaemonCommandsHandler::print_bc_outs(const std::vector<std::string>& args)
 {
   if (args.size() != 1)
@@ -113,13 +119,15 @@ bool DaemonCommandsHandler::print_bc_outs(const std::vector<std::string>& args)
   m_core.print_blockchain_outs(args[0]);
   return true;
 }
-//--------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool DaemonCommandsHandler::print_cn(const std::vector<std::string>& args)
 {
   m_srv.get_payload_object().log_connections();
   return true;
 }
-//--------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool DaemonCommandsHandler::print_bc(const std::vector<std::string> &args) {
   if (!args.size()) {
     std::cout << "need block index parameter" << ENDL;
@@ -156,7 +164,8 @@ bool DaemonCommandsHandler::print_bc(const std::vector<std::string> &args) {
   m_core.print_blockchain(start_index, end_index);
   return true;
 }
-//--------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool DaemonCommandsHandler::print_bci(const std::vector<std::string>& args)
 {
   m_core.print_blockchain_index();
@@ -187,7 +196,8 @@ bool DaemonCommandsHandler::set_log(const std::vector<std::string>& args)
   return true;
 }
 
-//--------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool DaemonCommandsHandler::print_block_by_height(uint32_t height)
 {
   std::list<CryptoNote::Block> blocks;
@@ -206,7 +216,8 @@ bool DaemonCommandsHandler::print_block_by_height(uint32_t height)
 
   return true;
 }
-//--------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool DaemonCommandsHandler::print_block_by_hash(const std::string& arg)
 {
   Crypto::Hash block_hash;
@@ -231,11 +242,13 @@ bool DaemonCommandsHandler::print_block_by_hash(const std::string& arg)
 
   return true;
 }
-//--------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 uint64_t DaemonCommandsHandler::calculatePercent(const CryptoNote::Currency& currency, uint64_t value, uint64_t total) {
   return static_cast<uint64_t>(100.0 * currency.coin() * static_cast<double>(value) / static_cast<double>(total));
 }
-//--------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool DaemonCommandsHandler::print_stat(const std::vector<std::string>& args) {
   uint32_t height = 0;
   uint32_t maxHeight = m_core.get_current_blockchain_height() - 1;
@@ -281,7 +294,8 @@ bool DaemonCommandsHandler::print_stat(const std::vector<std::string>& args) {
 
   return true;
 }
-//--------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool DaemonCommandsHandler::print_block(const std::vector<std::string> &args) {
   if (args.empty()) {
     std::cout << "expected: print_block (<block_hash> | <block_height>)" << std::endl;
@@ -298,7 +312,8 @@ bool DaemonCommandsHandler::print_block(const std::vector<std::string> &args) {
 
   return true;
 }
-//--------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool DaemonCommandsHandler::print_tx(const std::vector<std::string>& args)
 {
   if (args.empty()) {
@@ -326,19 +341,22 @@ bool DaemonCommandsHandler::print_tx(const std::vector<std::string>& args)
 
   return true;
 }
-//--------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool DaemonCommandsHandler::print_pool(const std::vector<std::string>& args)
 {
   logger(Logging::INFO) << "Pool state: " << ENDL << m_core.print_pool(false);
   return true;
 }
-//--------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool DaemonCommandsHandler::print_pool_sh(const std::vector<std::string>& args)
 {
   logger(Logging::INFO) << "Pool state: " << ENDL << m_core.print_pool(true);
   return true;
 }
-//--------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool DaemonCommandsHandler::start_mining(const std::vector<std::string> &args) {
   if (!args.size()) {
     std::cout << "Please, specify wallet address to mine for: start_mining <addr> [threads=1]" << std::endl;
@@ -361,7 +379,8 @@ bool DaemonCommandsHandler::start_mining(const std::vector<std::string> &args) {
   return true;
 }
 
-//--------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool DaemonCommandsHandler::stop_mining(const std::vector<std::string>& args) {
   m_core.get_miner().stop();
   return true;

@@ -1,7 +1,6 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+////////////////////////////////////////////////////////////////////////////
 
 #include "NetNode.h"
 
@@ -41,6 +40,7 @@
 
 #include "Common/ConsoleTools.h"
 #include "zrainbow.h"
+////////////////////////////////////////////////////////////////////////////
 
 using namespace Common;
 using namespace Logging;
@@ -144,9 +144,11 @@ namespace CryptoNote
   }
 
 
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   // P2pConnectionContext implementation
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
 
   bool P2pConnectionContext::pushMessage(P2pMessage&& msg) {
     writeQueueSize += msg.size();
@@ -273,7 +275,8 @@ namespace CryptoNote
 
 #undef INVOKE_HANDLER
 
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   
   void NodeServer::init_options(boost::program_options::options_description& desc)
   {
@@ -287,7 +290,8 @@ namespace CryptoNote
     command_line::add_arg(desc, arg_p2p_seed_node);    
     command_line::add_arg(desc, arg_p2p_hide_my_port);
   }
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   
   bool NodeServer::init_config() {
     try {
@@ -328,7 +332,8 @@ namespace CryptoNote
     return true;
   }
 
-  //----------------------------------------------------------------------------------- 
+  ///////////////////////////////////////////////////////////////////////////////
+ 
   void NodeServer::for_each_connection(std::function<void(CryptoNoteConnectionContext&, PeerIdType)> f)
   {
     for (auto& ctx : m_connections) {
@@ -336,21 +341,24 @@ namespace CryptoNote
     }
   }
 
-  //----------------------------------------------------------------------------------- 
+  ///////////////////////////////////////////////////////////////////////////////
+ 
   void NodeServer::externalRelayNotifyToAll(int command, const BinaryArray& data_buff) {
     m_dispatcher.remoteSpawn([this, command, data_buff] {
       relay_notify_to_all(command, data_buff, nullptr);
     });
   }
 
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   bool NodeServer::make_default_config()
   {
     m_config.m_peer_id  = Crypto::rand<uint64_t>();
     return true;
   }
   
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   
   bool NodeServer::handle_command_line(const boost::program_options::variables_map& vm)
   {
@@ -441,7 +449,8 @@ namespace CryptoNote
   }
 
 
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   
   bool NodeServer::init(const NetNodeConfig& config) {
     if (!config.getTestnet()) {
@@ -496,13 +505,15 @@ namespace CryptoNote
 
     return true;
   }
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   
   CryptoNote::CryptoNoteProtocolHandler& NodeServer::get_payload_object()
   {
     return m_payload_handler;
   }
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   
   bool NodeServer::run() {
     logger(INFO) << "Starting node_server";
@@ -522,18 +533,21 @@ namespace CryptoNote
     return true;
   }
 
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   
   uint64_t NodeServer::get_connections_count() {
     return m_connections.size();
   }
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   
   bool NodeServer::deinit()  {
     return store_config();
   }
 
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   
   bool NodeServer::store_config()
   {
@@ -561,7 +575,8 @@ namespace CryptoNote
 
     return false;
   }
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   
   bool NodeServer::sendStopSignal()  {
     m_stop = true;
@@ -704,7 +719,8 @@ void NodeServer::forEachConnection(std::function<void(P2pConnectionContext&)> ac
     }
   }
 
-  //----------------------------------------------------------------------------------- 
+  ///////////////////////////////////////////////////////////////////////////////
+ 
   bool NodeServer::is_peer_used(const PeerlistEntry& peer) {
     if(m_config.m_peer_id == peer.id)
       return true; //dont make connections to ourself
@@ -717,7 +733,8 @@ void NodeServer::forEachConnection(std::function<void(P2pConnectionContext&)> ac
     }
     return false;
   }
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   
   bool NodeServer::is_addr_connected(const NetworkAddress& peer) {
     for (const auto& conn : m_connections) {
@@ -978,7 +995,8 @@ return false;
 
     return true;
   }
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   
   bool NodeServer::make_expected_connections_count(bool white_list, size_t expected_connections)
   {
@@ -996,7 +1014,8 @@ return false;
     return true;
   }
 
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   size_t NodeServer::get_outgoing_connections_count() {
     size_t count = 0;
     for (const auto& cntxt : m_connections) {
@@ -1006,7 +1025,8 @@ return false;
     return count;
   }
 
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   bool NodeServer::idle_worker() {
     try {
       m_connections_maker_interval.call(std::bind(&NodeServer::connections_maker, this));
@@ -1050,7 +1070,8 @@ bool NodeServer::handle_remote_peerlist(const std::list<PeerlistEntry>& peerlist
 	
 	return m_peerlist.merge_peerlist(peerlist_);
 }
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   
   bool NodeServer::get_local_node_data(basic_node_data& node_data)
   {
@@ -1066,7 +1087,8 @@ bool NodeServer::handle_remote_peerlist(const std::list<PeerlistEntry>& peerlist
     node_data.network_id = m_network_id;
     return true;
   }
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
 #ifdef ALLOW_DEBUG_COMMANDS
 
   bool NodeServer::check_trust(const proof_of_trust &tr) {
@@ -1100,7 +1122,8 @@ bool NodeServer::handle_remote_peerlist(const std::list<PeerlistEntry>& peerlist
     m_last_stat_request_time = tr.time;
     return true;
   }
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   
   int NodeServer::handle_get_stat_info(int command, COMMAND_REQUEST_STAT_INFO::request& arg, COMMAND_REQUEST_STAT_INFO::response& rsp, P2pConnectionContext& context)
   {
@@ -1115,7 +1138,8 @@ bool NodeServer::handle_remote_peerlist(const std::list<PeerlistEntry>& peerlist
     m_payload_handler.get_stat_info(rsp.payload_info);
     return 1;
   }
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   
   int NodeServer::handle_get_network_state(int command, COMMAND_REQUEST_NETWORK_STATE::request& arg, COMMAND_REQUEST_NETWORK_STATE::response& rsp, P2pConnectionContext& context)
   {
@@ -1138,7 +1162,8 @@ bool NodeServer::handle_remote_peerlist(const std::list<PeerlistEntry>& peerlist
     rsp.local_time = time(NULL);
     return 1;
   }
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   
   int NodeServer::handle_get_peer_id(int command, COMMAND_REQUEST_PEER_ID::request& arg, COMMAND_REQUEST_PEER_ID::response& rsp, P2pConnectionContext& context)
   {
@@ -1147,7 +1172,8 @@ bool NodeServer::handle_remote_peerlist(const std::list<PeerlistEntry>& peerlist
   }
 #endif
   
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   
   void NodeServer::relay_notify_to_all(int command, const BinaryArray& data_buff, const net_connection_id* excludeConnection) {
     net_connection_id excludeId = excludeConnection ? *excludeConnection : boost::value_initialized<net_connection_id>();
@@ -1161,7 +1187,8 @@ bool NodeServer::handle_remote_peerlist(const std::list<PeerlistEntry>& peerlist
     });
   }
  
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   bool NodeServer::invoke_notify_to_peer(int command, const BinaryArray& buffer, const CryptoNoteConnectionContext& context) {
     auto it = m_connections.find(context.m_connection_id);
     if (it == m_connections.end()) {
@@ -1173,7 +1200,8 @@ bool NodeServer::handle_remote_peerlist(const std::list<PeerlistEntry>& peerlist
     return true;
   }
 
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   bool NodeServer::try_ping(basic_node_data& node_data, P2pConnectionContext& context) {
     if(!node_data.my_port) {
       return false;
@@ -1218,7 +1246,8 @@ bool NodeServer::handle_remote_peerlist(const std::list<PeerlistEntry>& peerlist
     return true;
   }
 
-  //----------------------------------------------------------------------------------- 
+  ///////////////////////////////////////////////////////////////////////////////
+ 
   int NodeServer::handle_timed_sync(int command, COMMAND_TIMED_SYNC::request& arg, COMMAND_TIMED_SYNC::response& rsp, P2pConnectionContext& context)
   {
     if(!m_payload_handler.process_payload_sync_data(arg.payload_data, context, false)) {
@@ -1234,14 +1263,19 @@ bool NodeServer::handle_remote_peerlist(const std::list<PeerlistEntry>& peerlist
     logger(Logging::TRACE) << context << "COMMAND_TIMED_SYNC";
     return 1;
   }
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   
   int NodeServer::handle_handshake(int command, COMMAND_HANDSHAKE::request& arg, COMMAND_HANDSHAKE::response& rsp, P2pConnectionContext& context)
   {
     context.version = arg.node_data.version;
 
     if (arg.node_data.network_id != m_network_id) {
-      logger(Logging::DEBUGGING) << context << "WRONG NETWORK AGENT CONNECTED! id=" << arg.node_data.network_id;
+      logger(Logging::DEBUGGING) 
+		<< context 
+		<< "WRONG NETWORK AGENT CONNECTED! id=" 
+		<< arg.node_data.network_id;
+		
       context.m_state = CryptoNoteConnectionContext::state_shutdown;
       return 1;
     }
@@ -1291,7 +1325,8 @@ bool NodeServer::handle_remote_peerlist(const std::list<PeerlistEntry>& peerlist
     logger(Logging::DEBUGGING, Logging::BRIGHT_GREEN) << "COMMAND_HANDSHAKE";
     return 1;
   }
-  //-----------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   
   int NodeServer::handle_ping(int command, COMMAND_PING::request& arg, COMMAND_PING::response& rsp, P2pConnectionContext& context)
   {
@@ -1300,7 +1335,8 @@ bool NodeServer::handle_remote_peerlist(const std::list<PeerlistEntry>& peerlist
     rsp.peer_id = m_config.m_peer_id;
     return 1;
   }
-//-----------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
   bool NodeServer::log_peerlist()
   {
     std::list<PeerlistEntry> pl_wite;
@@ -1639,3 +1675,6 @@ void NodeServer::writeHandler(P2pConnectionContext& ctx) {
 }
 ///////////////////////////////////////////////////////////////////////////////
 }
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////

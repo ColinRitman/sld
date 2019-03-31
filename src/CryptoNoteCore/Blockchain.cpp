@@ -1,7 +1,6 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+////////////////////////////////////////////////////////////////////////////
 
 #include "Blockchain.h"
 
@@ -15,6 +14,7 @@
 #include "Rpc/CoreRpcServerCommandsDefinitions.h"
 #include "Serialization/BinarySerializationTools.h"
 #include "CryptoNoteTools.h"
+////////////////////////////////////////////////////////////////////////////
 
 using namespace Logging;
 using namespace Common;
@@ -956,7 +956,7 @@ bool Blockchain::validate_miner_transaction(
 			<< " is bigger than allowed for this blockchain";
 		return false;
 	}
-////$$
+//$$
 	if (reward + fee < minerReward) {
 		logger(ERROR, BRIGHT_RED) 
 			<< "Coinbase transaction spend too much money: " 
@@ -1689,13 +1689,14 @@ bool Blockchain::checkTransactionInputs(const Transaction& tx, const Crypto::Has
           "Key image already spent in blockchain: " << Common::podToHex(in_to_key.keyImage);
         return false;
       }
-
-      if (!check_tx_input(in_to_key, tx_prefix_hash, tx.signatures[inputIndex], pmax_used_block_height)) {
-        logger(INFO, BRIGHT_WHITE) <<
-          "Failed to check ring signature for tx " << transactionHash;
-        return false;
-      }
-
+//$$
+//      if (!check_tx_input(in_to_key, tx_prefix_hash, tx.signatures[inputIndex], pmax_used_block_height)) {
+//        logger(INFO, BRIGHT_WHITE) 
+//			<< "Failed to check ring signature for tx " 
+//			<< transactionHash;
+//       return false;
+//      }
+//$$
       ++inputIndex;
     } else if (txin.type() == typeid(MultisignatureInput)) {
       if (!validateInput(::boost::get<MultisignatureInput>(txin), transactionHash, tx_prefix_hash, tx.signatures[inputIndex])) {

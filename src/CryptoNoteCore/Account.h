@@ -1,7 +1,6 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+///////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
@@ -12,13 +11,14 @@ namespace CryptoNote {
 
   class ISerializer;
 
-  /************************************************************************/
-  /*                                                                      */
-  /************************************************************************/
   class AccountBase {
   public:
     AccountBase();
     void generate();
+//$$	
+    static void generateViewFromSpend(Crypto::SecretKey&, Crypto::SecretKey&, Crypto::PublicKey&);
+    static void generateViewFromSpend(Crypto::SecretKey&, Crypto::SecretKey&);	
+//$$	
     void create_read_only(const CryptoNote::AccountPublicAddress& address, const Crypto::SecretKey& viewkey);
 	Crypto::SecretKey generate_or_recover(const Crypto::SecretKey& recovery_key, const Crypto::SecretKey& secondary_key, bool is_recovery, bool is_copy, bool is_deterministic);
 

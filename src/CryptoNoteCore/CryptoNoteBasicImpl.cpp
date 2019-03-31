@@ -20,7 +20,8 @@ namespace CryptoNote {
   /************************************************************************/
   /* CryptoNote helper functions                                          */
   /************************************************************************/
-  //-----------------------------------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   uint64_t getPenalizedAmount(uint64_t amount, size_t medianSize, size_t currentBlockSize) {
     static_assert(sizeof(size_t) >= sizeof(uint32_t), "size_t is too small");
     assert(currentBlockSize <= 2 * medianSize);
@@ -48,14 +49,16 @@ namespace CryptoNote {
 
     return penalizedAmountLo;
   }
-  //-----------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   std::string getAccountAddressAsStr(uint64_t prefix, const AccountPublicAddress& adr) {
     BinaryArray ba;
     bool r = toBinaryArray(adr, ba);
     assert(r);
     return Tools::Base58::encode_addr(prefix, Common::asString(ba));
   }
-  //-----------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   bool is_coinbase(const Transaction& tx) {
     if(tx.inputs.size() != 1) {
       return false;
@@ -67,7 +70,8 @@ namespace CryptoNote {
 
     return true;
   }
-  //-----------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   bool parseAccountAddressString(uint64_t& prefix, AccountPublicAddress& adr, const std::string& str) {
     std::string data;
 
@@ -78,17 +82,20 @@ namespace CryptoNote {
       check_key(adr.spendPublicKey) &&
       check_key(adr.viewPublicKey);
   }
-  //-----------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   bool operator ==(const CryptoNote::Transaction& a, const CryptoNote::Transaction& b) {
     return getObjectHash(a) == getObjectHash(b);
   }
-  //-----------------------------------------------------------------------
+  ///////////////////////////////////////////////////////////////////////////////
+
   bool operator ==(const CryptoNote::Block& a, const CryptoNote::Block& b) {
     return CryptoNote::get_block_hash(a) == CryptoNote::get_block_hash(b);
   }
 }
 
-//--------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 bool parse_hash256(const std::string& str_hash, Crypto::Hash& hash) {
   return Common::podFromHex(str_hash, hash);
 }

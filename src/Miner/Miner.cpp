@@ -165,7 +165,8 @@ void Miner::workerFunc(const Block& blockTemplate, difficulty_type difficulty, u
 		m_state = MiningState::MINING_STOPPED;
 	}
 }
-//-----------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
 void Miner::merge_hr() {
 
 	m_hashes_total += m_hashes;
@@ -204,7 +205,8 @@ void Miner::merge_hr() {
 	m_last_hr_merge_time = millisecondsSinceEpoch();
 	m_hashes = 0;
 }
-//-----------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////
+
  bool Miner::setStateBlockFound() {
   auto state = m_state.load();
 

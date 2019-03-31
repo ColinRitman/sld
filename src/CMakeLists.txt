@@ -31,9 +31,12 @@ file(GLOB_RECURSE JsonRpcServer JsonRpcServer/*)
 file(GLOB_RECURSE PaymentGate PaymentGate/*)
 file(GLOB_RECURSE PaymentGateService PaymentGateService/*)
 file(GLOB_RECURSE Miner Miner/*)
+file(GLOB_RECURSE Mnemonics Mnemonics/*)
+file(GLOB_RECURSE hdwallet hdwallet/*)
 
 #source_group("" FILES $${Common} ${ConnectivityTool} ${Crypto} ${CryptoNoteCore} ${CryptoNoteProtocol} ${Daemon} ${JsonRpcServer} ${Http} ${Logging} ${NodeRpcProxy} ${P2p} ${Rpc} ${Serialization} ${SimpleWallet} ${System} ${Transfers} ${Wallet} ${WalletLegacy})
-source_group("" FILES $${Common} ${Crypto} ${CryptoNoteCore} ${CryptoNoteProtocol} ${Daemon} ${JsonRpcServer} ${Http} ${Logging} ${NodeRpcProxy} ${P2p} ${Rpc} ${Serialization} ${SimpleWallet} ${System} ${Transfers} ${Wallet} ${WalletLegacy})
+#source_group("" FILES $${Common} ${Crypto} ${CryptoNoteCore} ${CryptoNoteProtocol} ${Daemon} ${JsonRpcServer} ${Http} ${Logging} ${NodeRpcProxy} ${P2p} ${Rpc} ${Serialization} ${SimpleWallet} ${System} ${Transfers} ${Wallet} ${WalletLegacy})
+source_group("" FILES $${Common} ${Crypto} ${CryptoNoteCore} ${CryptoNoteProtocol} ${Daemon} ${JsonRpcServer} ${Http} ${Logging} ${NodeRpcProxy} ${P2p} ${Rpc} ${Serialization} ${SimpleWallet} ${System} ${Transfers} ${Wallet} ${WalletLegacy} ${Mnemonics} ${hddwallet})
 
 add_library(BlockchainExplorer ${BlockchainExplorer})
 add_library(Common ${Common})
@@ -42,6 +45,8 @@ add_library(CryptoNoteCore ${CryptoNoteCore})
 add_library(Http ${Http})
 add_library(InProcessNode ${InProcessNode})
 add_library(Logging ${Logging})
+###
+add_library(Mnemonics ${Mnemonics})
 add_library(NodeRpcProxy ${NodeRpcProxy})
 add_library(Rpc ${Rpc})
 add_library(P2P ${CryptoNoteProtocol} ${P2p})
@@ -57,6 +62,8 @@ add_executable(Daemon ${Daemon})
 add_executable(SimpleWallet ${SimpleWallet})
 add_executable(PaymentGateService ${PaymentGateService})
 add_executable(Miner ${Miner})
+###
+add_executable(hdwallet ${hdwallet})
 
 if (MSVC)
   target_link_libraries(System ws2_32)
@@ -67,6 +74,7 @@ target_link_libraries(Daemon CryptoNoteCore P2P Rpc Serialization System Http Lo
 target_link_libraries(SimpleWallet Wallet NodeRpcProxy Transfers Rpc Http Serialization CryptoNoteCore System Logging Common Crypto ${Boost_LIBRARIES})
 target_link_libraries(PaymentGateService PaymentGate JsonRpcServer Wallet NodeRpcProxy Transfers CryptoNoteCore Crypto P2P Rpc Http Serialization System Logging Common InProcessNode upnpc-static BlockchainExplorer ${Boost_LIBRARIES})
 target_link_libraries(Miner CryptoNoteCore Rpc Serialization System Http Logging Common Crypto ${Boost_LIBRARIES})
+target_link_libraries(hdwallet Mnemonics Wallet NodeRpcProxy Transfers Rpc Http CryptoNoteCore System Logging Common ${Boost_LIBRARIES} Serialization Crypto)
 
 add_dependencies(Rpc version)
 
@@ -75,9 +83,12 @@ add_dependencies(Daemon version)
 add_dependencies(SimpleWallet version)
 add_dependencies(PaymentGateService version)
 add_dependencies(P2P version)
+add_dependencies(hdwallet version)
 
 #set_property(TARGET ConnectivityTool PROPERTY OUTPUT_NAME "sldt")
 set_property(TARGET SimpleWallet PROPERTY OUTPUT_NAME "sldw")
 set_property(TARGET PaymentGateService PROPERTY OUTPUT_NAME "sldp")
 set_property(TARGET Miner PROPERTY OUTPUT_NAME "sldm")
 set_property(TARGET Daemon PROPERTY OUTPUT_NAME "sldd")
+set_property(TARGET hdwallet PROPERTY OUTPUT_NAME "sldwhd")
+
