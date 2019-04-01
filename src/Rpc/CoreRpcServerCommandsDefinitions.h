@@ -1,23 +1,23 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
+////////////////////////////////////////////////////////////////////////////
 #pragma once
 
+#include "rulez.h"
 #include "CryptoNoteProtocol/CryptoNoteProtocolDefinitions.h"
 #include "CryptoNoteCore/CryptoNoteBasic.h"
 #include "CryptoNoteCore/Difficulty.h"
 #include "crypto/hash.h"
 
 #include "Serialization/SerializationOverloads.h"
+////////////////////////////////////////////////////////////////////////////
 
 namespace CryptoNote {
 //-----------------------------------------------
 #define CORE_RPC_STATUS_OK "OK"
 #define CORE_RPC_STATUS_BUSY "BUSY"
 
-//////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 struct transaction_short_response {
 	std::string hash;
 	uint64_t fee;
@@ -475,9 +475,9 @@ struct currency_core {
   uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;
 //  uint32_t UPGRADE__HEIGHT_V2;
 //  uint32_t UPGRADE__HEIGHT_V3;
-  size_t DIFFICULTY_WINDOW;
-  size_t DIFFICULTY_CUT;
-  size_t DIFFICULTY_LAG;
+//  size_t DIFFICULTY_WINDOW;
+//  size_t DIFFICULTY_CUT;
+//  size_t DIFFICULTY_LAG;
   uint16_t MIN_MIXIN;
   uint8_t MANDATORY_MIXIN_BLOCK_VERSION;
   uint32_t MIXIN_START_HEIGHT;
@@ -486,17 +486,17 @@ struct currency_core {
   uint64_t TAIL_EMISSION_REWARD;
   uint8_t CRYPTONOTE_COIN_VERSION;
   std::string GENESIS_BLOCK_REWARD;
-  size_t DIFFICULTY_WINDOW_V1;
-  size_t DIFFICULTY_WINDOW_V2;
-  size_t DIFFICULTY_CUT_V1;
-  size_t DIFFICULTY_CUT_V2;
-  size_t DIFFICULTY_LAG_V1;
-  size_t DIFFICULTY_LAG_V2;
-  uint32_t ZAWY_DIFFICULTY_BLOCK_INDEX;
-  size_t ZAWY_DIFFICULTY_V2;
-  uint8_t ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION;
-  uint32_t BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX;
-  std::string BYTECOIN_NETWORK;
+//  size_t DIFFICULTY_WINDOW_V1;
+//  size_t DIFFICULTY_WINDOW_V2;
+//  size_t DIFFICULTY_CUT_V1;
+//  size_t DIFFICULTY_CUT_V2;
+//  size_t DIFFICULTY_LAG_V1;
+//  size_t DIFFICULTY_LAG_V2;
+//  uint32_t ZAWY_DIFFICULTY_BLOCK_INDEX;
+//  size_t ZAWY_DIFFICULTY_V2;
+//  uint8_t ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION;
+//  uint32_t BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX;
+  std::string CRYPTONOTE_NETWORK;
   std::string CRYPTONOTE_NAME;
   std::string GENESIS_COINBASE_TX_HEX;
   std::vector<std::string> CHECKPOINTS;
@@ -520,9 +520,9 @@ struct currency_core {
     KV_MEMBER(EXPECTED_NUMBER_OF_BLOCKS_PER_DAY)
 //    KV_MEMBER(UPGRADE__HEIGHT_V2)
 //    KV_MEMBER(UPGRADE__HEIGHT_V3)
-    KV_MEMBER(DIFFICULTY_WINDOW)
-    KV_MEMBER(DIFFICULTY_CUT)
-    KV_MEMBER(DIFFICULTY_LAG)
+//    KV_MEMBER(DIFFICULTY_WINDOW)
+//    KV_MEMBER(DIFFICULTY_CUT)
+//    KV_MEMBER(DIFFICULTY_LAG)
     KV_MEMBER(MIN_MIXIN)
     KV_MEMBER(MANDATORY_MIXIN_BLOCK_VERSION)
     KV_MEMBER(MIXIN_START_HEIGHT)
@@ -531,17 +531,17 @@ struct currency_core {
     KV_MEMBER(TAIL_EMISSION_REWARD)
     KV_MEMBER(CRYPTONOTE_COIN_VERSION)
     KV_MEMBER(GENESIS_BLOCK_REWARD)
-    KV_MEMBER(DIFFICULTY_WINDOW_V1)
-    KV_MEMBER(DIFFICULTY_WINDOW_V2)
-    KV_MEMBER(DIFFICULTY_CUT_V1)
-    KV_MEMBER(DIFFICULTY_CUT_V2)
-    KV_MEMBER(DIFFICULTY_LAG_V1)
-    KV_MEMBER(DIFFICULTY_LAG_V2)
-    KV_MEMBER(ZAWY_DIFFICULTY_BLOCK_INDEX)
-    KV_MEMBER(ZAWY_DIFFICULTY_V2)
-    KV_MEMBER(ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION)
-    KV_MEMBER(BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX)
-    KV_MEMBER(BYTECOIN_NETWORK)
+//    KV_MEMBER(DIFFICULTY_WINDOW_V1)
+//    KV_MEMBER(DIFFICULTY_WINDOW_V2)
+//    KV_MEMBER(DIFFICULTY_CUT_V1)
+//    KV_MEMBER(DIFFICULTY_CUT_V2)
+//    KV_MEMBER(DIFFICULTY_LAG_V1)
+//    KV_MEMBER(DIFFICULTY_LAG_V2)
+//    KV_MEMBER(ZAWY_DIFFICULTY_BLOCK_INDEX)
+//    KV_MEMBER(ZAWY_DIFFICULTY_V2)
+//    KV_MEMBER(ZAWY_DIFFICULTY_DIFFICULTY_BLOCK_VERSION)
+//    KV_MEMBER(BUGGED_ZAWY_DIFFICULTY_BLOCK_INDEX)
+    KV_MEMBER(CRYPTONOTE_NETWORK)
     KV_MEMBER(CRYPTONOTE_NAME)
     KV_MEMBER(GENESIS_COINBASE_TX_HEX)
     KV_MEMBER(CHECKPOINTS)

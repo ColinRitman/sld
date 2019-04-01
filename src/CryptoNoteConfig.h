@@ -47,14 +47,17 @@ namespace CryptoNote
 
 		const uint64_t DIFFICULTY_TARGET                             = 20;//Difficulty target is an ideal time period between blocks, in seconds. 20=SLD, 720=ZZP
 		const uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY             = 24 * 60 * 60 / DIFFICULTY_TARGET;
+#ifndef PASSATELLI
+	//SPAGHETTI code...
 		const size_t   DIFFICULTY_WINDOW                             = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY/12; // blocks
 		const size_t   DIFFICULTY_CUT                                = 60;//Timestamps to cut after sorting
 		const size_t   DIFFICULTY_LAG                                = 20;//Lag of calculating the difficulty in terms of blocks
 
 		static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDOW or DIFFICULTY_CUT");
+	
+#endif
 
 		const size_t   DIFFICULTY_FNC_VER                            = 0;//0=SLD, 2=ZZP
-//		const uint32_t DIFFICULTY_ZAWY_START_BLOCK                   = 24000;//24000=SLD, 1=ZZP
 		const size_t   DIFFICULTY_ZAWY_WINDOW                        = 30;//30=SLD, 12=ZZP
 
 		const uint64_t DEPOSIT_MIN_AMOUNT                            = 1 * COIN;
@@ -82,16 +85,6 @@ namespace CryptoNote
 		const size_t   FUSION_TX_MIN_INPUT_COUNT                     = 12;
 		const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO              = 4;
 
-//		const uint32_t UPGRADE_HEIGHT_V2                             = 2;
-//		const uint32_t UPGRADE_HEIGHT_V3                             = 3;
-//		const uint32_t UPGRADE_HEIGHT_V4                             = 4;
-		
-//		const unsigned UPGRADE_VOTING_THRESHOLD                      = 90;               // percent
-//		const size_t   UPGRADE_VOTING_WINDOW                         = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
-//		const size_t   UPGRADE_WINDOW                                = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY;  // blocks
-//		static_assert(0 < UPGRADE_VOTING_THRESHOLD && UPGRADE_VOTING_THRESHOLD <= 100, "Bad UPGRADE_VOTING_THRESHOLD");
-//		static_assert(UPGRADE_VOTING_WINDOW > 1, "Bad UPGRADE_VOTING_WINDOW");
-
 		const char     CRYPTONOTE_BLOCKS_FILENAME[]                  = "chain.data";
 		const char     CRYPTONOTE_BLOCKINDEXES_FILENAME[]            = "idx.data";
 		const char     CRYPTONOTE_BLOCKSCACHE_FILENAME[]             = "cache.data";
@@ -101,12 +94,7 @@ namespace CryptoNote
 		const char     MINER_CONFIG_FILE_NAME[]                      = "common.json";
 	} // parameters
 
-//	const uint64_t TIMESTAMP_HACK_1_BLOCK_HEIGHT_Z               = 377777;//400000=SLD, 1=ZZP
-	const uint64_t TIMESTAMP_HACK_1_FUTURE_TIME_LIMIT_Z          = 60 * 7;//420 seconds/21 block = SLD
-
-	const uint64_t START_BLOCK_REWARD                            = (UINT64_C(320000) * parameters::COIN);
-	const uint64_t MIN_BLOCK_REWARD                              = (UINT64_C(150) * parameters::COIN);
-	const uint64_t REWARD_HALVING_INTERVAL                       = (UINT64_C(11000));
+	const uint64_t TIMESTAMP_HACK_1_FUTURE_TIME_LIMIT_Z				= 60 * 7;//420 seconds/21 block = SLD
 
 	const char     CRYPTONOTE_TICKER[]                           = CRYPTONOTE_ASSET_TICKER;
 	const char     CRYPTONOTE_NAME[]                             = CRYPTONOTE_ASSET_NAME;

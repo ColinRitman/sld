@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
 ////////////////////////////////////////////////////////////////////////////////
+#include "rulez.h"
 
 #include "Currency.h"
 #include <cctype>
@@ -598,6 +599,8 @@ bool Currency::parseAmount(const std::string& str, uint64_t& amount) const {
   return Common::fromString(strAmount, amount);
 }
 //******************************************************************************************************************
+#ifndef PASSATELLI
+	//SPAGHETTI code...
 difficulty_type Currency::nextDifficultyOld(
 	std::vector<uint64_t> timestamps,
 	std::vector<difficulty_type> cumulativeDifficulties, 
@@ -659,7 +662,8 @@ difficulty_type Currency::nextDifficultyOld(
 		}
 //std::cout << maroon << "DIFF UPGR: " << new_diff << std::endl;		
 	return new_diff;
-}
+}	
+#endif
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 difficulty_type Currency::nextDifficultyZawy(
@@ -774,7 +778,7 @@ bool Currency::checkProofOfWorkV1(Crypto::cn_context& context, const Block& bloc
 
   return check_hash(proofOfWork, currentDiffic);
 }
-
+////////////////////////////////////////////////////////////////////////////////
 bool Currency::checkProofOfWorkV2(Crypto::cn_context& context, const Block& block, difficulty_type currentDiffic,
   Crypto::Hash& proofOfWork) const {
   if (block.majorVersion < BLOCK_MAJOR_VERSION_3) {
@@ -789,8 +793,8 @@ bool Currency::checkProofOfWorkV2(Crypto::cn_context& context, const Block& bloc
     return false;
   }
   
-
   TransactionExtraMergeMiningTag mmTag;
+  
   if (!getMergeMiningTagFromExtra(block.rootBlock.baseTransaction.extra, mmTag)) {
     logger(ERROR) << "merge mining tag wasn't found in extra of the root block miner transaction";
     return false;
@@ -876,10 +880,14 @@ CurrencyBuilder::CurrencyBuilder(Logging::ILogger& log) : m_currency(log) {
   defaultDustThreshold(parameters::DEFAULT_DUST_THRESHOLD);
 
   difficultyTarget(parameters::DIFFICULTY_TARGET);
-  difficultyWindow(parameters::DIFFICULTY_WINDOW);
-  difficultyLag(parameters::DIFFICULTY_LAG);
-  difficultyCut(parameters::DIFFICULTY_CUT);
 
+#ifndef PASSATELLI
+	//SPAGHETTI code...
+	difficultyWindow(parameters::DIFFICULTY_WINDOW);
+	difficultyLag(parameters::DIFFICULTY_LAG);
+	difficultyCut(parameters::DIFFICULTY_CUT);	
+#endif
+  
   depositMinAmount(parameters::DEPOSIT_MIN_AMOUNT);
   depositMinTerm(parameters::DEPOSIT_MIN_TERM);
   depositMaxTerm(parameters::DEPOSIT_MAX_TERM);
