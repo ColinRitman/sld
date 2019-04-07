@@ -654,7 +654,7 @@ bool RpcServer::on_block_json(const COMMAND_RPC_GET_BLOCK_DETAILS::request& req,
 		parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE :
 		res.block.effectiveSizeMedian = std::max(res.block.sizeMedian, parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);
 //$$$$		
-	res.block.effectiveSizeMedian = m_core.currency().parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
+	res.block.effectiveSizeMedian = parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
 //$$$$	
 	if (!m_core.getBlockReward(res.block.sizeMedian, 0, prevBlockGeneratedCoins, 0, res.block.height, maxReward, emissionChange)) {
 		return false;
