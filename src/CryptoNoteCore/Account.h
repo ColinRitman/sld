@@ -1,8 +1,8 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
 ///////////////////////////////////////////////////////////////////////////////
-#pragma once
 #include "CryptoNoteConfig.h"
+#pragma once
 
 #include "CryptoNoteCore/CryptoNoteBasic.h"
 #include "crypto/crypto.h"
