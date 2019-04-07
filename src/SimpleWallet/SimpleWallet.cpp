@@ -5,7 +5,6 @@
 
 #include "SimpleWallet.h"
 
-#include <conio.h>
 #include <ctime>
 #include <fstream>
 #include <future>
