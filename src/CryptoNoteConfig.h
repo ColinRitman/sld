@@ -1,7 +1,6 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
 ////////////////////////////////////////////////////////////////////////////
-
 #include "rulez.h"
 
 #pragma once
@@ -15,21 +14,21 @@ namespace CryptoNote
 	namespace parameters 
 	{
 		const uint64_t CRYPTONOTE_MAX_BLOCK_NUMBER                   = 500000000;
-		const size_t   CRYPTONOTE_MAX_BLOCK_BLOB_SIZE                = 500000000;
-		const size_t   CRYPTONOTE_MAX_TX_SIZE                        = 1000000000;
+		const std::size_t   CRYPTONOTE_MAX_BLOCK_BLOB_SIZE                = 500000000;
+		const std::size_t   CRYPTONOTE_MAX_TX_SIZE                        = 1000000000;
 		const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX       = ADDRESS_BASE58_PREFIX;//Prefix of the wallet address: start with 135=ZZP, 117=SLD
-		const size_t   CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW          = 18;
+		const std::size_t   CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW          = 18;
 		const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT            = 60 * 60 * 2;
 
-		const size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW             = 30;
+		const std::size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW             = 30;
 
 		const uint64_t MONEY_SUPPLY                                  = static_cast<uint64_t>(-1);//Total amount of atomic units to be emitted.
 
-		const size_t   CRYPTONOTE_REWARD_BLOCKS_WINDOW               = 100;
-		const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE     = 1048576; //size of block (bytes) after which reward for block calculated using block size
+		const std::size_t   CRYPTONOTE_REWARD_BLOCKS_WINDOW               = 100;
+		const std::size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE     = 1048576; //size of block (bytes) after which reward for block calculated using block size
 		
-		const size_t   CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE        = 400; // 400 seems ok for Soldo
-		const size_t   CRYPTONOTE_DISPLAY_DECIMAL_POINT              = 8;
+		const std::size_t   CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE        = 400; // 400 seems ok for Soldo
+		const std::size_t   CRYPTONOTE_DISPLAY_DECIMAL_POINT              = 8;
 
 		const uint64_t COIN                                          = UINT64_C(100000000);// COIN - number of smallest units in one coin: 10000=ZZP, 100000000=SLD
 		const uint64_t MINIMUM_FEE                                   = UINT64_C(1);// Transactions with less than this fee wouldn’t be accepted by daemons
@@ -39,25 +38,25 @@ namespace CryptoNote
 		const uint64_t REAL_COINS_LOWSPEED_Z                         = UINT64_C(2500000);//Total amount of coins mineable with limited reward: 2500000=SLD,10000000000=ZZP
 		const uint64_t MONEY_SUPPLY_MINEABLE_Z                       = REAL_COINS_LIMITED_Z*COIN;//Total amount of atomic units mineable with full reward
 		const uint64_t MONEY_SUPPLY_LOWSPEED_Z                       = REAL_COINS_LOWSPEED_Z*COIN;//Total amount of atomic units mineable with limited reward
-		const size_t   RUSH_BLOCKS_Z                                 = 1000;//Premium rewarded blocks count: ZZP=500, SLD=1000
+		const std::size_t   RUSH_BLOCKS_Z                                 = 1000;//Premium rewarded blocks count: ZZP=500, SLD=1000
 		const uint64_t RUSH_REWARD_Z                                 = (UINT64_C(100)*COIN);//Reward for a premium block: ZZP=200000, SLD=100
 		const uint64_t COMMON_REWARD_Z                               = (UINT64_C(1)*COIN);//Reward for an ordinary block: ZZP=1000, SLD=1
 		const uint64_t GENESIS_BLOCK_REWARD_Z                        = (UINT64_C(50000)*COIN);//Premine amount, in atomic units: SLD=50000, ZZP=10.000.000
-		const size_t   RUSH_REWARD_LOCK_Z                            = 750000;//Premium rewarded blocks lock time: ZZP=20000, SLD=750000
+		const std::size_t   RUSH_REWARD_LOCK_Z                            = 750000;//Premium rewarded blocks lock time: ZZP=20000, SLD=750000
 
 		const uint64_t DIFFICULTY_TARGET                             = 20;//Difficulty target is an ideal time period between blocks, in seconds. 20=SLD, 720=ZZP
 		const uint64_t EXPECTED_NUMBER_OF_BLOCKS_PER_DAY             = 24 * 60 * 60 / DIFFICULTY_TARGET;
 #ifndef PASSATELLI
 	//SPAGHETTI code...
-		const size_t   DIFFICULTY_WINDOW                             = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY/12; // blocks
-		const size_t   DIFFICULTY_CUT                                = 60;//Timestamps to cut after sorting
-		const size_t   DIFFICULTY_LAG                                = 20;//Lag of calculating the difficulty in terms of blocks
+		const std::size_t   DIFFICULTY_WINDOW                             = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY/12; // blocks
+		const std::size_t   DIFFICULTY_CUT                                = 60;//Timestamps to cut after sorting
+		const std::size_t   DIFFICULTY_LAG                                = 20;//Lag of calculating the difficulty in terms of blocks
 
 		static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDOW or DIFFICULTY_CUT");
 #endif
 
-		const size_t   DIFFICULTY_FNC_VER                            = 0;//0=SLD, 2=ZZP
-		const size_t   DIFFICULTY_ZAWY_WINDOW                        = 30;//30=SLD, 12=ZZP
+		const std::size_t   DIFFICULTY_FNC_VER                            = 0;//0=SLD, 2=ZZP
+		const std::size_t   DIFFICULTY_ZAWY_WINDOW                        = 30;//30=SLD, 12=ZZP
 
 		const uint64_t DEPOSIT_MIN_AMOUNT                            = 1 * COIN;
 		const uint32_t DEPOSIT_MIN_TERM                              = 11000;
@@ -69,7 +68,7 @@ namespace CryptoNote
 		static_assert(DEPOSIT_MIN_TERM <= DEPOSIT_MAX_TERM, "Bad DEPOSIT_MAX_TERM");
 		static_assert(DEPOSIT_MIN_TERM * DEPOSIT_MAX_TOTAL_RATE > DEPOSIT_MIN_TOTAL_RATE_FACTOR, "Bad DEPOSIT_MIN_TOTAL_RATE_FACTOR or DEPOSIT_MAX_TOTAL_RATE");
 
-		const size_t   MAX_BLOCK_SIZE_INITIAL                        = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE * 4;
+		const std::size_t   MAX_BLOCK_SIZE_INITIAL                        = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE * 4;
 		const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_NUMERATOR         = 100 * 1024;
 		const uint64_t MAX_BLOCK_SIZE_GROWTH_SPEED_DENOMINATOR       = 365 * 24 * 60 * 60 / DIFFICULTY_TARGET;
 
@@ -80,9 +79,9 @@ namespace CryptoNote
 		const uint64_t CRYPTONOTE_MEMPOOL_TX_FROM_ALT_BLOCK_LIVETIME = (60 * 60 * 8); //seconds, 8 hours
 		const uint64_t CRYPTONOTE_NUMBER_OF_PERIODS_TO_FORGET_TX_DELETED_FROM_POOL = 7;  // CRYPTONOTE_NUMBER_OF_PERIODS_TO_FORGET_TX_DELETED_FROM_POOL * CRYPTONOTE_MEMPOOL_TX_LIVETIME = time to forget tx
 
-		const size_t   FUSION_TX_MAX_SIZE                            = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE * 30 / 100;
-		const size_t   FUSION_TX_MIN_INPUT_COUNT                     = 12;
-		const size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO              = 4;
+		const std::size_t   FUSION_TX_MAX_SIZE                            = CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE * 30 / 100;
+		const std::size_t   FUSION_TX_MIN_INPUT_COUNT                     = 12;
+		const std::size_t   FUSION_TX_MIN_IN_OUT_COUNT_RATIO              = 4;
 
 		const char     CRYPTONOTE_BLOCKS_FILENAME[]                  = "chain.data";
 		const char     CRYPTONOTE_BLOCKINDEXES_FILENAME[]            = "idx.data";
@@ -135,26 +134,26 @@ namespace CryptoNote
 	const uint8_t  BLOCK_MINOR_VERSION_0                         =  0;
 	const uint8_t  BLOCK_MINOR_VERSION_1                         =  1;
 
-	const size_t   BLOCKS_IDS_SYNCHRONIZING_DEFAULT_COUNT        =  10000;  //by default, blocks ids count in synchronizing
-	const size_t   BLOCKS_SYNCHRONIZING_DEFAULT_COUNT            =  128;    //by default, blocks count in blocks downloading
-	const size_t   COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT         =  1000;
+	const std::size_t   BLOCKS_IDS_SYNCHRONIZING_DEFAULT_COUNT        =  10000;  //by default, blocks ids count in synchronizing
+	const std::size_t   BLOCKS_SYNCHRONIZING_DEFAULT_COUNT            =  128;    //by default, blocks count in blocks downloading
+	const std::size_t   COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT         =  1000;
 
 	const int      P2P_DEFAULT_PORT                              = 33711;//ZZP=33721, SLD=33711
 	const int      RPC_DEFAULT_PORT                              = 33712;//ZZP=33722, SLD=33712
 
-	const size_t   P2P_LOCAL_WHITE_PEERLIST_LIMIT                =  4096;
-	const size_t   P2P_LOCAL_GRAY_PEERLIST_LIMIT                 =  1024;
+	const std::size_t   P2P_LOCAL_WHITE_PEERLIST_LIMIT                =  4096;
+	const std::size_t   P2P_LOCAL_GRAY_PEERLIST_LIMIT                 =  1024;
 
-	const size_t   P2P_CONNECTION_MAX_WRITE_BUFFER_SIZE          = 128 * 1024 * 1024; // 64 MB
+	const std::size_t   P2P_CONNECTION_MAX_WRITE_BUFFER_SIZE          = 128 * 1024 * 1024; // 64 MB
 	const uint32_t P2P_DEFAULT_CONNECTIONS_COUNT                 = 8;
-	const size_t   P2P_DEFAULT_WHITELIST_CONNECTIONS_PERCENT     = 85;
+	const std::size_t   P2P_DEFAULT_WHITELIST_CONNECTIONS_PERCENT     = 85;
 	const uint32_t P2P_DEFAULT_HANDSHAKE_INTERVAL                = 300;           // seconds
 	const uint32_t P2P_DEFAULT_PACKET_MAX_SIZE                   = 50000000;      // 50000000 bytes maximum packet size
 	const uint32_t P2P_DEFAULT_PEERS_IN_HANDSHAKE                = 64;
 	const uint32_t P2P_DEFAULT_CONNECTION_TIMEOUT                = 10000;          // 10 seconds
 	const uint32_t P2P_DEFAULT_PING_CONNECTION_TIMEOUT           = 10000;          // 10 seconds
 	const uint64_t P2P_DEFAULT_INVOKE_TIMEOUT                    = 60 * 2 * 1000; // 2 minutes
-	const size_t   P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT          = 10000;          // 10 seconds
+	const std::size_t   P2P_DEFAULT_HANDSHAKE_INVOKE_TIMEOUT          = 10000;          // 10 seconds
 	const char     P2P_STAT_TRUSTED_PUB_KEY[]                    = "ab99e468743e62c86e6d07a0db4f26db5fa6c46dc2ee899b459b3a205385d460";
 
 	const std::initializer_list<const char*> SEED_NODES = {
