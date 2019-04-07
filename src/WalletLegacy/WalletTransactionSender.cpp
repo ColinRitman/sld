@@ -156,7 +156,7 @@ WalletTransactionSender::WalletTransactionSender(const Currency& currency, Walle
   m_isStoping(false),
   m_keys(keys),
   m_transferDetails(transfersContainer),
-  m_upperTransactionSizeLimit((m_currency.blockGrantedFullRewardZone() * 125) / 100 - m_currency.minerTxBlobReservedSize()) {}
+  m_upperTransactionSizeLimit((parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE * 125) / 100 - m_currency.minerTxBlobReservedSize()) {}
 
 void WalletTransactionSender::stop() {
   m_isStoping = true;

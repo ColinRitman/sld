@@ -1,12 +1,12 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
+////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
 #include <map>
 #include <unordered_map>
+
+#include "CryptoNoteConfig.h"
 
 #include "ITransfersContainer.h"
 #include "IWallet.h"
@@ -18,10 +18,9 @@
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/composite_key.hpp>
 #include <boost/multi_index/member.hpp>
+////////////////////////////////////////////////////////////////////////////////
 
 namespace CryptoNote {
-
-const uint64_t ACCOUNT_CREATE_TIME_ACCURACY = 60 * 60 * 24;
 
 struct WalletRecord {
   Crypto::PublicKey spendPublicKey;
@@ -102,5 +101,8 @@ typedef boost::multi_index_container<
     >
   >
 > BlockHashesContainer;
-
+////////////////////////////////////////////////////////////////////////////////
 }
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////

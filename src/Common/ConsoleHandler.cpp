@@ -1,7 +1,6 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+///////////////////////////////////////////////////////////////////////////////
 
 #include "ConsoleHandler.h"
 
@@ -10,13 +9,19 @@
 #include <sstream>
 
 #ifdef _WIN32
-#include <Windows.h>
+
+	#ifndef NOMINMAX
+		#define NOMINMAX
+	#endif
+
+	#include <Windows.h>
 #else
-#include <unistd.h>
-#include <stdio.h>
+	#include <unistd.h>
+	#include <stdio.h>
 #endif
 
 #include <boost/algorithm/string.hpp>
+///////////////////////////////////////////////////////////////////////////////
 
 using Common::Console::Color;
 
@@ -27,20 +32,38 @@ namespace Common {
 /////////////////////////////////////////////////////////////////////////////
 AsyncConsoleReader::AsyncConsoleReader() : m_stop(true) {
 }
-
+///////////////////////////////////////////////////////////////////////////////
 AsyncConsoleReader::~AsyncConsoleReader() {
   stop();
 }
-
+///////////////////////////////////////////////////////////////////////////////
 void AsyncConsoleReader::start() {
   m_stop = false;
   m_thread = std::thread(std::bind(&AsyncConsoleReader::consoleThread, this));
 }
-
+///////////////////////////////////////////////////////////////////////////////
 bool AsyncConsoleReader::getline(std::string& line) {
   return m_queue.pop(line);
 }
+///////////////////////////////////////////////////////////////////////////////
+void AsyncConsoleReader::pause() {
+  if (m_stop) {
+    return;
+  }
 
+  m_stop = true;
+
+  if (m_thread.joinable()) {
+    m_thread.join();
+  }
+
+  m_thread = std::thread();
+}
+///////////////////////////////////////////////////////////////////////////////
+void AsyncConsoleReader::unpause() {
+  start();
+}
+///////////////////////////////////////////////////////////////////////////////
 void AsyncConsoleReader::stop() {
 
   if (m_stop) {
@@ -59,7 +82,7 @@ void AsyncConsoleReader::stop() {
 
   m_thread = std::thread();
 }
-
+///////////////////////////////////////////////////////////////////////////////
 bool AsyncConsoleReader::stopped() const {
   return m_stop;
 }
@@ -133,6 +156,14 @@ void ConsoleHandler::start(bool startThread, const std::string& prompt, Console:
 void ConsoleHandler::stop() {
   requestStop();
   wait();
+}
+
+void ConsoleHandler::pause() {
+  m_consoleReader.pause();
+}
+
+void ConsoleHandler::unpause() {
+  m_consoleReader.unpause();
 }
 
 void ConsoleHandler::wait() {

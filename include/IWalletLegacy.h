@@ -1,8 +1,6 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
+///////////////////////////////////////////////////////////////////////////////
 #pragma once
 
 #include <array>
@@ -15,6 +13,7 @@
 #include <vector>
 
 #include "CryptoNote.h"
+///////////////////////////////////////////////////////////////////////////////
 
 namespace CryptoNote {
 
@@ -105,7 +104,8 @@ public:
   virtual void addObserver(IWalletLegacyObserver* observer) = 0;
   virtual void removeObserver(IWalletLegacyObserver* observer) = 0;
 
-  virtual void initAndGenerate(const std::string& password) = 0;
+//  virtual void initAndGenerate(const std::string& password) = 0;
+//  virtual void initAndGenerate(const std::string& password, bool _is_hdw) = 0;
   
     virtual void initAndGenerateOrRecover
 	(

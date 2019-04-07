@@ -1,7 +1,6 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+////////////////////////////////////////////////////////////////////////////////
 
 #include "WalletLegacySerializer.h"
 
@@ -17,27 +16,31 @@
 #include "WalletLegacy/WalletUserTransactionsCache.h"
 #include "Wallet/WalletErrors.h"
 #include "WalletLegacy/KeysStorage.h"
+////////////////////////////////////////////////////////////////////////////////
 
 using namespace Common;
 
 namespace {
 
-const uint32_t WALLET_SERIALIZATION_VERSION = 2;
+	const uint32_t WALLET_SERIALIZATION_VERSION = 2;
 
-bool verifyKeys(const Crypto::SecretKey& sec, const Crypto::PublicKey& expected_pub) {
-  Crypto::PublicKey pub;
-  bool r = Crypto::secret_key_to_public_key(sec, pub);
-  return r && expected_pub == pub;
-}
+	bool verifyKeys(const Crypto::SecretKey& sec, const Crypto::PublicKey& expected_pub) {
+	  Crypto::PublicKey pub;
+	  bool r = Crypto::secret_key_to_public_key(sec, pub);
+	  return r && expected_pub == pub;
+	}
 
-void throwIfKeysMissmatch(const Crypto::SecretKey& sec, const Crypto::PublicKey& expected_pub) {
-  if (!verifyKeys(sec, expected_pub))
-    throw std::system_error(make_error_code(CryptoNote::error::WRONG_PASSWORD));
-}
+	void throwIfKeysMissmatch(const Crypto::SecretKey& sec, const Crypto::PublicKey& expected_pub) {
+	  if (!verifyKeys(sec, expected_pub))
+		throw std::system_error(make_error_code(CryptoNote::error::WRONG_PASSWORD));
+	}
 
 }
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 namespace CryptoNote {
+////////////////////////////////////////////////////////////////////////////////
 
 WalletLegacySerializer::WalletLegacySerializer(CryptoNote::AccountBase& account, WalletUserTransactionsCache& transactionsCache) :
   account(account),
@@ -45,8 +48,9 @@ WalletLegacySerializer::WalletLegacySerializer(CryptoNote::AccountBase& account,
   walletSerializationVersion(WALLET_SERIALIZATION_VERSION)
 {
 }
-
+////////////////////////////////////////////////////////////////////////////////
 void WalletLegacySerializer::serialize(std::ostream& stream, const std::string& password, bool saveDetailed, const std::string& cache) {
+	
   std::stringstream plainArchive;
   StdOutputStream plainStream(plainArchive);
   CryptoNote::BinaryOutputStreamSerializer serializer(plainStream);
@@ -76,7 +80,7 @@ void WalletLegacySerializer::serialize(std::ostream& stream, const std::string& 
 
   stream.flush();
 }
-
+////////////////////////////////////////////////////////////////////////////////
 void WalletLegacySerializer::saveKeys(CryptoNote::ISerializer& serializer) {
   CryptoNote::KeysStorage keys;
   CryptoNote::AccountKeys acc = account.getAccountKeys();
@@ -89,7 +93,7 @@ void WalletLegacySerializer::saveKeys(CryptoNote::ISerializer& serializer) {
 
   keys.serialize(serializer, "keys");
 }
-
+////////////////////////////////////////////////////////////////////////////////
 Crypto::chacha_iv WalletLegacySerializer::encrypt(const std::string& plain, const std::string& password, std::string& cipher) {
   Crypto::chacha_key key;
   Crypto::cn_context context;
@@ -102,8 +106,7 @@ Crypto::chacha_iv WalletLegacySerializer::encrypt(const std::string& plain, cons
 
   return iv;
 }
-
-
+////////////////////////////////////////////////////////////////////////////////
 void WalletLegacySerializer::deserialize(std::istream& stream, const std::string& password, std::string& cache) {
   StdInputStream stdStream(stream);
   CryptoNote::BinaryInputStreamSerializer serializerEncrypted(stdStream);
@@ -152,7 +155,7 @@ void WalletLegacySerializer::deserialize(std::istream& stream, const std::string
 
   serializer.binary(cache, "cache");
 }
-
+////////////////////////////////////////////////////////////////////////////////
 void WalletLegacySerializer::decrypt(const std::string& cipher, std::string& plain, Crypto::chacha_iv iv, const std::string& password) {
   Crypto::chacha_key key;
   Crypto::cn_context context;
@@ -162,7 +165,7 @@ void WalletLegacySerializer::decrypt(const std::string& cipher, std::string& pla
 
   Crypto::chacha8(cipher.data(), cipher.size(), key, iv, &plain[0]);
 }
-
+////////////////////////////////////////////////////////////////////////////////
 void WalletLegacySerializer::loadKeys(CryptoNote::ISerializer& serializer) {
   CryptoNote::KeysStorage keys;
 
@@ -179,7 +182,10 @@ void WalletLegacySerializer::loadKeys(CryptoNote::ISerializer& serializer) {
   acc.viewSecretKey = keys.viewSecretKey;
 
   account.setAccountKeys(acc);
-  account.set_createtime(keys.creationTimestamp);
+  account.set_createtime(keys.creationTimestamp);//$$$$
 }
-
+////////////////////////////////////////////////////////////////////////////////
 }
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////

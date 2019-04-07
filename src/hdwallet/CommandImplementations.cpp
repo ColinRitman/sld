@@ -1,8 +1,6 @@
 // Copyright (c) 2018, The TurtleCoin Developers
-
-/////////////////////////////////////////////
+////////////////////////////////////////////////////////  
 #include <hdwallet/CommandImplementations.h>
-/////////////////////////////////////////////
 
 #include <atomic>
 
@@ -25,15 +23,14 @@
 #include <hdwallet/Transfer.h>
 #include <hdwallet/Types.h>
 #include <hdwallet/WalletConfig.h>
-
+////////////////////////////////////////////////////////  
 void changePassword(std::shared_ptr<WalletInfo> &walletInfo)
 {
     /* Check the user knows the current password */
     confirmPassword(walletInfo->walletPass, "Confirm your current password: ");
 
     /* Get a new password for the wallet */
-    const std::string newPassword
-        = getWalletPassword(true, "Enter your new password: ");
+    const std::string newPassword = getWalletPassword(true, "Enter your new password: ");
 
     /* Change the wallet password */
     walletInfo->wallet.changePassword(walletInfo->walletPass, newPassword);
@@ -46,13 +43,13 @@ void changePassword(std::shared_ptr<WalletInfo> &walletInfo)
 
     std::cout << SuccessMsg("Your password has been changed!") << std::endl;
 }
-
+////////////////////////////////////////////////////////  
 void exportKeys(std::shared_ptr<WalletInfo> &walletInfo)
 {
     confirmPassword(walletInfo->walletPass);
     printPrivateKeys(walletInfo->wallet, walletInfo->viewWallet);
 }
-
+////////////////////////////////////////////////////////  
 std::string getGUIPrivateKey(CryptoNote::WalletGreen &wallet)
 {
     auto viewKey = wallet.getViewKey();
@@ -77,7 +74,7 @@ std::string getGUIPrivateKey(CryptoNote::WalletGreen &wallet)
         std::string(reinterpret_cast<char*>(&keys), sizeof(keys))
     );
 }
-
+////////////////////////////////////////////////////////  
 void printPrivateKeys(CryptoNote::WalletGreen &wallet, bool viewWallet)
 {
     auto privateViewKey = wallet.getViewKey().secretKey;
@@ -138,7 +135,7 @@ void printPrivateKeys(CryptoNote::WalletGreen &wallet, bool viewWallet)
                   << std::endl;
     }
 }
-
+////////////////////////////////////////////////////////  
 void balance(CryptoNote::INode &node, CryptoNote::WalletGreen &wallet,
              bool viewWallet)
 {
@@ -188,7 +185,7 @@ void balance(CryptoNote::INode &node, CryptoNote::WalletGreen &wallet,
                   << std::endl;
     }
 }
-
+////////////////////////////////////////////////////////  
 void blockchainHeight(CryptoNote::INode &node, CryptoNote::WalletGreen &wallet)
 {
     const uint32_t localHeight = node.getLastLocalBlockHeight();
@@ -251,7 +248,7 @@ void blockchainHeight(CryptoNote::INode &node, CryptoNote::WalletGreen &wallet)
                                 "network!") << std::endl;
     }
 }
-
+////////////////////////////////////////////////////////  
 void reset(CryptoNote::INode &node, std::shared_ptr<WalletInfo> &walletInfo)
 {
     std::cout << InformationMsg("Resetting wallet...") << std::endl;
@@ -267,7 +264,7 @@ void reset(CryptoNote::INode &node, std::shared_ptr<WalletInfo> &walletInfo)
     /* Now we rescan the chain to re-discover our balance and transactions */
     syncWallet(node, walletInfo);
 }
-
+////////////////////////////////////////////////////////  
 void saveCSV(CryptoNote::WalletGreen &wallet, CryptoNote::INode &node)
 {
     const size_t numTransactions = wallet.getTransactionCount();
@@ -322,7 +319,7 @@ void saveCSV(CryptoNote::WalletGreen &wallet, CryptoNote::INode &node)
               << SuccessMsg("!")
               << std::endl;
 }
-
+////////////////////////////////////////////////////////  
 void printOutgoingTransfer(CryptoNote::WalletTransaction t,
                            CryptoNote::INode &node)
 {
@@ -358,7 +355,7 @@ void printOutgoingTransfer(CryptoNote::WalletTransaction t,
 
     std::cout << std::endl;
 }
-
+////////////////////////////////////////////////////////  
 void printIncomingTransfer(CryptoNote::WalletTransaction t,
                            CryptoNote::INode &node)
 {
@@ -370,13 +367,14 @@ void printIncomingTransfer(CryptoNote::WalletTransaction t,
     /* Block height will be garbage from memory if not confirmed yet */
     if (t.timestamp != 0)
     {
-        std::cout << SuccessMsg("Block height: ")
-                  << SuccessMsg(std::to_string(t.blockHeight))
-                  << std::endl
-                  << SuccessMsg("Timestamp: ")
-                  << SuccessMsg(unixTimeToDate(t.timestamp))
-                  << std::endl;
-    }
+        std::cout 
+			<< SuccessMsg("Block height: ")
+			<< SuccessMsg(std::to_string(t.blockHeight))
+			<< std::endl
+			<< SuccessMsg("Timestamp: ")
+			<< SuccessMsg(unixTimeToDate(t.timestamp))
+			<< std::endl;
+	}
 
     std::cout << SuccessMsg("Hash: " + Common::podToHex(t.hash))
               << std::endl
@@ -392,7 +390,7 @@ void printIncomingTransfer(CryptoNote::WalletTransaction t,
 
     std::cout << std::endl;
 }
-
+////////////////////////////////////////////////////////  
 void listTransfers(bool incoming, bool outgoing, 
                    CryptoNote::WalletGreen &wallet, CryptoNote::INode &node)
 {
@@ -430,7 +428,7 @@ void listTransfers(bool incoming, bool outgoing,
                   << std::endl;
     }
 }
-
+////////////////////////////////////////////////////////  
 void save(std::shared_ptr<WalletInfo> &wallet)
 {
     std::cout << InformationMsg("Saving.") << std::endl;
@@ -440,3 +438,6 @@ void save(std::shared_ptr<WalletInfo> &wallet)
         std::cout << InformationMsg("Saved.") << std::endl;
     }
 }
+////////////////////////////////////////////////////////  
+////////////////////////////////////////////////////////  
+////////////////////////////////////////////////////////  

@@ -489,7 +489,7 @@ void Blockchain::rebuildCache() {
   m_outputs.clear();
   m_multisignatureOutputs.clear();
   for (uint32_t b = 0; b < m_blocks.size(); ++b) {
-    if (b % 1000 == 0) {
+    if (b % 10000 == 0) {
       logger(INFO, BLUE) << "Height " << b << " of " << m_blocks.size();
     }
     const BlockEntry& block = m_blocks[b];
@@ -1937,18 +1937,13 @@ bool Blockchain::getBlockCumulativeSize(const Block& block, size_t& cumulativeSi
 // Precondition: m_blockchain_lock is locked.
 bool Blockchain::update_next_comulative_size_limit() {
 	
-	size_t blockGrantedFullRewardZone =
-		get_block_major_version_for_height(getCurrentBlockchainHeight()) < Z_FORK_BLOCK_3 ?
-		parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1 :
-		m_currency.blockGrantedFullRewardZone();
-
 	std::vector<size_t> sz;
 	get_last_n_blocks_sizes(sz, m_currency.rewardBlocksWindow());
 
 	uint64_t median = Common::medianValue(sz);
 	
-	if (median <= blockGrantedFullRewardZone) {
-		median = blockGrantedFullRewardZone;
+	if (median <= parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE) {
+		median = parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
 	}
 
 	m_current_block_cumul_sz_limit = median * 2;

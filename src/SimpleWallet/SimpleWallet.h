@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-
+////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
 #include <condition_variable>
@@ -25,6 +25,8 @@
 #include <System/Dispatcher.h>
 #include <System/Ipv4Address.h>
 #include "crypto/electrum-words.h"
+////////////////////////////////////////////////////////////////////////////////
+
 namespace CryptoNote
 {
 	class simple_wallet : 
@@ -92,6 +94,7 @@ namespace CryptoNote
 		bool show_blockchain_height(const std::vector<std::string> &args);
 		bool read_only_wallet(const std::vector<std::string> &args);
 		bool paper(const std::vector<std::string> &args);
+		bool silent_mode(const std::vector<std::string> &args);
 		bool paper_prn(const std::vector<std::string> &args);
 		bool listTransfers(const std::vector<std::string> &args);
 		bool listComments(const std::vector<std::string> &args);
@@ -99,9 +102,11 @@ namespace CryptoNote
 		bool print_address(const std::vector<std::string> &args = std::vector<std::string>());
 		bool print_keys(const std::vector<std::string> &args = std::vector<std::string>());
 		bool print_seed(const std::vector<std::string> &args = std::vector<std::string>());
+		bool testing(const std::vector<std::string> &args);
 		bool save(const std::vector<std::string> &args);
 		bool reset(const std::vector<std::string> &args);
 		bool set_log(const std::vector<std::string> &args);
+		bool change_password(const std::vector<std::string> &args);
 
 		bool ask_wallet_create_if_needed();
 		std::string resolveAlias(const std::string& aliasUrl);
@@ -186,11 +191,13 @@ namespace CryptoNote
 		bool m_restore_legacy;  // recovery by old-style recovery key flag
 		bool m_restore_ro;  // create readonly wallet flag
 		bool m_classic;  // old 2-random non_deterministic wallet generation	
+		bool m_silent_mode; // suppress some output if true
 		std::string m_seed;  // electrum-style seed parameter
 		std::string m_legacy_key;  // old-style recovery key string
 		std::string m_spend_key;  // Private Spend key string
 		std::string m_view_key;  // Private View key string
 		std::string m_address;  // Wallet address string
+		std::string m_pass;  // Wallet password
 		
 		Crypto::SecretKey m_spend_secret_key;  // Private Spend Key
 		Crypto::SecretKey m_view_secret_key;  // Private View Key
@@ -202,6 +209,7 @@ namespace CryptoNote
 		Logging::LoggerManager& logManager;
 		System::Dispatcher& m_dispatcher;
 		Logging::LoggerRef logger;
+		Tools::PasswordContainer pwd_container;
 
 		std::unique_ptr<CryptoNote::NodeRpcProxy> m_node;
 		std::unique_ptr<CryptoNote::IWalletLegacy> m_wallet;
@@ -212,3 +220,6 @@ namespace CryptoNote
 		std::condition_variable m_walletSynchronizedCV;
   };
 }
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////

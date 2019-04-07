@@ -1,8 +1,7 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
+///////////////////////////////////////////////////////////////////////////////
+//#include "CryptoNoteConfig.h"
 #include "WalletLegacy.h"
 
 #include <numeric>
@@ -13,12 +12,13 @@
 #include "WalletLegacy/WalletLegacySerialization.h"
 #include "WalletLegacy/WalletLegacySerializer.h"
 #include "WalletLegacy/WalletUtils.h"
+///////////////////////////////////////////////////////////////////////////////
 
 using namespace Crypto;
 
 namespace {
 
-const uint64_t ACCOUNT_CREATE_TIME_ACCURACY = 24 * 60 * 60;
+//const uint64_t ACCOUNT_CREATE_TIME_ACCURACY = 24 * 60 * 60;
 
 void throwNotDefined() {
   throw std::runtime_error("The behavior is not defined!");
@@ -183,8 +183,10 @@ void WalletLegacy::RestoreReadOnly(const std::string& password, const CryptoNote
   initSync();
 	m_observerManager.notify(&IWalletLegacyObserver::initCompleted, std::error_code());
 }
+/*
 /////////////////////////////////////////////////////////////////////////////
-void WalletLegacy::initAndGenerate(const std::string& password) {
+//void WalletLegacy::initAndGenerate(const std::string& password) {
+void WalletLegacy::initAndGenerate(const std::string& password, bool _is_hdw) {
   {
     std::unique_lock<std::mutex> stateLock(m_cacheMutex);
 
@@ -192,7 +194,8 @@ void WalletLegacy::initAndGenerate(const std::string& password) {
       throw std::system_error(make_error_code(error::ALREADY_INITIALIZED));
     }
 
-    m_account.generate();
+//    m_account.generate();
+    m_account.generate(_is_hdw);
     m_password = password;
 
     initSync();
@@ -200,6 +203,7 @@ void WalletLegacy::initAndGenerate(const std::string& password) {
 
   m_observerManager.notify(&IWalletLegacyObserver::initCompleted, std::error_code());
 }
+*/
 ///////////////////////////////////////////////////////////////////////////////
 void WalletLegacy::initWithKeys(const AccountKeys& accountKeys, const std::string& password) {
   {
@@ -210,7 +214,8 @@ void WalletLegacy::initWithKeys(const AccountKeys& accountKeys, const std::strin
     }
 
     m_account.setAccountKeys(accountKeys);
-    m_account.set_createtime(ACCOUNT_CREATE_TIME_ACCURACY);
+//    m_account.set_createtime(ACCOUNT_CREATE_TIME_ACCURACY);
+    m_account.set_createtime(FIRST_BLOCK_TIMESTAMP_Z);
     m_password = password;
 
     initSync();
@@ -239,6 +244,7 @@ void WalletLegacy::initSync() {
   sub.keys = reinterpret_cast<const AccountKeys&>(m_account.getAccountKeys());
   sub.transactionSpendableAge = 6;
   sub.syncStart.height = 0;
+//$$ - sync time start here ///////////////  
   sub.syncStart.timestamp = m_account.get_createtime() - ACCOUNT_CREATE_TIME_ACCURACY;
   
   auto& subObject = m_transfersSync.addSubscription(sub);
@@ -913,5 +919,8 @@ void WalletLegacy::pushBalanceUpdatedEvents(std::deque<std::unique_ptr<WalletLeg
     eventsQueue.push_back(std::move(pendingBalanceUpdated));
   }
 }
-
+///////////////////////////////////////////////////////////////////////////////
 } //namespace CryptoNote
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////

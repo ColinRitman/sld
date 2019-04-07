@@ -33,7 +33,7 @@ public:
   uint64_t moneySupply() const { return m_moneySupply; }
 
   size_t rewardBlocksWindow() const { return m_rewardBlocksWindow; }
-  size_t blockGrantedFullRewardZone() const { return m_blockGrantedFullRewardZone; }
+  size_t blockGrantedFullRewardZone() const { return parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE; }
   size_t blockGrantedFullRewardZoneByBlockVersion(uint8_t blockMajorVersion) const;
   size_t minerTxBlobReservedSize() const { return m_minerTxBlobReservedSize; }
 
@@ -149,7 +149,7 @@ private:
   uint64_t m_moneySupply;
 
   size_t m_rewardBlocksWindow;
-  size_t m_blockGrantedFullRewardZone;
+//  size_t m_blockGrantedFullRewardZone;
   size_t m_minerTxBlobReservedSize;
 
   size_t m_numberOfDecimalPlaces;
@@ -235,7 +235,7 @@ public:
   CurrencyBuilder& moneySupply(uint64_t val) { m_currency.m_moneySupply = val; return *this; }
 
   CurrencyBuilder& rewardBlocksWindow(size_t val) { m_currency.m_rewardBlocksWindow = val; return *this; }
-  CurrencyBuilder& blockGrantedFullRewardZone(size_t val) { m_currency.m_blockGrantedFullRewardZone = val; return *this; }
+//  CurrencyBuilder& blockGrantedFullRewardZone(size_t val) { m_currency.m_blockGrantedFullRewardZone = val; return *this; }
   CurrencyBuilder& minerTxBlobReservedSize(size_t val) { m_currency.m_minerTxBlobReservedSize = val; return *this; }
 
   CurrencyBuilder& numberOfDecimalPlaces(size_t val);

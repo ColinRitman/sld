@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-
+///////////////////////////////////////////////////////////////////////////////
+//#include "CryptoNoteConfig.h"
 #include "Account.h"
 #include "CryptoNoteSerialization.h"
 #include "crypto/keccak.c"
@@ -15,7 +16,8 @@ void AccountBase::setNull() {
 	m_keys = AccountKeys();
 }
 ///////////////////////////////////////////////////////////////////////////////
-void AccountBase::generate() {
+/*
+void AccountBase::generate(bool _is_hdw) {
 	
 	Crypto::generate_keys(m_keys.address.spendPublicKey, m_keys.spendSecretKey);
   
@@ -24,13 +26,14 @@ void AccountBase::generate() {
 // with keccak-256, and then using this as the seed to generate a new set
 // of keys - the public and private view keys. See generate_keys_from_seed
 // instead of 
-// Crypto::generate_keys(m_keys.address.viewPublicKey, m_keys.viewSecretKey);
+//	Crypto::generate_keys(m_keys.address.viewPublicKey, m_keys.viewSecretKey);
 
 	generateViewFromSpend(m_keys.spendSecretKey, m_keys.viewSecretKey, m_keys.address.viewPublicKey);  
 
-	m_creation_timestamp = time(NULL);
-//	m_creation_timestamp = 1509321600;
+	m_creation_timestamp = FIRST_BLOCK_TIMESTAMP_Z;
+//$$
 }
+*/
 ///////////////////////////////////////////////////////////////////////////////
 void AccountBase::generateViewFromSpend(Crypto::SecretKey &spend, Crypto::SecretKey &viewSecret, Crypto::PublicKey &viewPublic) {
 	
@@ -89,11 +92,22 @@ Crypto::SecretKey AccountBase::generate_or_recover(const Crypto::SecretKey& reco
 		m_keys.viewSecretKey, 
 		secondary_key, 
 		is_deterministic);
+		
+	
+//    m_account.set_createtime(ACCOUNT_CREATE_TIME_ACCURACY);
+//    m_account.set_createtime(FIRST_BLOCK_TIMESTAMP_Z);
+//
+//	m_creation_timestamp = time(NULL);
+//	m_creation_timestamp = FIRST_BLOCK_TIMESTAMP_Z;
+//
 
-//$$
-	m_creation_timestamp = time(NULL);
-//	m_creation_timestamp = 1509321600;
-
+	if (is_recovery) {
+		m_creation_timestamp = FIRST_BLOCK_TIMESTAMP_Z;
+	} else {
+		struct tm timestamp;
+		m_creation_timestamp = mktime(&timestamp) - ACCOUNT_CREATE_TIME_ACCURACY;
+	}
+	
 	return like_seed;
 }
 ///////////////////////////////////////////////////////////////////////////////
@@ -106,10 +120,7 @@ void AccountBase::create_read_only(const CryptoNote::AccountPublicAddress& addre
 	m_keys.address = address;
 	m_keys.spendSecretKey = zero;
 	m_keys.viewSecretKey = viewkey;
-//$$	
-	m_creation_timestamp = time(NULL);
-//	m_creation_timestamp = 1509321600;
-
+	m_creation_timestamp = FIRST_BLOCK_TIMESTAMP_Z;
 }
 ///////////////////////////////////////////////////////////////////////////////
 

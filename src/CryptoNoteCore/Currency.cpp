@@ -220,11 +220,7 @@ uint64_t Currency::Lottery(const Crypto::Hash lbh) const
 }
 ////////////////////////////////////////////////////////////////////////////
 size_t Currency::blockGrantedFullRewardZoneByBlockVersion(uint8_t blockMajorVersion) const {
-	if (blockMajorVersion >= BLOCK_MAJOR_VERSION_4) {
-		return m_blockGrantedFullRewardZone;
-	} else {
-		return CryptoNote::parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1;
-	}
+	return parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
 }
 ////////////////////////////////////////////////////////////////////////////////
 uint32_t Currency::upgradeHeight(uint8_t majorVersion) const {
@@ -245,8 +241,8 @@ bool Currency::getBlockReward(size_t medianSize, size_t currentBlockSize, uint64
 	assert(alreadyGeneratedCoins <= m_moneySupply);
 
 	uint64_t baseReward = baseRewardFunction(alreadyGeneratedCoins, height, last_BlockHash);
-	size_t blockGrantedFullRewardZone = (height < Z_FORK_BLOCK_3) ? parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1 : m_blockGrantedFullRewardZone;
-	medianSize = std::max(medianSize, blockGrantedFullRewardZone);
+	
+	medianSize = std::max(medianSize, parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);
 	
 	if (currentBlockSize > UINT64_C(2) * medianSize) {
 		logger(TRACE) 
@@ -871,7 +867,7 @@ CurrencyBuilder::CurrencyBuilder(Logging::ILogger& log) : m_currency(log) {
   moneySupply(parameters::MONEY_SUPPLY);
 
   rewardBlocksWindow(parameters::CRYPTONOTE_REWARD_BLOCKS_WINDOW);
-  blockGrantedFullRewardZone(parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);
+//  blockGrantedFullRewardZone(parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);
   minerTxBlobReservedSize(parameters::CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE);
 
   numberOfDecimalPlaces(parameters::CRYPTONOTE_DISPLAY_DECIMAL_POINT);

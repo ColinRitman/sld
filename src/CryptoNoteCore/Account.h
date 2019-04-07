@@ -1,12 +1,12 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
 ///////////////////////////////////////////////////////////////////////////////
-
 #pragma once
+#include "CryptoNoteConfig.h"
 
 #include "CryptoNoteCore/CryptoNoteBasic.h"
 #include "crypto/crypto.h"
-
+///////////////////////////////////////////////////////////////////////////////
 namespace CryptoNote {
 
   class ISerializer;
@@ -14,7 +14,8 @@ namespace CryptoNote {
   class AccountBase {
   public:
     AccountBase();
-    void generate();
+//    void generate();
+//    void generate(bool _is_hdw);
 //$$	
     static void generateViewFromSpend(Crypto::SecretKey&, Crypto::SecretKey&, Crypto::PublicKey&);
     static void generateViewFromSpend(Crypto::SecretKey&, Crypto::SecretKey&);	

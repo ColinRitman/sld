@@ -1,7 +1,6 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+////////////////////////////////////////////////////////////////////////////////
 
 #include "PasswordContainer.h"
 
@@ -10,12 +9,17 @@
 #include <stdio.h>
 
 #if defined(_WIN32)
-#include <io.h>
-#include <windows.h>
+	#include <io.h>
+	#include <windows.h>
 #else
-#include <termios.h>
-#include <unistd.h>
+	#include <termios.h>
+	#include <unistd.h>
 #endif
+
+#include "Common/ConsoleTools.h"
+#include "zrainbow.h"
+
+////////////////////////////////////////////////////////////////////////////////
 
 namespace Tools
 {
@@ -45,9 +49,8 @@ namespace Tools
   {
     clear();
   }
-
-  void PasswordContainer::clear()
-  {
+///////////////////////////////////////////////////////////////////////////////
+  void PasswordContainer::clear() {
     if (0 < m_password.capacity())
     {
       m_password.replace(0, m_password.capacity(), m_password.capacity(), '\0');
@@ -55,34 +58,75 @@ namespace Tools
     }
     m_empty = true;
   }
+///////////////////////////////////////////////////////////////////////////////
+  bool PasswordContainer::read_password() {
+    return read_password(false, "Enter password: ");
+  }
+///////////////////////////////////////////////////////////////////////////////
+  bool PasswordContainer::read_and_validate(std::string msg) {
+    std::string tmpPassword = m_password;
 
-  bool PasswordContainer::read_password()
-  {
+    if (msg == "") {
+        if (!read_password()) {
+            std::cout << "Failed to read password!";
+            return false;
+        }
+    } else {
+        if (!read_password(false, msg)) {
+            std::cout << "Failed to read password!";
+            return false;
+        }
+    }
+
+    bool validPass = m_password == tmpPassword;
+
+    m_password = tmpPassword;
+
+    return validPass;
+  }
+///////////////////////////////////////////////////////////////////////////////
+  bool PasswordContainer::read_password(bool verify, std::string msg) {
     clear();
 
     bool r;
-    if (is_cin_tty())
-    {
-      std::cout << "password: ";
-      r = read_from_tty();
-    }
-    else
-    {
+    if (is_cin_tty()) {
+      std::cout << msg;
+
+      if (verify) {
+        std::string password1;
+        std::string password2;
+        r = read_from_tty(password1);
+        if (r) {
+          std::cout << "Confirm your new password: ";
+          r = read_from_tty(password2);
+          if (r) {
+            if (password1 == password2) {
+              m_password = std::move(password2);
+              m_empty = false;
+	            return true;
+            } else {
+              std::cout << "Passwords do not match, try again." << std::endl;
+              clear();
+	            return read_password(true, msg);
+            }
+          }
+	      }
+      } else {
+	      r = read_from_tty(m_password);
+      }
+    } else {
       r = read_from_file();
     }
 
-    if (r)
-    {
+    if (r) {
       m_empty = false;
-    }
-    else
-    {
+    } else {
       clear();
     }
 
     return r;
   }
-
+////////////////////////////////////////////////////////////////////////////////
   bool PasswordContainer::read_from_file()
   {
     m_password.reserve(max_password_size);
@@ -106,18 +150,18 @@ namespace Tools
     return true;
   }
 
+////////////////////////////////////////////////////////////////////////////////
 #if defined(_WIN32)
 
-  namespace
-  {
-    bool is_cin_tty()
-    {
-      return 0 != _isatty(_fileno(stdin));
-    }
-  }
-
-  bool PasswordContainer::read_from_tty()
-  {
+namespace
+{
+	bool is_cin_tty()
+	{
+		return 0 != _isatty(_fileno(stdin));
+	}
+}
+////////////////////////////////////////////////////////////////////////////////
+bool PasswordContainer::read_from_tty(std::string& password) {
     const char BACKSPACE = 8;
 
     HANDLE h_cin = ::GetStdHandle(STD_INPUT_HANDLE);
@@ -128,8 +172,8 @@ namespace Tools
     ::SetConsoleMode(h_cin, mode_new);
 
     bool r = true;
-    m_password.reserve(max_password_size);
-    while (m_password.size() < max_password_size)
+    password.reserve(max_password_size);
+    while (password.size() < max_password_size)
     {
       DWORD read;
       char ch;
@@ -146,16 +190,16 @@ namespace Tools
       }
       else if (ch == BACKSPACE)
       {
-        if (!m_password.empty())
+        if (!password.empty())
         {
-          m_password.back() = '\0';
-          m_password.resize(m_password.size() - 1);
+          password.back() = '\0';
+          password.resize(password.size() - 1);
           std::cout << "\b \b";
         }
       }
       else
       {
-        m_password.push_back(ch);
+        password.push_back(ch);
         std::cout << '*';
       }
     }
@@ -164,16 +208,15 @@ namespace Tools
 
     return r;
   }
-
+////////////////////////////////////////////////////////////////////////////////
 #else
 
-  namespace
-  {
+namespace {
     bool is_cin_tty()
     {
       return 0 != isatty(fileno(stdin));
     }
-
+	///////////////////////////////////////////////////////////////////////////
     int getch()
     {
       struct termios tty_old;
@@ -190,14 +233,15 @@ namespace Tools
 
       return ch;
     }
-  }
+}
+////////////////////////////////////////////////////////////////////////////////
 
-  bool PasswordContainer::read_from_tty()
-  {
+bool PasswordContainer::read_from_tty(std::string& password){
+	
     const char BACKSPACE = 127;
 
-    m_password.reserve(max_password_size);
-    while (m_password.size() < max_password_size)
+    password.reserve(max_password_size);
+    while (password.size() < max_password_size)
     {
       int ch = getch();
       if (EOF == ch)
@@ -211,22 +255,25 @@ namespace Tools
       }
       else if (ch == BACKSPACE)
       {
-        if (!m_password.empty())
+        if (!password.empty())
         {
-          m_password.back() = '\0';
-          m_password.resize(m_password.size() - 1);
+          password.back() = '\0';
+          password.resize(password.size() - 1);
           std::cout << "\b \b";
         }
       }
       else
       {
-        m_password.push_back(ch);
+        password.push_back(ch);
         std::cout << '*';
       }
     }
 
     return true;
-  }
+}
 
 #endif
 }
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////

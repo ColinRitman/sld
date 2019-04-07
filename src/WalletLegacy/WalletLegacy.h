@@ -1,8 +1,6 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
+///////////////////////////////////////////////////////////////////////////////
 #pragma once
 
 #include <list>
@@ -10,6 +8,8 @@
 #include <unordered_map>
 #include <memory>
 #include <mutex>
+
+#include "CryptoNoteConfig.h"
 
 #include "IWalletLegacy.h"
 #include "INode.h"
@@ -27,6 +27,7 @@
 
 #include "Transfers/BlockchainSynchronizer.h"
 #include "Transfers/TransfersSynchronizer.h"
+///////////////////////////////////////////////////////////////////////////////
 
 namespace CryptoNote {
 
@@ -44,7 +45,8 @@ public:
   virtual void addObserver(IWalletLegacyObserver* observer) override;
   virtual void removeObserver(IWalletLegacyObserver* observer) override;
 
-  virtual void initAndGenerate(const std::string& password) override;
+//  virtual void initAndGenerate(const std::string& password) override;
+//  virtual void initAndGenerate(const std::string& password, bool _is_hdw) override;
 
   virtual void initAndGenerateOrRecover
 	(
@@ -184,5 +186,8 @@ private:
 
   std::unique_ptr<SyncStarter> m_onInitSyncStarter;
 };
-
+///////////////////////////////////////////////////////////////////////////////
 } //namespace CryptoNote
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////

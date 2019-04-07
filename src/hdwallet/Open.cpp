@@ -504,14 +504,14 @@ std::string getNewWalletFileName()
         }
     }
 }
-
+////////////////////////////////////////////////////////  
 std::string getWalletPassword(bool verifyPwd, std::string msg)
 {
     Tools::PasswordContainer pwdContainer;
     pwdContainer.read_password(verifyPwd, msg);
     return pwdContainer.password();
 }
-
+////////////////////////////////////////////////////////  
 void viewWalletMsg()
 {
     std::cout << InformationMsg("Please remember that when using a view wallet "

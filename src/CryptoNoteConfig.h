@@ -27,7 +27,7 @@ namespace CryptoNote
 
 		const size_t   CRYPTONOTE_REWARD_BLOCKS_WINDOW               = 100;
 		const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE     = 1048576; //size of block (bytes) after which reward for block calculated using block size
-		const size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V1  = 1048576;  //size of block (bytes) after which reward for block calculated using block size
+		
 		const size_t   CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE        = 400; // 400 seems ok for Soldo
 		const size_t   CRYPTONOTE_DISPLAY_DECIMAL_POINT              = 8;
 
@@ -54,7 +54,6 @@ namespace CryptoNote
 		const size_t   DIFFICULTY_LAG                                = 20;//Lag of calculating the difficulty in terms of blocks
 
 		static_assert(2 * DIFFICULTY_CUT <= DIFFICULTY_WINDOW - 2, "Bad DIFFICULTY_WINDOW or DIFFICULTY_CUT");
-	
 #endif
 
 		const size_t   DIFFICULTY_FNC_VER                            = 0;//0=SLD, 2=ZZP
@@ -95,6 +94,8 @@ namespace CryptoNote
 	} // parameters
 
 	const uint64_t TIMESTAMP_HACK_1_FUTURE_TIME_LIMIT_Z				= 60 * 7;//420 seconds/21 block = SLD
+	const uint64_t ACCOUNT_CREATE_TIME_ACCURACY = 60 * 60 * 24; 
+	const uint64_t FIRST_BLOCK_TIMESTAMP_Z							= 1509321600;
 
 	const char     CRYPTONOTE_TICKER[]                           = CRYPTONOTE_ASSET_TICKER;
 	const char     CRYPTONOTE_NAME[]                             = CRYPTONOTE_ASSET_NAME;
@@ -254,6 +255,9 @@ __attribute__((unused))
 		{ 2244777,   "f484503e702a3ff8a5054a3ab2f32655327425ad2929bcb0328224a75705beaf" },		
 		{ 2253666,   "5916fda38f4b88988961bad743cd80abc4120e518f8e8a18a03104c74ae2b5f2" },		
 		{ 2257777,   "f01e8914fbcee5d5ad518a31f0dc4cb6715cbe161f6582bfce783b650c2ba76e" },		
+		{ 2268050,   "75780f6fe42b8c5264319144bbc3822d2faab605a91995584ab818089dda90f6" },		
+		{ 2268700,   "1845a4df7bff53dcf43d30f4a8bbee1c5eba855a5a95d52d62a97fc84b9b5e3b" },		
+		{ 2289200,   "7c12db5dbdbca4f81c381188dbbbe7c9ff6c11342841516d11c417721919f5b2" },		
 	};
 
 } // CryptoNote

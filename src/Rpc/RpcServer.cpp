@@ -345,7 +345,7 @@ bool RpcServer::on_get_blockchain_settings(const COMMAND_RPC_GET_BLOCKCHAIN_SETT
   res.core.DEFAULT_DUST_THRESHOLD = m_core.getCurrency().defaultDustThreshold();
   res.core.MINIMUM_FEE = m_core.getCurrency().minimumFee();
   res.core.CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW = m_core.getCurrency().minedMoneyUnlockWindow();
-  res.core.CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE = m_core.getCurrency().blockGrantedFullRewardZone();
+//  res.core.CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE = m_core.getCurrency().blockGrantedFullRewardZone();
   res.core.CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = m_core.getCurrency().publicAddressBase58Prefix();
   res.core.MAX_BLOCK_SIZE_INITIAL = m_core.getCurrency().maxBlockSizeInitial();
 //  res.core.UPGRADE__HEIGHT_V2 = m_core.getCurrency().upgradeHeight(2);
@@ -651,10 +651,10 @@ bool RpcServer::on_block_json(const COMMAND_RPC_GET_BLOCK_DETAILS::request& req,
 	bool penalizeFee = blk.majorVersion >= 2;
 	
 	size_t blockGrantedFullRewardZone = penalizeFee ?
-		m_core.currency().blockGrantedFullRewardZone() :
-		res.block.effectiveSizeMedian = std::max(res.block.sizeMedian, blockGrantedFullRewardZone);
+		parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE :
+		res.block.effectiveSizeMedian = std::max(res.block.sizeMedian, parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE);
 //$$$$		
-	res.block.effectiveSizeMedian = m_core.currency().blockGrantedFullRewardZone();
+	res.block.effectiveSizeMedian = m_core.currency().parameters::CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE;
 //$$$$	
 	if (!m_core.getBlockReward(res.block.sizeMedian, 0, prevBlockGeneratedCoins, 0, res.block.height, maxReward, emissionChange)) {
 		return false;
