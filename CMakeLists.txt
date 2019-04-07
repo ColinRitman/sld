@@ -160,7 +160,9 @@ elseif(NOT MSVC)
 endif()
 
 set(COMMIT_ID_IN_VERSION ON CACHE BOOL "Include commit ID in version")
+
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/version")
+
 if (NOT COMMIT_ID_IN_VERSION)
   set(VERSION "${VERSION}-unknown")
   configure_file("src/version.h.in" "version/version.h")

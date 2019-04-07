@@ -35,7 +35,6 @@ file(GLOB_RECURSE Miner Miner/*)
 file(GLOB_RECURSE Mnemonics mnemonics/*)
 file(GLOB_RECURSE hdwallet hdwallet/*)
 
-#source_group("" FILES $${Common} ${ConnectivityTool} ${Crypto} ${CryptoNoteCore} ${CryptoNoteProtocol} ${Daemon} ${JsonRpcServer} ${Http} ${Logging} ${NodeRpcProxy} ${P2p} ${Rpc} ${Serialization} ${SimpleWallet} ${System} ${Transfers} ${Wallet} ${WalletLegacy})
 source_group("" FILES $${Common} ${Crypto} ${CryptoNoteCore} ${CryptoNoteProtocol} ${Daemon} ${JsonRpcServer} ${Http} ${Logging} ${NodeRpcProxy} ${P2p} ${Rpc} ${Serialization} ${SimpleWallet} ${System} ${Transfers} ${Wallet} ${WalletLegacy} ${Mnemonics} ${hddwallet})
 
 add_library(BlockchainExplorer ${BlockchainExplorer})
