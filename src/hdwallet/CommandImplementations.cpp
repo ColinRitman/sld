@@ -13,7 +13,7 @@
 #include <fstream>
 #endif
 
-#include <Mnemonics/electrum-words.h>
+#include <mnemonics/electrum-words.h>
 
 #include <hdwallet/ColouredMsg.h>
 #include <hdwallet/Open.h>

@@ -11,7 +11,7 @@
 #include <CryptoNoteCore/Account.h>
 #include <CryptoNoteCore/CryptoNoteBasicImpl.h>
 
-#include <Mnemonics/electrum-words.h>
+#include <mnemonics/electrum-words.h>
 
 #include <Wallet/WalletErrors.h>
 
