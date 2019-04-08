@@ -42,8 +42,10 @@ void chacha(size_t doubleRounds, const void* data, size_t length, const uint8_t*
   uint32_t j0, j1, j2, j3, j4, j5, j6, j7, j8, j9, j10, j11, j12, j13, j14, j15;
   char* ctarget = 0;
   char tmp[64];
-  int i;
-
+//$$  
+  //int i;
+  size_t i;
+//$$
   if (!length) return;
 
   j0  = U8TO32_LITTLE(sigma + 0);

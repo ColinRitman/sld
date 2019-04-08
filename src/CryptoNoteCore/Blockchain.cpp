@@ -451,22 +451,7 @@ bool Blockchain::init(const std::string& config_folder, bool load_existing) {
       return false;
     }
   }
-/*
-  if (!m_upgradeDetectorV2.init()) {
-    logger(ERROR, BRIGHT_RED) << "Failed to initialize upgrade detector";
-    return false;
-  }
 
-  if (!m_upgradeDetectorV3.init()) {
-    logger(ERROR, BRIGHT_RED) << "Failed to initialize upgrade detector";
-    return false;
-  }
-
-  if (!m_upgradeDetectorV4.init()) {
-    logger(ERROR, BRIGHT_RED) << "Failed to initialize upgrade detector";
-    return false;
-  }
-*/
   update_next_comulative_size_limit();
 
   uint64_t timestamp_diff = time(NULL) - m_blocks.back().bl.timestamp;

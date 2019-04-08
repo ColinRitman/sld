@@ -235,7 +235,6 @@ namespace {
     }
 }
 ////////////////////////////////////////////////////////////////////////////////
-
 bool PasswordContainer::read_from_tty(std::string& password){
 	
     const char BACKSPACE = 127;

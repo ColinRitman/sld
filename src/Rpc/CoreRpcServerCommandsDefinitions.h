@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 #pragma once
 
 #include "rulez.h"
@@ -10,14 +10,14 @@
 #include "crypto/hash.h"
 
 #include "Serialization/SerializationOverloads.h"
-////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 namespace CryptoNote {
-//-----------------------------------------------
+////////////////////////////////////////////////////////////////////////////////
 #define CORE_RPC_STATUS_OK "OK"
 #define CORE_RPC_STATUS_BUSY "BUSY"
 
-////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 struct transaction_short_response {
 	std::string hash;
 	uint64_t fee;
@@ -31,7 +31,7 @@ struct transaction_short_response {
 		KV_MEMBER(size)
 	}
 };
-//////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 struct transaction_details_response {
 	std::string hash;
 	size_t size;
@@ -49,7 +49,7 @@ struct transaction_details_response {
 		KV_MEMBER(amount_out)
 	}
 };
-//////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 struct block_short_response {
 	uint64_t timestamp;
 	uint32_t height;
@@ -67,7 +67,7 @@ struct block_short_response {
 		KV_MEMBER(tx_count)
 	}
 };
-//////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 struct block_details_response {
 	uint8_t major_version;
 	uint8_t minor_version;  
@@ -115,11 +115,11 @@ struct block_details_response {
 		KV_MEMBER(totalFeeAmount)
 	}
 };
-/////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 struct EMPTY_STRUCT {
   void serialize(ISerializer &s) {}
 };
-
+////////////////////////////////////////////////////////////////////////////////
 struct STATUS_STRUCT {
   std::string status;
 
@@ -127,7 +127,7 @@ struct STATUS_STRUCT {
     KV_MEMBER(status)
   }
 };
-
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_GET_HEIGHT {
   typedef EMPTY_STRUCT request;
 
@@ -141,7 +141,7 @@ struct COMMAND_RPC_GET_HEIGHT {
     }
   };
 };
-
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_GET_BLOCKS_FAST {
 
   struct request {
@@ -166,7 +166,7 @@ struct COMMAND_RPC_GET_BLOCKS_FAST {
     }
   };
 };
-//-----------------------------------------------
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_GET_TRANSACTIONS {
   struct request {
     std::vector<std::string> txs_hashes;
@@ -188,7 +188,7 @@ struct COMMAND_RPC_GET_TRANSACTIONS {
     }
   };
 };
-//-----------------------------------------------
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_GET_POOL_CHANGES {
   struct request {
     Crypto::Hash tailBlockId;
@@ -214,7 +214,7 @@ struct COMMAND_RPC_GET_POOL_CHANGES {
     }
   };
 };
-
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_GET_POOL_CHANGES_LITE {
   struct request {
     Crypto::Hash tailBlockId;
@@ -240,8 +240,7 @@ struct COMMAND_RPC_GET_POOL_CHANGES_LITE {
     }
   };
 };
-
-//-----------------------------------------------
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_GET_TX_GLOBAL_OUTPUTS_INDEXES {
   
   struct request {
@@ -262,7 +261,7 @@ struct COMMAND_RPC_GET_TX_GLOBAL_OUTPUTS_INDEXES {
     }
   };
 };
-//-----------------------------------------------
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_request {
   std::vector<uint64_t> amounts;
   uint64_t outs_count;
@@ -272,14 +271,14 @@ struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_request {
     KV_MEMBER(outs_count)
   }
 };
-
+////////////////////////////////////////////////////////////////////////////////
 #pragma pack(push, 1)
 struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_out_entry {
   uint64_t global_amount_index;
   Crypto::PublicKey out_key;
 };
 #pragma pack(pop)
-
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_outs_for_amount {
   uint64_t amount;
   std::vector<COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_out_entry> outs;
@@ -289,7 +288,7 @@ struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_outs_for_amount {
     serializeAsBinary(outs, "outs", s);
   }
 };
-
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_response {
   std::vector<COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_outs_for_amount> outs;
   std::string status;
@@ -299,7 +298,7 @@ struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_response {
     KV_MEMBER(status)
   }
 };
-
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS {
   typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_request request;
   typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_response response;
@@ -307,8 +306,7 @@ struct COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS {
   typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_out_entry out_entry;
   typedef COMMAND_RPC_GET_RANDOM_OUTPUTS_FOR_AMOUNTS_outs_for_amount outs_for_amount;
 };
-
-//-----------------------------------------------
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_SEND_RAW_TX {
   struct request {
     std::string tx_as_hex;
@@ -329,7 +327,7 @@ struct COMMAND_RPC_SEND_RAW_TX {
     }
   };
 };
-//-----------------------------------------------
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_START_MINING {
   struct request {
     std::string miner_address;
@@ -349,7 +347,7 @@ struct COMMAND_RPC_START_MINING {
     }
   };
 };
-//-----------------------------------------------
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_GET_INFO {
   typedef EMPTY_STRUCT request;
 
@@ -385,20 +383,17 @@ struct COMMAND_RPC_GET_INFO {
     }
   };
 };
-
-//-----------------------------------------------
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_STOP_MINING {
   typedef EMPTY_STRUCT request;
   typedef STATUS_STRUCT response;
 };
-
-//-----------------------------------------------
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_STOP_DAEMON {
   typedef EMPTY_STRUCT request;
   typedef STATUS_STRUCT response;
 };
-
-//
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_GETBLOCKCOUNT {
   typedef std::vector<std::string> request;
 
@@ -412,12 +407,32 @@ struct COMMAND_RPC_GETBLOCKCOUNT {
     }
   };
 };
-
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_GETBLOCKHASH {
   typedef std::vector<uint64_t> request;
   typedef std::string response;
 };
+////////////////////////////////////////////////////////////////////////////////
+struct COMMAND_RPC_GET_TRANSACTIONS_BY_PAYMENT_ID {
+    struct request {
+        std::string payment_id;
 
+        void serialize(ISerializer &s) {
+            KV_MEMBER(payment_id)
+        }
+    };
+        
+    struct response {
+        std::vector<transaction_short_response> transactions;
+        std::string status;
+            
+        void serialize(ISerializer &s) {
+            KV_MEMBER(transactions)
+            KV_MEMBER(status)
+        }
+    };
+};
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_GETBLOCKTEMPLATE {
   struct request {
     uint64_t reserve_size; //max 255 bytes
@@ -559,12 +574,12 @@ struct COMMAND_RPC_GET_CURRENCY_ID {
     }
   };
 };
-
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_SUBMITBLOCK {
   typedef std::vector<std::string> request;
   typedef STATUS_STRUCT response;
 };
-
+////////////////////////////////////////////////////////////////////////////////
 struct block_header_response {
   uint8_t major_version;
   uint8_t minor_version;
@@ -592,7 +607,7 @@ struct block_header_response {
     KV_MEMBER(reward)
   }
 };
-
+////////////////////////////////////////////////////////////////////////////////
 struct BLOCK_HEADER_RESPONSE {
   std::string status;
   block_header_response block_header;
@@ -602,13 +617,12 @@ struct BLOCK_HEADER_RESPONSE {
     KV_MEMBER(status)
   }
 };
-
-
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_GET_LAST_BLOCK_HEADER {
   typedef EMPTY_STRUCT request;
   typedef BLOCK_HEADER_RESPONSE response;
 };
-
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_GET_BLOCK_HEADER_BY_HASH {
   struct request {
     std::string hash;
@@ -620,7 +634,7 @@ struct COMMAND_RPC_GET_BLOCK_HEADER_BY_HASH {
 
   typedef BLOCK_HEADER_RESPONSE response;
 };
-
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_GET_BLOCK_HEADER_BY_HEIGHT {
   struct request {
     uint64_t height;
@@ -757,7 +771,7 @@ struct COMMAND_RPC_QUERY_BLOCKS {
     }
   };
 };
-
+////////////////////////////////////////////////////////////////////////////////
 struct COMMAND_RPC_QUERY_BLOCKS_LITE {
   struct request {
     std::vector<Crypto::Hash> blockIds;

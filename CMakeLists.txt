@@ -7,7 +7,7 @@ set(REFS " (HEAD -> master, tag: v5.37)")
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set(CMAKE_CONFIGURATION_TYPES Debug RelWithDebInfo Release CACHE TYPE INTERNAL)
-set(CMAKE_SKIP_INSTALL_RULES ON)
+set(CMAKE_SKIP_INSTALL_RULES OFF)
 set(CMAKE_SKIP_PACKAGE_ALL_DEPENDENCY ON)
 set(CMAKE_SUPPRESS_REGENERATION ON)
 
@@ -23,6 +23,9 @@ endif()
 enable_testing()
 
 project(Soldo)
+
+set(GTEST_OS_SOLARIS 0)
+
 
 include_directories(include src external "${CMAKE_BINARY_DIR}/version")
 if(APPLE)
@@ -84,8 +87,14 @@ else()
   set(WARNINGS "-Wall -Wextra -Wpointer-arith -Wundef -Wvla -Wwrite-strings -Wno-error=extra -Wno-error=unused-function -Wno-error=deprecated-declarations -Wno-error=sign-compare -Wno-error=strict-aliasing -Wno-error=type-limits -Wno-unused-parameter -Wno-error=unused-variable -Wno-error=undef -Wno-error=uninitialized -Wno-error=unused-result -Wno-error=implicit-fallthrough -Wno-error=format-truncation -Wno-error=unused-const-variable")
   
   if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 5.4)
-    set(WARNINGS "-Wall -Wextra -Wpointer-arith -Wundef -Wvla -Wwrite-strings -Wno-error=extra -Wno-error=unused-function -Wno-error=deprecated-declarations -Wno-error=sign-compare -Wno-error=strict-aliasing -Wno-error=type-limits -Wno-unused-parameter -Wno-error=unused-variable -Wno-error=undef -Wno-error=uninitialized -Wno-error=unused-result -Wno-error=implicit-fallthrough -Wno-error=format-truncation -Wno-error=unused-const-variable")
-  else()
+    
+find_file(DEBIAN_FOUND debian_version debconf.conf PATHS /etc)
+    if(DEBIAN_FOUND)
+        set(WARNINGS "-Wall -Wextra -Wpointer-arith -Wundef -Wvla -Wwrite-strings -Wno-unused-function -Wno-implicit-fallthrough -Wno-unused-but-set-variable -Wno-maybe-uninitialized -Wno-error=extra -Wno-error=unused-function -Wno-error=deprecated-declarations -Wno-error=sign-compare -Wno-error=strict-aliasing -Wno-error=type-limits -Wno-unused-parameter -Wno-error=unused-variable -Wno-error=undef -Wno-error=uninitialized -Wno-error=unused-result -Wno-error=unused-const-variable")
+        else()
+        set(WARNINGS "-Wall -Wextra -Wpointer-arith -Wundef -Wvla -Wwrite-strings -Wno-unused-function -Wno-implicit-fallthrough -Wno-unused-but-set-variable -Wno-maybe-uninitialized -Wno-error=extra -Wno-error=unused-function -Wno-error=deprecated-declarations -Wno-error=sign-compare -Wno-error=strict-aliasing -Wno-error=type-limits -Wno-unused-parameter -Wno-error=unused-variable -Wno-error=undef -Wno-error=uninitialized -Wno-error=unused-result -Wno-error=implicit-fallthrough -Wno-error=format-truncation -Wno-error=unused-const-variable")
+    endif()
+else()
     set(WARNINGS "-Wall -Wextra -Wpointer-arith -Wundef -Wvla -Wwrite-strings -Wno-error=extra -Wno-error=unused-function -Wno-error=deprecated-declarations -Wno-error=sign-compare -Wno-error=strict-aliasing -Wno-error=type-limits -Wno-unused-parameter -Wno-error=unused-variable -Wno-error=undef -Wno-error=uninitialized -Wno-error=unused-result")
   endif()
   

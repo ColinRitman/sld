@@ -1030,30 +1030,34 @@ bool core::getPoolTransactionsByTimestamp(uint64_t timestampBegin, uint64_t time
   return true;
 }
 ///////////////////////////////////////////////////////////////////////////////
-
 bool core::getTransactionsByPaymentId(const Crypto::Hash& paymentId, std::vector<Transaction>& transactions) {
-  std::vector<Crypto::Hash> blockchainTransactionHashes;
-  if (!m_blockchain.getTransactionIdsByPaymentId(paymentId, blockchainTransactionHashes)) {
-    return false;
-  }
-  std::vector<Crypto::Hash> poolTransactionHashes;
-  if (!m_mempool.getTransactionIdsByPaymentId(paymentId, poolTransactionHashes)) {
-    return false;
-  }
-  std::list<Transaction> txs;
-  std::list<Crypto::Hash> missed_txs;
-  blockchainTransactionHashes.insert(blockchainTransactionHashes.end(), poolTransactionHashes.begin(), poolTransactionHashes.end());
-
-  getTransactions(blockchainTransactionHashes, txs, missed_txs, true);
-  if (missed_txs.size() > 0) {
-    return false;
-  }
-
-  transactions.insert(transactions.end(), txs.begin(), txs.end());
-  return true;
+	
+    std::vector<Crypto::Hash> blockchainTransactionHashes;
+    m_blockchain.getTransactionIdsByPaymentId(paymentId, blockchainTransactionHashes);
+    
+    std::vector<Crypto::Hash> poolTransactionHashes;
+    m_mempool.getTransactionIdsByPaymentId(paymentId, poolTransactionHashes);
+    
+    std::list<Transaction> txs;
+    std::list<Crypto::Hash> missed_txs;
+    
+    if (!poolTransactionHashes.empty()) {
+        blockchainTransactionHashes.insert(blockchainTransactionHashes.end(), poolTransactionHashes.begin(), poolTransactionHashes.end());
+    }
+    
+    if (blockchainTransactionHashes.empty()) {
+        return false;
+    }
+    
+    getTransactions(blockchainTransactionHashes, txs, missed_txs, true);
+    if (missed_txs.size() > 0) {
+        return false;
+    }
+    
+    transactions.insert(transactions.end(), txs.begin(), txs.end());
+    return true;	
 }
 ///////////////////////////////////////////////////////////////////////////////
-
 std::error_code core::executeLocked(const std::function<std::error_code()>& func) {
 	std::lock_guard<decltype(m_mempool)> lk(m_mempool);
 	LockedBlockchainStorage lbs(m_blockchain);
@@ -1061,7 +1065,6 @@ std::error_code core::executeLocked(const std::function<std::error_code()>& func
 	return func();
 }
 ///////////////////////////////////////////////////////////////////////////////
-
 uint64_t core::getNextBlockDifficulty() {
 	return m_blockchain.getDifficultyForNextBlock();
 }
@@ -1071,27 +1074,22 @@ uint64_t core::getTotalGeneratedAmount() {
 	return m_blockchain.getCoinsInCirculation();
 }
 ///////////////////////////////////////////////////////////////////////////////
-
 uint64_t core::fullDepositAmount() const {
 	return m_blockchain.fullDepositAmount();
 }
 ///////////////////////////////////////////////////////////////////////////////
-
 uint64_t core::depositAmountAtHeight(size_t height) const {
 	return m_blockchain.depositAmountAtHeight(height);
 }
 ///////////////////////////////////////////////////////////////////////////////
-
 uint64_t core::fullDepositInterest() const {
 	return m_blockchain.fullDepositInterest();
 }
 ///////////////////////////////////////////////////////////////////////////////
-
 uint64_t core::depositInterestAtHeight(size_t height) const {
 	return m_blockchain.depositInterestAtHeight(height);
 }
 ///////////////////////////////////////////////////////////////////////////////
-
 bool core::handleIncomingTransaction(const Transaction& tx, const Crypto::Hash& txHash, size_t blobSize, tx_verification_context& tvc, bool keptByBlock) {
   if (!check_tx_syntax(tx)) {
     logger(INFO, RED) << "WRONG TRANSACTION BLOB, Failed to check tx " << txHash << " syntax, rejected";
@@ -1124,7 +1122,6 @@ bool core::handleIncomingTransaction(const Transaction& tx, const Crypto::Hash& 
   return r;
 }
 ///////////////////////////////////////////////////////////////////////////////
-
 std::unique_ptr<IBlock> core::getBlock(const Crypto::Hash& blockId) {
   std::lock_guard<decltype(m_mempool)> lk(m_mempool);
   LockedBlockchainStorage lbs(m_blockchain);
@@ -1148,19 +1145,19 @@ std::unique_ptr<IBlock> core::getBlock(const Crypto::Hash& blockId) {
   return std::move(blockPtr);
 }
 ///////////////////////////////////////////////////////////////////////////////
-
 bool core::addMessageQueue(MessageQueue<BlockchainMessage>& messageQueue) {
 	return m_blockchain.addMessageQueue(messageQueue);
 }
 ///////////////////////////////////////////////////////////////////////////////
-
 bool core::removeMessageQueue(MessageQueue<BlockchainMessage>& messageQueue) {
 	return m_blockchain.removeMessageQueue(messageQueue);
 }
 ///////////////////////////////////////////////////////////////////////////////
-
 const Currency& core::getCurrency() const {
 	return m_currency;
 }
-
+///////////////////////////////////////////////////////////////////////////////
 }//namespace CryptoNote end
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////

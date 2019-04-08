@@ -16,7 +16,6 @@
 #include "CryptoNoteFormatUtils.h"
 #include "CryptoNoteTools.h"
 #include "TransactionExtra.h"
-//#include "UpgradeDetector.h"
 
 #include "Common/ConsoleTools.h"
 #include "zrainbow.h"
