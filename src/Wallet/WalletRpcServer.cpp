@@ -206,7 +206,6 @@ bool wallet_rpc_server::on_transfer(const wallet_rpc::COMMAND_RPC_TRANSFER::requ
   return true;
 }
 ///////////////////////////////////////////////////////////////////////////////
-
 bool wallet_rpc_server::on_store(const wallet_rpc::COMMAND_RPC_STORE::request& req, wallet_rpc::COMMAND_RPC_STORE::response& res) {
   try {
     WalletHelper::storeWallet(m_wallet, m_walletFilename);

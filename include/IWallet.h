@@ -121,16 +121,16 @@ public:
   virtual void shutdown() = 0;
 
   virtual void changePassword(const std::string& oldPassword, const std::string& newPassword) = 0;
-  virtual void save(std::ostream& destination, bool saveDetails = true, bool saveCache = true) = 0;
+  virtual void save_711WG(std::ostream& destination, bool saveDetails = true, bool saveCache = true) = 0;
 
   virtual size_t getAddressCount() const = 0;
   virtual std::string getAddress(size_t index) const = 0;
   virtual KeyPair getAddressSpendKey(size_t index) const = 0;
   virtual KeyPair getAddressSpendKey(const std::string& address) const = 0;
   virtual KeyPair getViewKey() const = 0;
-  virtual std::string createAddress() = 0;
-  virtual std::string createAddress(const Crypto::SecretKey& spendSecretKey, bool reset = true) = 0;
-  virtual std::string createAddress(const Crypto::PublicKey& spendPublicKey) = 0;
+  virtual std::string createAddress_WG() = 0;
+  virtual std::string createAddress_WG(const Crypto::SecretKey& spendSecretKey, bool reset = true) = 0;
+  virtual std::string createAddress_WG(const Crypto::PublicKey& spendPublicKey) = 0;
   virtual void deleteAddress(const std::string& address) = 0;
 
   virtual uint64_t getActualBalance() const = 0;

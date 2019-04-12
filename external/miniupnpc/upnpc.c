@@ -1,9 +1,9 @@
 /* $Id: upnpc.c,v 1.102 2014/02/05 17:27:14 nanard Exp $ */
 /* Project : miniupnp
  * Author : Thomas Bernard
- * Copyright (c) 2005-2014 Thomas Bernard
- * This software is subject to the conditions detailed in the
- * LICENCE file provided in this distribution. */
+ * Copyright (c) 2005-2014 Thomas Bernard */
+////////////////////////////////////////////////////////////////////////////
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -113,7 +113,10 @@ static void ListRedirections(struct UPNPUrls * urls,
 {
 	int r;
 	int i = 0;
-	char index[6];
+//$$
+//	char index[6];
+	char index[11];
+
 	char intClient[40];
 	char intPort[6];
 	char extPort[6];
@@ -127,7 +130,10 @@ static void ListRedirections(struct UPNPUrls * urls,
 	printf("PortMappingNumberOfEntries : %u\n", num);*/
 	printf(" i protocol exPort->inAddr:inPort description remoteHost leaseTime\n");
 	do {
-		snprintf(index, 6, "%d", i);
+//$$		
+//		snprintf(index, 6, "%d", i);
+		snprintf(index, sizeof(index), "%d", i);
+
 		rHost[0] = '\0'; enabled[0] = '\0';
 		duration[0] = '\0'; desc[0] = '\0';
 		extPort[0] = '\0'; intPort[0] = '\0'; intClient[0] = '\0';

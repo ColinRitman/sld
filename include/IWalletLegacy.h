@@ -129,7 +129,7 @@ public:
   virtual void shutdown() = 0;
   virtual void reset() = 0;
 
-  virtual void save(std::ostream& destination, bool saveDetailed = true, bool saveCache = true) = 0;
+  virtual void save_711WL(std::ostream& destination, bool saveDetailed = true, bool saveCache = true) = 0;
 
   virtual std::error_code changePassword(const std::string& oldPassword, const std::string& newPassword) = 0;
 

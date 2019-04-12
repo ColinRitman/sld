@@ -13,7 +13,6 @@
 #include "WalletLegacy/WalletLegacySerializer.h"
 #include "WalletLegacy/WalletUtils.h"
 ///////////////////////////////////////////////////////////////////////////////
-
 using namespace Crypto;
 
 namespace {
@@ -331,13 +330,14 @@ void WalletLegacy::shutdown() {
 }
 ///////////////////////////////////////////////////////////////////////////////
 void WalletLegacy::reset() {
+//std::cout << "|+ WalletLegacy::reset" << std::endl;
   try {
     std::error_code saveError;
     std::stringstream ss;
     {
       SaveWaiter saveWaiter;
       WalletHelper::IWalletRemoveObserverGuard saveGuarantee(*this, saveWaiter);
-      save(ss, false, false);
+      save_711WL(ss, false, false);
       saveError = saveWaiter.waitSave();
     }
 
@@ -351,13 +351,16 @@ void WalletLegacy::reset() {
   } catch (std::exception& e) {
     std::cout << "exception in reset: " << e.what() << std::endl;
   }
+//std::cout << "|- WalletLegacy::reset" << std::endl;
 }
 ///////////////////////////////////////////////////////////////////////////////
 std::vector<Payments> WalletLegacy::getTransactionsByPaymentIds(const std::vector<PaymentId>& paymentIds) const {
   return m_transactionsCache.getTransactionsByPaymentIds(paymentIds);
 }
 ///////////////////////////////////////////////////////////////////////////////
-void WalletLegacy::save(std::ostream& destination, bool saveDetailed, bool saveCache) {
+void WalletLegacy::save_711WL(std::ostream& destination, bool saveDetailed, bool saveCache) {
+//std::cout << "|+ WalletLegacy::save_711WL" << std::endl;
+
   if(m_isStopping) {
     m_observerManager.notify(&IWalletLegacyObserver::saveCompleted, make_error_code(CryptoNote::error::OPERATION_CANCELLED));
     return;
@@ -372,11 +375,14 @@ void WalletLegacy::save(std::ostream& destination, bool saveDetailed, bool saveC
   }
 
   m_asyncContextCounter.addAsyncContext();
-  std::thread saver(&WalletLegacy::doSave, this, std::ref(destination), saveDetailed, saveCache);
+  std::thread saver(&WalletLegacy::doSaveWL, this, std::ref(destination), saveDetailed, saveCache);
   saver.detach();
+//std::cout << "|- WalletLegacy::save_711WL" << std::endl;
 }
 ///////////////////////////////////////////////////////////////////////////////
-void WalletLegacy::doSave(std::ostream& destination, bool saveDetailed, bool saveCache) {
+void WalletLegacy::doSaveWL(std::ostream& destination, bool saveDetailed, bool saveCache) {
+//std::cout << "|+ WalletLegacy::doSaveWL" << std::endl;
+
   ContextCounterHolder counterHolder(m_asyncContextCounter);
 
   try {
@@ -392,7 +398,7 @@ void WalletLegacy::doSave(std::ostream& destination, bool saveDetailed, bool sav
       cache = stream.str();
     }
 
-    serializer.serialize(destination, m_password, saveDetailed, cache);
+    serializer.serialize(destination, m_password, saveDetailed, cache);//serializer and ...
 
     m_state = INITIALIZED;
     m_blockchainSync.start(); //XXX: start can throw. what to do in this case?
@@ -409,6 +415,8 @@ void WalletLegacy::doSave(std::ostream& destination, bool saveDetailed, bool sav
   }
 
   m_observerManager.notify(&IWalletLegacyObserver::saveCompleted, std::error_code());
+
+//std::cout << "|- WalletLegacy::doSaveWL" << std::endl;
 }
 ///////////////////////////////////////////////////////////////////////////////
 std::error_code WalletLegacy::changePassword(const std::string& oldPassword, const std::string& newPassword) {

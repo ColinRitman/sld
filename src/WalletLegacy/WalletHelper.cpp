@@ -1,14 +1,12 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
+/////////////////////////////////////////////////////////////////////////////
 #include "WalletHelper.h"
 #include "Common/PathTools.h"
 
 #include <fstream>
 #include <boost/filesystem.hpp>
-
+/////////////////////////////////////////////////////////////////////////////
 using namespace CryptoNote;
 
 namespace {
@@ -21,13 +19,15 @@ void openOutputFileStream(const std::string& filename, std::ofstream& file) {
 }
 
 std::error_code walletSaveWrapper(CryptoNote::IWalletLegacy& wallet, std::ofstream& file, bool saveDetailes, bool saveCache) {
+//std::cout << "|+ walletSaveWrapper" << std::endl;
+	
   CryptoNote::WalletHelper::SaveWalletResultObserver o;
 
   std::error_code e;
   try {
     std::future<std::error_code> f = o.saveResult.get_future();
     wallet.addObserver(&o);
-    wallet.save(file, saveDetailes, saveCache);
+    wallet.save_711WL(file, saveDetailes, saveCache);
     e = f.get();
   } catch (std::exception&) {
     wallet.removeObserver(&o);
@@ -36,6 +36,8 @@ std::error_code walletSaveWrapper(CryptoNote::IWalletLegacy& wallet, std::ofstre
 
   wallet.removeObserver(&o);
   return e;
+  
+//std::cout << "|+ walletSaveWrapper" << std::endl;
 }
 
 }
@@ -123,3 +125,6 @@ void WalletHelper::storeWallet(CryptoNote::IWalletLegacy& wallet, const std::str
   boost::system::error_code ignore;
   boost::filesystem::remove(tempFile, ignore);
 }
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////

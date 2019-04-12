@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-
+/////////////////////////////////////////////////////////////////////////////
 #pragma once
 
 #include "IWallet.h"
@@ -15,7 +15,7 @@
 #include <System/Event.h>
 #include "Transfers/TransfersSynchronizer.h"
 #include "Transfers/BlockchainSynchronizer.h"
-
+/////////////////////////////////////////////////////////////////////////////
 namespace CryptoNote {
 
 class WalletGreen : public IWallet,
@@ -33,16 +33,16 @@ public:
   virtual void shutdown() override;
 
   virtual void changePassword(const std::string& oldPassword, const std::string& newPassword) override;
-  virtual void save(std::ostream& destination, bool saveDetails = true, bool saveCache = true) override;
+  virtual void save_711WG(std::ostream& destination, bool saveDetails = true, bool saveCache = true) override;
 
   virtual size_t getAddressCount() const override;
   virtual std::string getAddress(size_t index) const override;
   virtual KeyPair getAddressSpendKey(size_t index) const override;
   virtual KeyPair getAddressSpendKey(const std::string& address) const override;
   virtual KeyPair getViewKey() const override;
-  virtual std::string createAddress() override;
-  virtual std::string createAddress(const Crypto::SecretKey& spendSecretKey, bool reset = true) override;
-  virtual std::string createAddress(const Crypto::PublicKey& spendPublicKey) override;
+  virtual std::string createAddress_WG() override;
+  virtual std::string createAddress_WG(const Crypto::SecretKey& spendSecretKey, bool reset = true) override;
+  virtual std::string createAddress_WG(const Crypto::PublicKey& spendPublicKey) override;
   virtual void deleteAddress(const std::string& address) override;
 
   virtual uint64_t getActualBalance() const override;
@@ -92,7 +92,7 @@ protected:
   void doShutdown();
   //void clearCaches();
   void initWithKeys(const Crypto::PublicKey& viewPublicKey, const Crypto::SecretKey& viewSecretKey, const std::string& password);
-  std::string doCreateAddress(const Crypto::PublicKey& spendPublicKey, const Crypto::SecretKey& spendSecretKey, uint64_t creationTimestamp);
+  std::string doCreateAddress_712WG(const Crypto::PublicKey& spendPublicKey, const Crypto::SecretKey& spendSecretKey, uint64_t creationTimestamp);
 
   struct InputInfo {
     TransactionTypes::InputKeyInfo keyInfo;
@@ -244,7 +244,7 @@ protected:
   void removeUnconfirmedTransaction(const Crypto::Hash& transactionHash);
 
   void unsafeLoad(std::istream& source, const std::string& password);
-  void unsafeSave(std::ostream& destination, bool saveDetails, bool saveCache);
+  void unsafeSave_71WG(std::ostream& destination, bool saveDetails, bool saveCache);
 
   std::vector<OutputToTransfer> pickRandomFusionInputs(uint64_t threshold, size_t minInputCount, size_t maxInputCount);
   ReceiverAmounts decomposeFusionOutputs(uint64_t inputsAmount);
@@ -311,5 +311,8 @@ protected:
 
   BlockHashesContainer m_blockchain;
 };
-
+/////////////////////////////////////////////////////////////////////////////
 } //namespace CryptoNote
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////

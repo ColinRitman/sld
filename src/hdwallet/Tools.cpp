@@ -29,7 +29,7 @@ bool saveWallet(std::shared_ptr<WalletInfo> &walletInfo)
 
     try
     {
-        walletInfo->wallet.save(tempFile);
+        walletInfo->wallet.save_711WG(tempFile);
         tempFile.flush();
     }
     catch (const std::exception &)

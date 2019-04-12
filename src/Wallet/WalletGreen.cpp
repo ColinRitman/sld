@@ -1,8 +1,6 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
+///////////////////////////////////////////////////////////////////////////////
 #include "WalletGreen.h"
 
 #include <algorithm>
@@ -35,23 +33,23 @@
 #include "WalletSerialization.h"
 #include "WalletErrors.h"
 #include "WalletUtils.h"
-
+///////////////////////////////////////////////////////////////////////////////
 using namespace Common;
 using namespace Crypto;
 using namespace CryptoNote;
-
+///////////////////////////////////////////////////////////////////////////////
 namespace {
-
+///////////////////////////////////////////////////////////////////////////////
 void asyncRequestCompletion(System::Event& requestFinished) {
   requestFinished.set();
 }
-
+///////////////////////////////////////////////////////////////////////////////
 void parseAddressString(const std::string& string, const CryptoNote::Currency& currency, CryptoNote::AccountPublicAddress& address) {
   if (!currency.parseAccountAddressString(string, address)) {
     throw std::system_error(make_error_code(CryptoNote::error::BAD_ADDRESS));
   }
 }
-
+///////////////////////////////////////////////////////////////////////////////
 void validateAddresses(const std::vector<std::string>& addresses, const CryptoNote::Currency& currency) {
   for (const auto& address: addresses) {
     if (!CryptoNote::validateAddress(address, currency)) {
@@ -59,7 +57,7 @@ void validateAddresses(const std::vector<std::string>& addresses, const CryptoNo
     }
   }
 }
-
+///////////////////////////////////////////////////////////////////////////////
 void validateOrders(const std::vector<WalletOrder>& orders, const CryptoNote::Currency& currency) {
   for (const auto& order: orders) {
     if (!CryptoNote::validateAddress(order.address, currency)) {
@@ -329,19 +327,22 @@ void WalletGreen::initWithKeys(const Crypto::PublicKey& viewPublicKey, const Cry
 
   m_state = WalletState::INITIALIZED;
 }
-
-void WalletGreen::save(std::ostream& destination, bool saveDetails, bool saveCache) {
+/////////////////////////////////////////////////////////////////////////////
+void WalletGreen::save_711WG(std::ostream& destination, bool saveDetails, bool saveCache) {
+//std::cout << "|+ WalletGreen::save_711WG" << std::endl;
   throwIfNotInitialized();
   throwIfStopped();
 
   stopBlockchainSynchronizer();
 
-  unsafeSave(destination, saveDetails, saveCache);
+  unsafeSave_71WG(destination, saveDetails, saveCache);// unsafeSave_71WG(ss, true, false) while creating
 
   startBlockchainSynchronizer();
+//std::cout << "|- WalletGreen::save_711WG" << std::endl;
 }
-
-void WalletGreen::unsafeSave(std::ostream& destination, bool saveDetails, bool saveCache) {
+/////////////////////////////////////////////////////////////////////////////
+void WalletGreen::unsafeSave_71WG(std::ostream& destination, bool saveDetails, bool saveCache) {
+//std::cout << "|+ WalletGreen::unsafeSave_71WG" << std::endl;
   WalletTransactions transactions;
   WalletTransfers transfers;
 
@@ -371,7 +372,8 @@ void WalletGreen::unsafeSave(std::ostream& destination, bool saveDetails, bool s
   );
 
   StdOutputStream output(destination);
-  s.save(m_password, output, saveDetails, saveCache);
+  s.save_7WS(m_password, output, saveDetails, saveCache); // save wallet command here
+//std::cout << "|- WalletGreen::unsafeSave_71WG" << std::endl;
 }
 
 void WalletGreen::load(std::istream& source, const std::string& password) {
@@ -483,34 +485,35 @@ KeyPair WalletGreen::getViewKey() const {
 
   return {m_viewPublicKey, m_viewSecretKey};
 }
-
-std::string WalletGreen::createAddress() {
+/////////////////////////////////////////////////////////////////////////////
+std::string WalletGreen::createAddress_WG() {
   KeyPair spendKey;
   Crypto::generate_keys(spendKey.publicKey, spendKey.secretKey);
   uint64_t creationTimestamp = static_cast<uint64_t>(time(nullptr));
 
-  return doCreateAddress(spendKey.publicKey, spendKey.secretKey, creationTimestamp);
+  return doCreateAddress_712WG(spendKey.publicKey, spendKey.secretKey, creationTimestamp);
 }
-std::string WalletGreen::createAddress(const Crypto::SecretKey& spendSecretKey, bool reset) {
+/////////////////////////////////////////////////////////////////////////////
+std::string WalletGreen::createAddress_WG(const Crypto::SecretKey& spendSecretKey, bool reset) {
   Crypto::PublicKey spendPublicKey;
   if (!Crypto::secret_key_to_public_key(spendSecretKey, spendPublicKey) ) {
     throw std::system_error(make_error_code(CryptoNote::error::KEY_GENERATION_ERROR));
   }
 //$$$$  
 	uint64_t creationTimestamp = reset ? 0 : static_cast<uint64_t>(time(nullptr));
-	return doCreateAddress(spendPublicKey, spendSecretKey, creationTimestamp);
+	return doCreateAddress_712WG(spendPublicKey, spendSecretKey, creationTimestamp);
 //$$$$  
 }
-
-std::string WalletGreen::createAddress(const Crypto::PublicKey& spendPublicKey) {
+/////////////////////////////////////////////////////////////////////////////
+std::string WalletGreen::createAddress_WG(const Crypto::PublicKey& spendPublicKey) {
   if (!Crypto::check_key(spendPublicKey)) {
     throw std::system_error(make_error_code(error::WRONG_PARAMETERS), "Wrong public key format");
   }
 
-  return doCreateAddress(spendPublicKey, NULL_SECRET_KEY, 0);
+  return doCreateAddress_712WG(spendPublicKey, NULL_SECRET_KEY, 0);
 }
-
-std::string WalletGreen::doCreateAddress(const Crypto::PublicKey& spendPublicKey, const Crypto::SecretKey& spendSecretKey, uint64_t creationTimestamp) {
+/////////////////////////////////////////////////////////////////////////////
+std::string WalletGreen::doCreateAddress_712WG(const Crypto::PublicKey& spendPublicKey, const Crypto::SecretKey& spendSecretKey, uint64_t creationTimestamp) {
   assert(creationTimestamp <= std::numeric_limits<uint64_t>::max() - m_currency.blockFutureTimeLimit());
 
   throwIfNotInitialized();
@@ -526,7 +529,7 @@ std::string WalletGreen::doCreateAddress(const Crypto::PublicKey& spendPublicKey
     if (creationTimestamp + m_currency.blockFutureTimeLimit() < currentTime) {
       std::string password = m_password;
       std::stringstream ss;
-      unsafeSave(ss, true, false);
+      unsafeSave_71WG(ss, true, false);
       shutdown();
       load(ss, password);
     }
@@ -539,7 +542,7 @@ std::string WalletGreen::doCreateAddress(const Crypto::PublicKey& spendPublicKey
 
   return address;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 std::string WalletGreen::addWallet(const Crypto::PublicKey& spendPublicKey, const Crypto::SecretKey& spendSecretKey, uint64_t creationTimestamp) {
   auto& index = m_walletsContainer.get<KeysIndex>();
 
@@ -2588,7 +2591,7 @@ void WalletGreen::createViewWallet(const std::string &password,
     }
 
     initializeWithViewKey(viewSecretKey, password);
-    createAddress(publicKeys.spendPublicKey);
+    createAddress_WG(publicKeys.spendPublicKey);
 }
 ///////////////////////////////////////////////////////////////////////////////
 

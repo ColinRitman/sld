@@ -1,5 +1,9 @@
 build/
+~build/
+~fresh/
 *~
 CMakeLists.txt.user
 uncrustify.cfg
+*.bak
+
 

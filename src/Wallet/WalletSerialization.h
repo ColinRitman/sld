@@ -1,8 +1,6 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
+/////////////////////////////////////////////////////////////////////////////
 #pragma once
 
 #include "IWallet.h"
@@ -11,36 +9,36 @@
 #include "Common/IOutputStream.h"
 #include "Transfers/TransfersSynchronizer.h"
 #include "Serialization/BinaryInputStreamSerializer.h"
-
+//#include <iostream>
 #include "crypto/chacha.h"
-
+/////////////////////////////////////////////////////////////////////////////
 namespace CryptoNote {
-
+/////////////////////////////////////////////////////////////////////////////
 struct CryptoContext {
   Crypto::chacha_key key;
   Crypto::chacha_iv iv;
 
   void incIv();
 };
-
+/////////////////////////////////////////////////////////////////////////////
 class WalletSerializer {
 public:
-  WalletSerializer(
-    ITransfersObserver& transfersObserver,
-    Crypto::PublicKey& viewPublicKey,
-    Crypto::SecretKey& viewSecretKey,
-    uint64_t& actualBalance,
-    uint64_t& pendingBalance,
-    WalletsContainer& walletsContainer,
-    TransfersSyncronizer& synchronizer,
-    UnlockTransactionJobs& unlockTransactions,
-    WalletTransactions& transactions,
-    WalletTransfers& transfers,
-    uint32_t transactionSoftLockTime,
-    UncommitedTransactions& uncommitedTransactions
-  );
+	WalletSerializer(
+		ITransfersObserver& transfersObserver,
+		Crypto::PublicKey& viewPublicKey,
+		Crypto::SecretKey& viewSecretKey,
+		uint64_t& actualBalance,
+		uint64_t& pendingBalance,
+		WalletsContainer& walletsContainer,
+		TransfersSyncronizer& synchronizer,
+		UnlockTransactionJobs& unlockTransactions,
+		WalletTransactions& transactions,
+		WalletTransfers& transfers,
+		uint32_t transactionSoftLockTime,
+		UncommitedTransactions& uncommitedTransactions
+	);
   
-  void save(const std::string& password, Common::IOutputStream& destination, bool saveDetails, bool saveCache);
+  void save_7WS(const std::string& password, Common::IOutputStream& destination, bool saveDetails, bool saveCache);
   void load(const std::string& password, Common::IInputStream& source);
 
 private:
@@ -105,5 +103,8 @@ private:
   uint32_t m_transactionSoftLockTime;
   UncommitedTransactions& uncommitedTransactions;
 };
-
+/////////////////////////////////////////////////////////////////////////////
 } //namespace CryptoNote
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////

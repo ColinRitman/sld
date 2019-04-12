@@ -362,8 +362,10 @@ void createWalletFile(std::fstream& walletFile, const std::string& filename) {
 }
 ///////////////////////////////////////////////////////////////////////////////
 void saveWallet(CryptoNote::IWallet& wallet, std::fstream& walletFile, bool saveDetailed = true, bool saveCache = true) {
-	  wallet.save(walletFile, saveDetailed, saveCache);
+//std::cout << "|+ saveWallet" << std::endl;
+	  wallet.save_711WG(walletFile, saveDetailed, saveCache);
 	  walletFile.flush();
+//std::cout << "|- saveWallet" << std::endl;
 }
 ///////////////////////////////////////////////////////////////////////////////
 void secureSaveWallet(CryptoNote::IWallet& wallet, const std::string& path, bool saveDetailed, bool saveCache) {
@@ -397,7 +399,7 @@ void generateNewWallet(const CryptoNote::Currency &currency, const WalletConfigu
   createWalletFile(walletFile, conf.walletFile);
 
   wallet->initialize(conf.walletPassword);
-  auto address = wallet->createAddress();
+  auto address = wallet->createAddress_WG();
 
   log(Logging::INFO) << "New wallet is generated. Address: " << address;
 
@@ -545,7 +547,7 @@ std::error_code WalletService::createAddress(const std::string& spendSecretKeyTe
       return make_error_code(CryptoNote::error::WalletServiceErrorCode::WRONG_KEY_FORMAT);
     }
 
-	address = wallet.createAddress(secretKey, reset);
+	address = wallet.createAddress_WG(secretKey, reset);
   } catch (std::system_error& x) {
     logger(Logging::WARNING) << "Error while creating address: " << x.what();
     return x.code();
@@ -565,7 +567,7 @@ std::error_code WalletService::createAddress(std::string& address) {
 	saveWallet();
 //$$$$
 
-    address = wallet.createAddress();
+    address = wallet.createAddress_WG();
   } catch (std::system_error& x) {
     logger(Logging::WARNING) << "Error while creating address: " << x.what();
     return x.code();
@@ -588,7 +590,7 @@ std::error_code WalletService::createTrackingAddress(const std::string& spendPub
       return make_error_code(CryptoNote::error::WalletServiceErrorCode::WRONG_KEY_FORMAT);
     }
 
-    address = wallet.createAddress(publicKey);
+    address = wallet.createAddress_WG(publicKey);
   } catch (std::system_error& x) {
     logger(Logging::WARNING) << "Error while creating tracking address: " << x.what();
     return x.code();
