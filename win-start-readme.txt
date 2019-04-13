@@ -5,9 +5,10 @@ this archive contains several apps and batch files.
 0 - Useful files
 
 sldd.exe - coin's daemon
-sldw.exe - wallet app
+sldw.exe - classic wallet app
+sldp.exe - payments gate [wallet for exchanges] app
+sldwhd.exe - HD-wallet app
 sldm.exe - CPU solo miner app
-sldp.exe - payments gate app for exchanges
 
 new-wallet.bat - batch file to generate new wallet
 daemon.bat - batch file to start coin's daemon
@@ -57,7 +58,6 @@ Wait to full sync.
 If daemon will not find any seed - check your windows firewall and home/office router NAT and firewall rules.
 If still failed - ask for assistance at the Discord chat - https://discord.gg/46xpPye
 
-
 5 - Start mining
 
 If your daemon found any seed and became fully synced - start mining.
@@ -65,3 +65,4 @@ Start miner.bat.
 Another way - just type:
 	start_mining your_sld_wallet_address threads_count
 inside daemon's app window, where your_sld_wallet_address is the same you have in miner.bat file and threads_count - munber of mining threads.
+
