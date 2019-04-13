@@ -1,8 +1,6 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
+/////////////////////////////////////////////////////////////////////////////
 #include "IWalletLegacy.h"
 
 #include "crypto/hash.h"
@@ -15,7 +13,7 @@
 #include "Serialization/ISerializer.h"
 #include "Serialization/SerializationOverloads.h"
 #include <algorithm>
-
+/////////////////////////////////////////////////////////////////////////////
 using namespace Crypto;
 
 namespace CryptoNote {
@@ -32,7 +30,7 @@ struct LegacyDepositInfo {
   Deposit deposit;
   uint32_t outputInTransaction;
 };
-
+/////////////////////////////////////////////////////////////////////////////
 void serialize(LegacyDeposit& deposit, ISerializer& serializer) {
   uint64_t creatingTxId = static_cast<uint64_t>(deposit.creatingTransactionId);
   serializer(creatingTxId, "creating_transaction_id");
@@ -46,12 +44,13 @@ void serialize(LegacyDeposit& deposit, ISerializer& serializer) {
   serializer(deposit.amount, "amount");
   serializer(deposit.interest, "interest");
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void serialize(LegacyDepositInfo& depositInfo, ISerializer& serializer) {
   serializer(depositInfo.deposit, "deposit");
   serializer(depositInfo.outputInTransaction, "output_in_transaction");
 }
-
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 namespace {
 
 class DepositIdSequenceIterator: public std::iterator<std::random_access_iterator_tag, DepositId> {
@@ -86,7 +85,7 @@ public:
 private:
   DepositId val;
 };
-
+/////////////////////////////////////////////////////////////////////////////
 void convertLegacyDeposits(const std::vector<LegacyDepositInfo>& legacyDeposits, UserDeposits& deposits) {
   deposits.reserve(legacyDeposits.size());
 
@@ -105,10 +104,11 @@ void convertLegacyDeposits(const std::vector<LegacyDepositInfo>& legacyDeposits,
 }
 
 }
+/////////////////////////////////////////////////////////////////////////////
 
 WalletUserTransactionsCache::WalletUserTransactionsCache(uint64_t mempoolTxLiveTime) : m_unconfirmedTransactions(mempoolTxLiveTime) {
 }
-
+/////////////////////////////////////////////////////////////////////////////
 bool WalletUserTransactionsCache::serialize(CryptoNote::ISerializer& s) {
   s(m_transactions, "transactions");
   s(m_transfers, "transfers");
@@ -124,7 +124,7 @@ bool WalletUserTransactionsCache::serialize(CryptoNote::ISerializer& s) {
 
   return true;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void WalletUserTransactionsCache::deserializeLegacyV1(CryptoNote::ISerializer& s) {
   s(m_transactions, "transactions");
   s(m_transfers, "transfers");
@@ -136,26 +136,26 @@ void WalletUserTransactionsCache::deserializeLegacyV1(CryptoNote::ISerializer& s
   convertLegacyDeposits(legacyDeposits, m_deposits);
   restoreTransactionOutputToDepositIndex();
 }
-
+/////////////////////////////////////////////////////////////////////////////
 bool paymentIdIsSet(const PaymentId& paymentId) {
   return paymentId != NULL_HASH;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 bool canInsertTransactionToIndex(const WalletLegacyTransaction& info) {
   return info.state == WalletLegacyTransactionState::Active && info.blockHeight != WALLET_LEGACY_UNCONFIRMED_TRANSACTION_HEIGHT &&
       info.totalAmount > 0 && !info.extra.empty();
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void WalletUserTransactionsCache::pushToPaymentsIndex(const PaymentId& paymentId, Offset distance) {
   m_paymentsIndex[paymentId].push_back(distance);
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void WalletUserTransactionsCache::popFromPaymentsIndex(const PaymentId& paymentId, Offset distance) {
   auto it = m_paymentsIndex.find(paymentId);
   if (it == m_paymentsIndex.end()) {
     return;
   }
-
+/////////////////////////////////////////////////////////////////////////////
   auto toErase = std::lower_bound(it->second.begin(), it->second.end(), distance);
   if (toErase == it->second.end() || *toErase != distance) {
     return;
@@ -163,7 +163,7 @@ void WalletUserTransactionsCache::popFromPaymentsIndex(const PaymentId& paymentI
 
   it->second.erase(toErase);
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void WalletUserTransactionsCache::rebuildPaymentsIndex() {
   auto begin = std::begin(m_transactions);
   auto end = std::end(m_transactions);
@@ -177,19 +177,19 @@ void WalletUserTransactionsCache::rebuildPaymentsIndex() {
     extra.clear();
   }
 }
-
+/////////////////////////////////////////////////////////////////////////////
 uint64_t WalletUserTransactionsCache::unconfirmedTransactionsAmount() const {
   return m_unconfirmedTransactions.countUnconfirmedTransactionsAmount();
 }
-
+/////////////////////////////////////////////////////////////////////////////
 uint64_t WalletUserTransactionsCache::unconfrimedOutsAmount() const {
   return m_unconfirmedTransactions.countUnconfirmedOutsAmount();
 }
-
+/////////////////////////////////////////////////////////////////////////////
 uint64_t WalletUserTransactionsCache::countUnconfirmedCreatedDepositsSum() const {
   return m_unconfirmedTransactions.countCreatedDepositsSum();
 }
-
+/////////////////////////////////////////////////////////////////////////////
 uint64_t WalletUserTransactionsCache::countUnconfirmedSpentDepositsProfit() const {
   return m_unconfirmedTransactions.countSpentDepositsProfit();
 }
@@ -201,15 +201,15 @@ uint64_t WalletUserTransactionsCache::countUnconfirmedSpentDepositsTotalAmount()
 size_t WalletUserTransactionsCache::getTransactionCount() const {
   return m_transactions.size();
 }
-
+/////////////////////////////////////////////////////////////////////////////
 size_t WalletUserTransactionsCache::getTransferCount() const {
   return m_transfers.size();
 }
-
+/////////////////////////////////////////////////////////////////////////////
 size_t WalletUserTransactionsCache::getDepositCount() const {
   return m_deposits.size();
 }
-
+/////////////////////////////////////////////////////////////////////////////
 TransactionId WalletUserTransactionsCache::addNewTransaction(uint64_t amount,
                                                              uint64_t fee,
                                                              const std::string& extra,
@@ -243,7 +243,7 @@ TransactionId WalletUserTransactionsCache::addNewTransaction(uint64_t amount,
 
   return insertTransaction(std::move(transaction));
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void WalletUserTransactionsCache::updateTransaction(
   TransactionId transactionId, const CryptoNote::Transaction& tx, uint64_t amount, const std::vector<TransactionOutputInformation>& usedOutputs) {
   // update extra field from created transaction
@@ -251,7 +251,7 @@ void WalletUserTransactionsCache::updateTransaction(
   txInfo.extra.assign(tx.extra.begin(), tx.extra.end());
   m_unconfirmedTransactions.add(tx, transactionId, amount, usedOutputs);
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void WalletUserTransactionsCache::updateTransactionSendingState(TransactionId transactionId, std::error_code ec) {
   auto& txInfo = m_transactions.at(transactionId);
   if (ec) {
@@ -262,7 +262,7 @@ void WalletUserTransactionsCache::updateTransactionSendingState(TransactionId tr
     txInfo.state = WalletLegacyTransactionState::Active;
   }
 }
-
+/////////////////////////////////////////////////////////////////////////////
 std::deque<std::unique_ptr<WalletLegacyEvent>> WalletUserTransactionsCache::onTransactionUpdated(const TransactionInformation& txInfo,
                                                                                                  int64_t txBalance,
                                                                                                  const std::vector<TransactionOutputInformation>& newDepositOutputs,
@@ -340,7 +340,7 @@ std::deque<std::unique_ptr<WalletLegacyEvent>> WalletUserTransactionsCache::onTr
 
   return events;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 std::deque<std::unique_ptr<WalletLegacyEvent>> WalletUserTransactionsCache::onTransactionDeleted(const Crypto::Hash& transactionHash) {
   TransactionId id = CryptoNote::WALLET_LEGACY_INVALID_TRANSACTION_ID;
   if (m_unconfirmedTransactions.findTransactionId(transactionHash, id)) {
@@ -387,7 +387,7 @@ std::deque<std::unique_ptr<WalletLegacyEvent>> WalletUserTransactionsCache::onTr
 
   return events;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 std::vector<Payments> WalletUserTransactionsCache::getTransactionsByPaymentIds(const std::vector<PaymentId>& paymentIds) const {
   std::vector<Payments> payments(paymentIds.size());
   auto payment = payments.begin();
@@ -407,7 +407,7 @@ std::vector<Payments> WalletUserTransactionsCache::getTransactionsByPaymentIds(c
 
   return payments;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 std::vector<DepositId> WalletUserTransactionsCache::unlockDeposits(const std::vector<TransactionOutputInformation>& transfers) {
   std::vector<DepositId> unlockedDeposits;
 
@@ -425,7 +425,7 @@ std::vector<DepositId> WalletUserTransactionsCache::unlockDeposits(const std::ve
 
   return unlockedDeposits;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 std::vector<DepositId> WalletUserTransactionsCache::lockDeposits(const std::vector<TransactionOutputInformation>& transfers) {
   std::vector<DepositId> lockedDeposits;
   for (const auto& transfer: transfers) {
@@ -442,7 +442,7 @@ std::vector<DepositId> WalletUserTransactionsCache::lockDeposits(const std::vect
 
   return lockedDeposits;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 TransactionId WalletUserTransactionsCache::findTransactionByTransferId(TransferId transferId) const
 {
   TransactionId id;
@@ -461,7 +461,7 @@ TransactionId WalletUserTransactionsCache::findTransactionByTransferId(TransferI
 
   return id;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 bool WalletUserTransactionsCache::getTransaction(TransactionId transactionId, WalletLegacyTransaction& transaction) const
 {
   if (transactionId >= m_transactions.size())
@@ -471,7 +471,7 @@ bool WalletUserTransactionsCache::getTransaction(TransactionId transactionId, Wa
 
   return true;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 bool WalletUserTransactionsCache::getTransfer(TransferId transferId, WalletLegacyTransfer& transfer) const
 {
   if (transferId >= m_transfers.size())
@@ -481,7 +481,7 @@ bool WalletUserTransactionsCache::getTransfer(TransferId transferId, WalletLegac
 
   return true;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 bool WalletUserTransactionsCache::getDeposit(DepositId depositId, Deposit& deposit) const {
   if (depositId >= m_deposits.size()) {
     return false;
@@ -490,18 +490,18 @@ bool WalletUserTransactionsCache::getDeposit(DepositId depositId, Deposit& depos
   deposit = m_deposits[depositId].deposit;
   return true;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 Deposit& WalletUserTransactionsCache::getDeposit(DepositId depositId) {
   assert(depositId < m_deposits.size());
 
   return m_deposits[depositId].deposit;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 TransactionId WalletUserTransactionsCache::insertTransaction(WalletLegacyTransaction&& Transaction) {
   m_transactions.emplace_back(std::move(Transaction));
   return m_transactions.size() - 1;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 TransactionId WalletUserTransactionsCache::findTransactionByHash(const Hash& hash) {
   auto it = std::find_if(m_transactions.begin(), m_transactions.end(), [&hash](const WalletLegacyTransaction& tx) { return tx.hash == hash; });
 
@@ -510,20 +510,20 @@ TransactionId WalletUserTransactionsCache::findTransactionByHash(const Hash& has
 
   return std::distance(m_transactions.begin(), it);
 }
-
+/////////////////////////////////////////////////////////////////////////////
 bool WalletUserTransactionsCache::isUsed(const TransactionOutputInformation& out) const {
   return m_unconfirmedTransactions.isUsed(out);
 }
-
+/////////////////////////////////////////////////////////////////////////////
 WalletLegacyTransaction& WalletUserTransactionsCache::getTransaction(TransactionId transactionId) {
   return m_transactions.at(transactionId);
 }
-
+/////////////////////////////////////////////////////////////////////////////
 TransferId WalletUserTransactionsCache::insertTransfers(const std::vector<WalletLegacyTransfer>& transfers) {
   std::copy(transfers.begin(), transfers.end(), std::back_inserter(m_transfers));
   return m_transfers.size() - transfers.size();
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void WalletUserTransactionsCache::updateUnconfirmedTransactions() {
   for (TransactionId id = 0; id < m_transactions.size(); ++id) {
     if (m_transactions[id].blockHeight == WALLET_LEGACY_UNCONFIRMED_TRANSACTION_HEIGHT) {
@@ -531,17 +531,17 @@ void WalletUserTransactionsCache::updateUnconfirmedTransactions() {
     }
   }
 }
-
+/////////////////////////////////////////////////////////////////////////////
 WalletLegacyTransfer& WalletUserTransactionsCache::getTransfer(TransferId transferId) {
   return m_transfers.at(transferId);
 }
-  
+/////////////////////////////////////////////////////////////////////////////
 void WalletUserTransactionsCache::reset() {
   m_transactions.clear();
   m_transfers.clear();
   m_unconfirmedTransactions.reset();
 }
-
+/////////////////////////////////////////////////////////////////////////////
 std::vector<TransactionId> WalletUserTransactionsCache::deleteOutdatedTransactions() {
   auto deletedTransactions = m_unconfirmedTransactions.deleteOutdatedTransactions();
 
@@ -552,7 +552,7 @@ std::vector<TransactionId> WalletUserTransactionsCache::deleteOutdatedTransactio
 
   return deletedTransactions;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void WalletUserTransactionsCache::restoreTransactionOutputToDepositIndex() {
   m_transactionOutputToDepositIndex.clear();
 
@@ -563,7 +563,7 @@ void WalletUserTransactionsCache::restoreTransactionOutputToDepositIndex() {
     ++id;
   }
 }
-
+/////////////////////////////////////////////////////////////////////////////
 DepositId WalletUserTransactionsCache::insertDeposit(const Deposit& deposit, size_t depositIndexInTransaction, const Hash& transactionHash) {
   DepositInfo info;
   info.deposit = deposit;
@@ -577,7 +577,7 @@ DepositId WalletUserTransactionsCache::insertDeposit(const Deposit& deposit, siz
 
   return id;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 bool WalletUserTransactionsCache::getDepositInTransactionInfo(DepositId depositId, Hash& transactionHash, uint32_t& outputInTransaction) {
   if (depositId >= m_deposits.size()) {
     return false;
@@ -590,7 +590,7 @@ bool WalletUserTransactionsCache::getDepositInTransactionInfo(DepositId depositI
 
   return true;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 std::vector<DepositId> WalletUserTransactionsCache::createNewDeposits(TransactionId creatingTransactionId, const std::vector<TransactionOutputInformation>& depositOutputs,
     const Currency& currency) {
   std::vector<DepositId> deposits;
@@ -601,7 +601,7 @@ std::vector<DepositId> WalletUserTransactionsCache::createNewDeposits(Transactio
   }
   return deposits;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 DepositId WalletUserTransactionsCache::insertNewDeposit(const TransactionOutputInformation& depositOutput, TransactionId creatingTransactionId,
   const Currency& currency) {
   assert(depositOutput.type == TransactionTypes::OutputType::Multisignature);
@@ -618,7 +618,7 @@ DepositId WalletUserTransactionsCache::insertNewDeposit(const TransactionOutputI
 
   return insertDeposit(deposit, depositOutput.outputInTransaction, depositOutput.transactionHash);
 }
-
+/////////////////////////////////////////////////////////////////////////////
 std::vector<DepositId> WalletUserTransactionsCache::processSpentDeposits(TransactionId spendingTransactionId, const std::vector<TransactionOutputInformation>& spentDepositOutputs) {
   std::vector<DepositId> deposits;
   deposits.reserve(spentDepositOutputs.size());
@@ -636,7 +636,7 @@ std::vector<DepositId> WalletUserTransactionsCache::processSpentDeposits(Transac
   }
   return deposits;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 DepositId WalletUserTransactionsCache::getDepositId(const Hash& creatingTransactionHash, uint32_t outputInTransaction) {
   auto it = m_transactionOutputToDepositIndex.find(std::tie(creatingTransactionHash, outputInTransaction));
   if (it == m_transactionOutputToDepositIndex.end()) {
@@ -645,7 +645,7 @@ DepositId WalletUserTransactionsCache::getDepositId(const Hash& creatingTransact
 
   return it->second;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 std::vector<DepositId> WalletUserTransactionsCache::getDepositIdsBySpendingTransaction(TransactionId transactionId) {
   std::vector<DepositId> ids;
 
@@ -659,17 +659,20 @@ std::vector<DepositId> WalletUserTransactionsCache::getDepositIdsBySpendingTrans
 
   return ids;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void WalletUserTransactionsCache::addCreatedDeposit(DepositId id, uint64_t totalAmount) {
   m_unconfirmedTransactions.addCreatedDeposit(id, totalAmount);
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void WalletUserTransactionsCache::addDepositSpendingTransaction(const Hash& transactionHash, const UnconfirmedSpentDepositDetails& details) {
   m_unconfirmedTransactions.addDepositSpendingTransaction(transactionHash, details);
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void WalletUserTransactionsCache::eraseCreatedDeposit(DepositId id) {
   m_unconfirmedTransactions.eraseCreatedDeposit(id);
 }
-
+/////////////////////////////////////////////////////////////////////////////
 } //namespace CryptoNote
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////

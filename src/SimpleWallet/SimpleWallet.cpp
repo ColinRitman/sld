@@ -365,7 +365,7 @@ std::string tryToOpenWalletOrLoadKeysOrThrow(LoggerRef& logger, std::unique_ptr<
 			<< "Storing wallet...";
 
         try {
-			CryptoNote::WalletHelper::storeWallet(*wallet, walletFileName);
+			CryptoNote::WalletHelper::storeWallet_7111WL(*wallet, walletFileName);
 			
         } catch (std::exception& e) {
 			logger(ERROR, BRIGHT_RED) 
@@ -405,7 +405,7 @@ std::string tryToOpenWalletOrLoadKeysOrThrow(LoggerRef& logger, std::unique_ptr<
     logger(INFO) << "Storing wallet...";
 
     try {
-      CryptoNote::WalletHelper::storeWallet(*wallet, walletFileName);
+      CryptoNote::WalletHelper::storeWallet_7111WL(*wallet, walletFileName);
     } catch(std::exception& e) {
       logger(ERROR, BRIGHT_RED) << "Failed to store wallet: " << e.what();
       throw std::runtime_error("error saving wallet file '" + walletFileName + "'");
@@ -1301,7 +1301,7 @@ bool simple_wallet::new_wallet
     }
 
     try {
-      CryptoNote::WalletHelper::storeWallet(*m_wallet, m_wallet_file);
+      CryptoNote::WalletHelper::storeWallet_7111WL(*m_wallet, m_wallet_file);
     } catch (std::exception& e) {
       fail_msg_writer() << "failed to save new wallet: " << e.what();
       throw;
@@ -1369,7 +1369,7 @@ bool simple_wallet::view_wallet
     }
 
     try {
-      CryptoNote::WalletHelper::storeWallet(*m_wallet, m_wallet_file);
+      CryptoNote::WalletHelper::storeWallet_7111WL(*m_wallet, m_wallet_file);
     } catch (std::exception& e) {
       fail_msg_writer() << "failed to save new wallet: " << e.what();
       throw;
@@ -1389,7 +1389,7 @@ bool simple_wallet::view_wallet
 bool simple_wallet::close_wallet()
 {
   try {
-    CryptoNote::WalletHelper::storeWallet(*m_wallet, m_wallet_file);
+    CryptoNote::WalletHelper::storeWallet_7111WL(*m_wallet, m_wallet_file);
   } catch (const std::exception& e) {
     fail_msg_writer() << e.what();
     return false;
@@ -1404,7 +1404,7 @@ bool simple_wallet::close_wallet()
 bool simple_wallet::save(const std::vector<std::string> &args)
 {
   try {
-    CryptoNote::WalletHelper::storeWallet(*m_wallet, m_wallet_file);
+    CryptoNote::WalletHelper::storeWallet_7111WL(*m_wallet, m_wallet_file);
     success_msg_writer() << "Wallet data saved";
   } catch (const std::exception& e) {
     fail_msg_writer() << e.what();
@@ -1613,7 +1613,6 @@ bool simple_wallet::show_balance(const std::vector<std::string>& args/* = std::v
   return true;
 }
 ///////////////////////////////////////////////////////////////////////////////
-
 bool simple_wallet::show_incoming_transfers(const std::vector<std::string>& args) 
 {
 	uint64_t factor = 1;
@@ -1867,7 +1866,7 @@ bool simple_wallet::transfer(const std::vector<std::string> &args) {
     success_msg_writer(true) << "Money successfully sent, transaction " << Common::podToHex(txInfo.hash);
 
     try {
-      CryptoNote::WalletHelper::storeWallet(*m_wallet, m_wallet_file);
+      CryptoNote::WalletHelper::storeWallet_7111WL(*m_wallet, m_wallet_file);
     } catch (const std::exception& e) {
       fail_msg_writer() << e.what();
       return true;
@@ -1982,7 +1981,7 @@ bool simple_wallet::testing(const std::vector<std::string> &args) {
 			return false;
 		}
 			
-		CryptoNote::WalletHelper::storeWallet(*m_wallet, m_wallet_file);
+		CryptoNote::WalletHelper::storeWallet_7111WL(*m_wallet, m_wallet_file);
 		
 		success_msg_writer() 
 			<< "Wallet data saved";
@@ -2088,7 +2087,7 @@ int main(int argc, char* argv[]) {
 			CryptoNote::Currency tmp_currency = CryptoNote::CurrencyBuilder(logManager).currency();
 			CryptoNote::simple_wallet tmp_wallet(dispatcher, tmp_currency, logManager);
 			
-			std::cout << yellow << CRYPTONOTE_NAME << " wallet app " << teal << PROJECT_VERSION_LONG << grey << std::endl << std::endl;
+			std::cout << yellow << CRYPTONOTE_NAME << " classic wallet app " << teal << PROJECT_VERSION_LONG << grey << std::endl << std::endl;
 			std::cout << "Usage: "<< CRYPTONOTE_TICKER <<" [w --wallet-file=<file>|--generate-new-wallet=<file>] [--daemon-address=<host>:<port>] [<COMMAND>]";
 			std::cout << desc_all << '\n' << tmp_wallet.get_commands_str();
 			return false;
@@ -2119,7 +2118,7 @@ int main(int argc, char* argv[]) {
 
   logger(INFO, CYAN) 
 	<< CRYPTONOTE_NAME 
-	<< " wallet " 
+	<< " classic wallet " 
 	<< PROJECT_VERSION_LONG 
 	<< "..."
 	<< std::endl 
@@ -2207,7 +2206,7 @@ int main(int argc, char* argv[]) {
     
     try {
       logger(INFO) << "Storing wallet...";
-      CryptoNote::WalletHelper::storeWallet(*wallet, walletFileName);
+      CryptoNote::WalletHelper::storeWallet_7111WL(*wallet, walletFileName);
       logger(INFO, BRIGHT_GREEN) << "Stored ok";
     } catch (const std::exception& e) {
       logger(ERROR, BRIGHT_RED) << "Failed to store wallet: " << e.what();
@@ -2256,42 +2255,7 @@ bool simple_wallet::change_password(const std::vector<std::string>& args) {
 	pc.clear();
 //	std::getline(std::cin, newpass);
 	std::cin >> newpass;
-/*	
-//----	
-    const char BACKSPACE = 127;
-	std::string password;
-	
-    password.reserve(1024);
-    while (password.size() < 1024)
-    {
-      int ch = getch();
-      if (EOF == ch)
-      {
-        return false;
-      }
-      else if (ch == '\n' || ch == '\r')
-      {
-        std::cout << std::endl;
-        break;
-      }
-      else if (ch == BACKSPACE)
-      {
-        if (!password.empty())
-        {
-          password.back() = '\0';
-          password.resize(password.size() - 1);
-          std::cout << "\b \b";
-        }
-      }
-      else
-      {
-        password.push_back(ch);
-        std::cout << '*';
-      }
-    }
-*/
-//------------	
-//	newpass = pc.read_password();
+
 	m_consoleHandler.unpause();
 	
 	pc.clear();
@@ -2330,7 +2294,7 @@ bool simple_wallet::change_password(const std::vector<std::string>& args) {
 		//m_wallet->changePassword(m_pass, password);
 			
 		try {
-			CryptoNote::WalletHelper::storeWallet(*m_wallet, m_wallet_file);
+			CryptoNote::WalletHelper::storeWallet_7111WL(*m_wallet, m_wallet_file);
 			success_msg_writer() 
 				<< "Wallet data saved";
 		} catch (const std::exception& e) {

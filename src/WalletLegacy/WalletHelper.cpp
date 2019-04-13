@@ -8,40 +8,43 @@
 #include <boost/filesystem.hpp>
 /////////////////////////////////////////////////////////////////////////////
 using namespace CryptoNote;
-
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 namespace {
+	///////////////////////////////////////////////////////////////////////////////
+	void openOutputFileStream(const std::string& filename, std::ofstream& file) {
+	  file.open(filename, std::ios_base::binary | std::ios_base::out | std::ios::trunc);
+	  if (file.fail()) {
+		throw std::runtime_error("error opening file: " + filename);
+	  }
+	}
+	///////////////////////////////////////////////////////////////////////////////
+	std::error_code walletSaveWrapper_711WL(CryptoNote::IWalletLegacy& wallet, std::ofstream& file, bool saveDetailes, bool saveCache) {
+		
+	CryptoNote::WalletHelper::SaveWalletResultObserver o;
 
-void openOutputFileStream(const std::string& filename, std::ofstream& file) {
-  file.open(filename, std::ios_base::binary | std::ios_base::out | std::ios::trunc);
-  if (file.fail()) {
-    throw std::runtime_error("error opening file: " + filename);
-  }
+	std::error_code e;
+	try {
+		std::future<std::error_code> f = o.saveResult.get_future();
+		wallet.addObserver(&o);
+
+		wallet.save_71WL(file, saveDetailes, saveCache);//- doesn't work
+		//wallet.save_71WL(file, false, false); - works
+		//wallet.save_71WL(file, true, false);- works
+		//wallet.save_71WL(file, false, true);- doesn't work
+
+		e = f.get();
+	} catch (std::exception&) {
+		wallet.removeObserver(&o);
+		return make_error_code(std::errc::invalid_argument);
+	}
+	wallet.removeObserver(&o);
+	return e;
+	}
+	///////////////////////////////////////////////////////////////////////////////
 }
-
-std::error_code walletSaveWrapper(CryptoNote::IWalletLegacy& wallet, std::ofstream& file, bool saveDetailes, bool saveCache) {
-//std::cout << "|+ walletSaveWrapper" << std::endl;
-	
-  CryptoNote::WalletHelper::SaveWalletResultObserver o;
-
-  std::error_code e;
-  try {
-    std::future<std::error_code> f = o.saveResult.get_future();
-    wallet.addObserver(&o);
-    wallet.save_711WL(file, saveDetailes, saveCache);
-    e = f.get();
-  } catch (std::exception&) {
-    wallet.removeObserver(&o);
-    return make_error_code(std::errc::invalid_argument);
-  }
-
-  wallet.removeObserver(&o);
-  return e;
-  
-//std::cout << "|+ walletSaveWrapper" << std::endl;
-}
-
-}
-
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 void WalletHelper::prepareFileNames(const std::string& file_path, std::string& keys_file, std::string& wallet_file) {
   if (Common::GetExtension(file_path) == ".wallet") {
     keys_file = Common::RemoveExtension(file_path) + ".keys";
@@ -54,13 +57,13 @@ void WalletHelper::prepareFileNames(const std::string& file_path, std::string& k
     wallet_file = file_path + ".wallet";
   }
 }
-
+///////////////////////////////////////////////////////////////////////////////
 void WalletHelper::SendCompleteResultObserver::sendTransactionCompleted(CryptoNote::TransactionId transactionId, std::error_code result) {
-  std::lock_guard<std::mutex> lock(m_mutex);
-  m_finishedTransactions[transactionId] = result;
-  m_condition.notify_one();
+	std::lock_guard<std::mutex> lock(m_mutex);
+	m_finishedTransactions[transactionId] = result;
+	m_condition.notify_one();
 }
-
+///////////////////////////////////////////////////////////////////////////////
 std::error_code WalletHelper::SendCompleteResultObserver::wait(CryptoNote::TransactionId transactionId) {
   std::unique_lock<std::mutex> lock(m_mutex);
 
@@ -76,54 +79,57 @@ std::error_code WalletHelper::SendCompleteResultObserver::wait(CryptoNote::Trans
 
   return m_result;
 }
-
+///////////////////////////////////////////////////////////////////////////////
 WalletHelper::IWalletRemoveObserverGuard::IWalletRemoveObserverGuard(CryptoNote::IWalletLegacy& wallet, CryptoNote::IWalletLegacyObserver& observer) :
   m_wallet(wallet),
   m_observer(observer),
   m_removed(false) {
   m_wallet.addObserver(&m_observer);
 }
-
+///////////////////////////////////////////////////////////////////////////////
 WalletHelper::IWalletRemoveObserverGuard::~IWalletRemoveObserverGuard() {
   if (!m_removed) {
     m_wallet.removeObserver(&m_observer);
   }
 }
-
+///////////////////////////////////////////////////////////////////////////////
 void WalletHelper::IWalletRemoveObserverGuard::removeObserver() {
   m_wallet.removeObserver(&m_observer);
   m_removed = true;
 }
+///////////////////////////////////////////////////////////////////////////////
+void WalletHelper::storeWallet_7111WL(CryptoNote::IWalletLegacy& wallet, const std::string& walletFilename) {
 
-void WalletHelper::storeWallet(CryptoNote::IWalletLegacy& wallet, const std::string& walletFilename) {
-  boost::filesystem::path tempFile = boost::filesystem::unique_path(walletFilename + ".tmp.%%%%-%%%%");
+	boost::filesystem::path tempFile = boost::filesystem::unique_path(walletFilename + ".tmp.%%%%-%%%%");
 
-  if (boost::filesystem::exists(walletFilename)) {
-    boost::filesystem::rename(walletFilename, tempFile);
-  }
+	if (boost::filesystem::exists(walletFilename)) {
+		boost::filesystem::rename(walletFilename, tempFile);
+	}
 
   std::ofstream file;
-  try {
-    openOutputFileStream(walletFilename, file);
-  } catch (std::exception&) {
-    if (boost::filesystem::exists(tempFile)) {
-      boost::filesystem::rename(tempFile, walletFilename);
-    }
-    throw;
-  }
+  
+	try {
+		openOutputFileStream(walletFilename, file);
+	} catch (std::exception&) {
+		if (boost::filesystem::exists(tempFile)) {
+			boost::filesystem::rename(tempFile, walletFilename);
+		}		
+		throw;
+	}
+	// we need to store details and cache
+	std::error_code saveError = walletSaveWrapper_711WL(wallet, file, true, true);
+  
+	if (saveError) {
+		file.close();
+		boost::filesystem::remove(walletFilename);
+		boost::filesystem::rename(tempFile, walletFilename);
+		throw std::system_error(saveError);
+	}
 
-  std::error_code saveError = walletSaveWrapper(wallet, file, true, true);
-  if (saveError) {
-    file.close();
-    boost::filesystem::remove(walletFilename);
-    boost::filesystem::rename(tempFile, walletFilename);
-    throw std::system_error(saveError);
-  }
+	file.close();
 
-  file.close();
-
-  boost::system::error_code ignore;
-  boost::filesystem::remove(tempFile, ignore);
+	boost::system::error_code ignore;
+	boost::filesystem::remove(tempFile, ignore);
 }
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////

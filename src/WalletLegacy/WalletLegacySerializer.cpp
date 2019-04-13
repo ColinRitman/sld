@@ -46,7 +46,7 @@ WalletLegacySerializer::WalletLegacySerializer(CryptoNote::AccountBase& account,
 }
 ////////////////////////////////////////////////////////////////////////////////
 void WalletLegacySerializer::serialize(std::ostream& stream, const std::string& password, bool saveDetailed, const std::string& cache) {
-//std::cout << "|+ WalletLegacySerializer::serialize" << std::endl;
+std::cout << "|+ WalletLegacySerializer::serialize" << std::endl;
 	
   std::stringstream plainArchive;
   StdOutputStream plainStream(plainArchive);
@@ -77,11 +77,11 @@ void WalletLegacySerializer::serialize(std::ostream& stream, const std::string& 
   s.endObject();
 
   stream.flush();
-//std::cout << "|- WalletLegacySerializer::serialize" << std::endl;
+std::cout << "|- WalletLegacySerializer::serialize" << std::endl;
 }
 ////////////////////////////////////////////////////////////////////////////////
 void WalletLegacySerializer::saveKeys(CryptoNote::ISerializer& serializer) {
-//std::cout << "|+ WalletLegacySerializer::saveKeys" << std::endl;
+std::cout << "|+ WalletLegacySerializer::saveKeys" << std::endl;
 
   CryptoNote::KeysStorage keys;
   CryptoNote::AccountKeys acc = account.getAccountKeys();
@@ -93,11 +93,11 @@ void WalletLegacySerializer::saveKeys(CryptoNote::ISerializer& serializer) {
   keys.viewSecretKey = acc.viewSecretKey;
 
   keys.serialize(serializer, "keys");
-//std::cout << "|- WalletLegacySerializer::saveKeys" << std::endl;
+std::cout << "|- WalletLegacySerializer::saveKeys" << std::endl;
 }
 ////////////////////////////////////////////////////////////////////////////////
 Crypto::chacha_iv WalletLegacySerializer::encrypt(const std::string& plain, const std::string& password, std::string& cipher) {
-//std::cout << "|+ WalletLegacySerializer::encrypt" << std::endl;
+std::cout << "|+ WalletLegacySerializer::encrypt" << std::endl;
 Crypto::chacha_key key;
   Crypto::cn_context context;
   Crypto::generate_chacha8_key(context, password, key);
@@ -107,12 +107,12 @@ Crypto::chacha_key key;
   Crypto::chacha_iv iv = Crypto::rand<Crypto::chacha_iv>();
   Crypto::chacha8(plain.data(), plain.size(), key, iv, &cipher[0]);
 
-//std::cout << "|- WalletLegacySerializer::encrypt" << std::endl;
+std::cout << "|- WalletLegacySerializer::encrypt" << std::endl;
   return iv;
 }
 ////////////////////////////////////////////////////////////////////////////////
 void WalletLegacySerializer::deserialize(std::istream& stream, const std::string& password, std::string& cache) {
-//std::cout << "|+ WalletLegacySerializer::deserialize" << std::endl;
+std::cout << "|+ WalletLegacySerializer::deserialize" << std::endl;
   StdInputStream stdStream(stream);
   CryptoNote::BinaryInputStreamSerializer serializerEncrypted(stdStream);
 
@@ -159,11 +159,15 @@ void WalletLegacySerializer::deserialize(std::istream& stream, const std::string
   }
 
   serializer.binary(cache, "cache");
-//std::cout << "|- WalletLegacySerializer::deserialize" << std::endl;
+std::cout << "|- WalletLegacySerializer::deserialize" << std::endl;
 }
 ////////////////////////////////////////////////////////////////////////////////
 void WalletLegacySerializer::decrypt(const std::string& cipher, std::string& plain, Crypto::chacha_iv iv, const std::string& password) {
-//std::cout << "|+ WalletLegacySerializer::decrypt" << std::endl;
+std::cout << "|+ WalletLegacySerializer::decrypt" << std::endl;
+//std::cout << "cipher = " << cipher << std::endl;
+//std::cout << "plain = " << plain << std::endl;
+std::cout << "password = " << password << std::endl;
+
   Crypto::chacha_key key;
   Crypto::cn_context context;
   Crypto::generate_chacha8_key(context, password, key);
@@ -171,11 +175,13 @@ void WalletLegacySerializer::decrypt(const std::string& cipher, std::string& pla
   plain.resize(cipher.size());
 
   Crypto::chacha8(cipher.data(), cipher.size(), key, iv, &plain[0]);
-//std::cout << "|- WalletLegacySerializer::decrypt" << std::endl;
+
+//std::cout << "plain = 2" << plain << std::endl;
+std::cout << "|- WalletLegacySerializer::decrypt" << std::endl;
 }
 ////////////////////////////////////////////////////////////////////////////////
 void WalletLegacySerializer::loadKeys(CryptoNote::ISerializer& serializer) {
-//std::cout << "|+ WalletLegacySerializer::decrypt" << std::endl;
+std::cout << "|+ WalletLegacySerializer::decrypt" << std::endl;
 CryptoNote::KeysStorage keys;
 
   try {
@@ -191,8 +197,9 @@ CryptoNote::KeysStorage keys;
   acc.viewSecretKey = keys.viewSecretKey;
 
   account.setAccountKeys(acc);
-  account.set_createtime(keys.creationTimestamp);//$$$$
-//std::cout << "|- WalletLegacySerializer::decrypt" << std::endl;
+//ttt
+  account.set_createtime(keys.creationTimestamp);//ttt
+std::cout << "|- WalletLegacySerializer::decrypt" << std::endl;
 }
 ////////////////////////////////////////////////////////////////////////////////
 }

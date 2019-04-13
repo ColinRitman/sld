@@ -94,6 +94,7 @@ namespace CryptoNote
 
 	const uint64_t TIMESTAMP_HACK_1_FUTURE_TIME_LIMIT_Z				= 60 * 7;//420 seconds/21 block = SLD
 	const uint64_t ACCOUNT_CREATE_TIME_ACCURACY = 60 * 60 * 24; 
+	
 	const uint64_t FIRST_BLOCK_TIMESTAMP_Z							= 1509321600;
 
 	const char     CRYPTONOTE_TICKER[]                           = CRYPTONOTE_ASSET_TICKER;

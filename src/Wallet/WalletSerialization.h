@@ -9,7 +9,7 @@
 #include "Common/IOutputStream.h"
 #include "Transfers/TransfersSynchronizer.h"
 #include "Serialization/BinaryInputStreamSerializer.h"
-//#include <iostream>
+#include <iostream>
 #include "crypto/chacha.h"
 /////////////////////////////////////////////////////////////////////////////
 namespace CryptoNote {

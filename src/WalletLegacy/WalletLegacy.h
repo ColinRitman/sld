@@ -70,7 +70,7 @@ public:
   virtual void shutdown() override;
   virtual void reset() override;
 
-  virtual void save_711WL(std::ostream& destination, bool saveDetailed = true, bool saveCache = true) override;
+  virtual void save_71WL(std::ostream& destination, bool saveDetailed = true, bool saveCache = true) override;
 
   virtual std::error_code changePassword(const std::string& oldPassword, const std::string& newPassword) override;
 
@@ -127,7 +127,7 @@ private:
   void initSync();
   void throwIfNotInitialised();
 
-  void doSaveWL(std::ostream& destination, bool saveDetailed, bool saveCache);
+  void doSave_7WL(std::ostream& destination, bool saveDetailed, bool saveCache);
   void doLoad(std::istream& source);
 
   void synchronizationCallback(WalletRequest::Callback callback, std::error_code ec);

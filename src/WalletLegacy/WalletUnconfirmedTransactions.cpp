@@ -1,28 +1,26 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
+/////////////////////////////////////////////////////////////////////////////
 #include "WalletUnconfirmedTransactions.h"
 #include "WalletLegacy/WalletLegacySerialization.h"
 
 #include "CryptoNoteCore/CryptoNoteTools.h"
 #include "Serialization/ISerializer.h"
 #include "Serialization/SerializationOverloads.h"
-
+/////////////////////////////////////////////////////////////////////////////
 using namespace Crypto;
 
 namespace CryptoNote {
-
+/////////////////////////////////////////////////////////////////////////////
 inline TransactionOutputId getOutputId(const TransactionOutputInformation& out) {
   return std::make_pair(out.transactionPublicKey, out.outputInTransaction);
 }
-
+/////////////////////////////////////////////////////////////////////////////
 WalletUnconfirmedTransactions::WalletUnconfirmedTransactions(uint64_t uncofirmedTransactionsLiveTime):
   m_uncofirmedTransactionsLiveTime(uncofirmedTransactionsLiveTime) {
 
 }
-
+/////////////////////////////////////////////////////////////////////////////
 bool WalletUnconfirmedTransactions::serialize(ISerializer& s) {
   s(m_unconfirmedTxs, "transactions");
   s(m_createdDeposits, "unconfirmedCreatedDeposits");
@@ -34,7 +32,7 @@ bool WalletUnconfirmedTransactions::serialize(ISerializer& s) {
 
   return true;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 bool WalletUnconfirmedTransactions::deserializeV1(ISerializer& s) {
   s(m_unconfirmedTxs, "transactions");
 
@@ -44,11 +42,11 @@ bool WalletUnconfirmedTransactions::deserializeV1(ISerializer& s) {
 
   return true;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 bool WalletUnconfirmedTransactions::findTransactionId(const Hash& hash, TransactionId& id) {
   return findUnconfirmedTransactionId(hash, id) || findUnconfirmedDepositSpendingTransactionId(hash, id);
 }
-
+/////////////////////////////////////////////////////////////////////////////
 bool WalletUnconfirmedTransactions::findUnconfirmedTransactionId(const Crypto::Hash& hash, TransactionId& id) {
   auto it = m_unconfirmedTxs.find(hash);
   if (it == m_unconfirmedTxs.end()) {
@@ -58,7 +56,7 @@ bool WalletUnconfirmedTransactions::findUnconfirmedTransactionId(const Crypto::H
   id = it->second.transactionId;
   return true;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 bool WalletUnconfirmedTransactions::findUnconfirmedDepositSpendingTransactionId(const Crypto::Hash& hash, TransactionId& id) {
   auto it = m_spentDeposits.find(hash);
   if (it == m_spentDeposits.end()) {
@@ -68,11 +66,11 @@ bool WalletUnconfirmedTransactions::findUnconfirmedDepositSpendingTransactionId(
   id = it->second.transactionId;
   return true;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void WalletUnconfirmedTransactions::erase(const Hash& hash) {
   eraseUnconfirmedTransaction(hash) || eraseDepositSpendingTransaction(hash);
 }
-
+/////////////////////////////////////////////////////////////////////////////
 bool WalletUnconfirmedTransactions::eraseUnconfirmedTransaction(const Crypto::Hash& hash) {
   auto it = m_unconfirmedTxs.find(hash);
   if (it == m_unconfirmedTxs.end()) {
@@ -84,7 +82,7 @@ bool WalletUnconfirmedTransactions::eraseUnconfirmedTransaction(const Crypto::Ha
 
   return true;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 bool WalletUnconfirmedTransactions::eraseDepositSpendingTransaction(const Crypto::Hash& hash) {
   auto it = m_spentDeposits.find(hash);
   if (it == m_spentDeposits.end()) {
@@ -95,7 +93,7 @@ bool WalletUnconfirmedTransactions::eraseDepositSpendingTransaction(const Crypto
 
   return true;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void WalletUnconfirmedTransactions::add(const Transaction& tx, TransactionId transactionId, 
   uint64_t amount, const std::vector<TransactionOutputInformation>& usedOutputs) {
 
@@ -118,27 +116,27 @@ void WalletUnconfirmedTransactions::add(const Transaction& tx, TransactionId tra
 
   utd.outsAmount = outsAmount;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void WalletUnconfirmedTransactions::updateTransactionId(const Hash& hash, TransactionId id) {
   auto it = m_unconfirmedTxs.find(hash);
   if (it != m_unconfirmedTxs.end()) {
     it->second.transactionId = id;
   }
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void WalletUnconfirmedTransactions::addCreatedDeposit(DepositId id, uint64_t totalAmount) {
   m_createdDeposits[id] = totalAmount;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void WalletUnconfirmedTransactions::addDepositSpendingTransaction(const Hash& transactionHash, const UnconfirmedSpentDepositDetails& details) {
   assert(m_spentDeposits.count(transactionHash) == 0);
   m_spentDeposits.emplace(transactionHash, details);
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void WalletUnconfirmedTransactions::eraseCreatedDeposit(DepositId id) {
   m_createdDeposits.erase(id);
 }
-
+/////////////////////////////////////////////////////////////////////////////
 uint64_t WalletUnconfirmedTransactions::countCreatedDepositsSum() const {
   uint64_t sum = 0;
 
@@ -148,7 +146,7 @@ uint64_t WalletUnconfirmedTransactions::countCreatedDepositsSum() const {
 
   return sum;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 uint64_t WalletUnconfirmedTransactions::countSpentDepositsProfit() const {
   uint64_t sum = 0;
 
@@ -158,7 +156,7 @@ uint64_t WalletUnconfirmedTransactions::countSpentDepositsProfit() const {
 
   return sum;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 uint64_t WalletUnconfirmedTransactions::countSpentDepositsTotalAmount() const {
   uint64_t sum = 0;
 
@@ -168,7 +166,7 @@ uint64_t WalletUnconfirmedTransactions::countSpentDepositsTotalAmount() const {
 
   return sum;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 uint64_t WalletUnconfirmedTransactions::countUnconfirmedOutsAmount() const {
   uint64_t amount = 0;
 
@@ -177,7 +175,7 @@ uint64_t WalletUnconfirmedTransactions::countUnconfirmedOutsAmount() const {
 
   return amount;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 uint64_t WalletUnconfirmedTransactions::countUnconfirmedTransactionsAmount() const {
   uint64_t amount = 0;
 
@@ -186,11 +184,11 @@ uint64_t WalletUnconfirmedTransactions::countUnconfirmedTransactionsAmount() con
 
   return amount;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 bool WalletUnconfirmedTransactions::isUsed(const TransactionOutputInformation& out) const {
   return m_usedOutputs.find(getOutputId(out)) != m_usedOutputs.end();
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void WalletUnconfirmedTransactions::collectUsedOutputs() {
   UsedOutputsContainer used;
   for (const auto& kv : m_unconfirmedTxs) {
@@ -198,18 +196,18 @@ void WalletUnconfirmedTransactions::collectUsedOutputs() {
   }
   m_usedOutputs = std::move(used);
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void WalletUnconfirmedTransactions::reset() {
   m_unconfirmedTxs.clear();
   m_usedOutputs.clear();
 }
-
+/////////////////////////////////////////////////////////////////////////////
 void WalletUnconfirmedTransactions::deleteUsedOutputs(const std::vector<TransactionOutputId>& usedOutputs) {
   for (const auto& output: usedOutputs) {
     m_usedOutputs.erase(output);
   }
 }
-
+/////////////////////////////////////////////////////////////////////////////
 std::vector<TransactionId> WalletUnconfirmedTransactions::deleteOutdatedTransactions() {
   std::vector<TransactionId> deletedTransactions;
 
@@ -225,8 +223,11 @@ std::vector<TransactionId> WalletUnconfirmedTransactions::deleteOutdatedTransact
       ++it;
     }
   }
-
+/////////////////////////////////////////////////////////////////////////////
   return deletedTransactions;
 }
-
+/////////////////////////////////////////////////////////////////////////////
 } /* namespace CryptoNote */
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////

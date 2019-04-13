@@ -213,7 +213,9 @@ void WalletLegacy::initWithKeys(const AccountKeys& accountKeys, const std::strin
     }
 
     m_account.setAccountKeys(accountKeys);
+	
 //    m_account.set_createtime(ACCOUNT_CREATE_TIME_ACCURACY);
+//ttt
     m_account.set_createtime(FIRST_BLOCK_TIMESTAMP_Z);
     m_password = password;
 
@@ -244,6 +246,7 @@ void WalletLegacy::initSync() {
   sub.transactionSpendableAge = 6;
   sub.syncStart.height = 0;
 //$$ - sync time start here ///////////////  
+//ttt
   sub.syncStart.timestamp = m_account.get_createtime() - ACCOUNT_CREATE_TIME_ACCURACY;
   
   auto& subObject = m_transfersSync.addSubscription(sub);
@@ -330,14 +333,14 @@ void WalletLegacy::shutdown() {
 }
 ///////////////////////////////////////////////////////////////////////////////
 void WalletLegacy::reset() {
-//std::cout << "|+ WalletLegacy::reset" << std::endl;
+std::cout << "|+ WalletLegacy::reset" << std::endl;
   try {
     std::error_code saveError;
     std::stringstream ss;
     {
       SaveWaiter saveWaiter;
       WalletHelper::IWalletRemoveObserverGuard saveGuarantee(*this, saveWaiter);
-      save_711WL(ss, false, false);
+      save_71WL(ss, false, false);
       saveError = saveWaiter.waitSave();
     }
 
@@ -351,15 +354,15 @@ void WalletLegacy::reset() {
   } catch (std::exception& e) {
     std::cout << "exception in reset: " << e.what() << std::endl;
   }
-//std::cout << "|- WalletLegacy::reset" << std::endl;
+std::cout << "|- WalletLegacy::reset" << std::endl;
 }
 ///////////////////////////////////////////////////////////////////////////////
 std::vector<Payments> WalletLegacy::getTransactionsByPaymentIds(const std::vector<PaymentId>& paymentIds) const {
   return m_transactionsCache.getTransactionsByPaymentIds(paymentIds);
 }
 ///////////////////////////////////////////////////////////////////////////////
-void WalletLegacy::save_711WL(std::ostream& destination, bool saveDetailed, bool saveCache) {
-//std::cout << "|+ WalletLegacy::save_711WL" << std::endl;
+void WalletLegacy::save_71WL(std::ostream& destination, bool saveDetailed, bool saveCache) {
+std::cout << "|+ WalletLegacy::save_71WL" << std::endl;
 
   if(m_isStopping) {
     m_observerManager.notify(&IWalletLegacyObserver::saveCompleted, make_error_code(CryptoNote::error::OPERATION_CANCELLED));
@@ -368,20 +371,18 @@ void WalletLegacy::save_711WL(std::ostream& destination, bool saveDetailed, bool
 
   {
     std::unique_lock<std::mutex> lock(m_cacheMutex);
-
     throwIf(m_state != INITIALIZED, CryptoNote::error::WRONG_STATE);
-
     m_state = SAVING;
   }
 
   m_asyncContextCounter.addAsyncContext();
-  std::thread saver(&WalletLegacy::doSaveWL, this, std::ref(destination), saveDetailed, saveCache);
+  std::thread saver(&WalletLegacy::doSave_7WL, this, std::ref(destination), saveDetailed, saveCache);
   saver.detach();
-//std::cout << "|- WalletLegacy::save_711WL" << std::endl;
+std::cout << "|- WalletLegacy::save_71WL" << std::endl;
 }
 ///////////////////////////////////////////////////////////////////////////////
-void WalletLegacy::doSaveWL(std::ostream& destination, bool saveDetailed, bool saveCache) {
-//std::cout << "|+ WalletLegacy::doSaveWL" << std::endl;
+void WalletLegacy::doSave_7WL(std::ostream& destination, bool saveDetailed, bool saveCache) {
+std::cout << "|+ WalletLegacy::doSave_7WL" << std::endl;
 
   ContextCounterHolder counterHolder(m_asyncContextCounter);
 
@@ -416,7 +417,7 @@ void WalletLegacy::doSaveWL(std::ostream& destination, bool saveDetailed, bool s
 
   m_observerManager.notify(&IWalletLegacyObserver::saveCompleted, std::error_code());
 
-//std::cout << "|- WalletLegacy::doSaveWL" << std::endl;
+std::cout << "|- WalletLegacy::doSave_7WL" << std::endl;
 }
 ///////////////////////////////////////////////////////////////////////////////
 std::error_code WalletLegacy::changePassword(const std::string& oldPassword, const std::string& newPassword) {

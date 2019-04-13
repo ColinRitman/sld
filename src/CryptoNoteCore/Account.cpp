@@ -30,7 +30,7 @@ void AccountBase::generate(bool _is_hdw) {
 
 	generateViewFromSpend(m_keys.spendSecretKey, m_keys.viewSecretKey, m_keys.address.viewPublicKey);  
 
-	m_creation_timestamp = FIRST_BLOCK_TIMESTAMP_Z;
+	m__creation_timestamp = FIRST_BLOCK_TIMESTAMP_Z;
 //$$
 }
 */
@@ -97,15 +97,18 @@ Crypto::SecretKey AccountBase::generate_or_recover(const Crypto::SecretKey& reco
 //    m_account.set_createtime(ACCOUNT_CREATE_TIME_ACCURACY);
 //    m_account.set_createtime(FIRST_BLOCK_TIMESTAMP_Z);
 //
-//	m_creation_timestamp = time(NULL);
-//	m_creation_timestamp = FIRST_BLOCK_TIMESTAMP_Z;
-//
+//	m__creation_timestamp = time(NULL);
+//	m__creation_timestamp = FIRST_BLOCK_TIMESTAMP_Z;
 
+
+//ttt
 	if (is_recovery) {
 		m_creation_timestamp = FIRST_BLOCK_TIMESTAMP_Z;
+		std::cout << "recovery mode, timestamp = " << m_creation_timestamp;
 	} else {
-		struct tm timestamp;
-		m_creation_timestamp = mktime(&timestamp) - ACCOUNT_CREATE_TIME_ACCURACY;
+		uint64_t now = std::time(0);
+		m_creation_timestamp = now - ACCOUNT_CREATE_TIME_ACCURACY;
+		std::cout << "timestamp = " << m_creation_timestamp << std::endl;
 	}
 	
 	return like_seed;

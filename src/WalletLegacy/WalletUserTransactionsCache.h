@@ -1,8 +1,6 @@
 // Copyright (c) 2011-2016 The Cryptonote developers
 // Copyright (c) 2014-2017 XDN-project developers
-// Distributed under the MIT/X11 software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
+/////////////////////////////////////////////////////////////////////////////
 #pragma once
 
 #include <deque>
@@ -17,7 +15,7 @@
 #include "WalletLegacy/WalletDepositInfo.h"
 #include "WalletLegacy/WalletLegacyEvent.h"
 #include "WalletLegacy/WalletUnconfirmedTransactions.h"
-
+/////////////////////////////////////////////////////////////////////////////
 namespace CryptoNote {
 class ISerializer;
 }
@@ -140,5 +138,8 @@ private:
   std::unordered_map<std::tuple<Crypto::Hash, uint32_t>, DepositId> m_transactionOutputToDepositIndex;
   UserPaymentIndex m_paymentsIndex;
 };
-
+/////////////////////////////////////////////////////////////////////////////
 } //namespace CryptoNote
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////

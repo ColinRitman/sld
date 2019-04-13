@@ -362,10 +362,10 @@ void createWalletFile(std::fstream& walletFile, const std::string& filename) {
 }
 ///////////////////////////////////////////////////////////////////////////////
 void saveWallet(CryptoNote::IWallet& wallet, std::fstream& walletFile, bool saveDetailed = true, bool saveCache = true) {
-//std::cout << "|+ saveWallet" << std::endl;
+std::cout << "|+ saveWallet" << std::endl;
 	  wallet.save_711WG(walletFile, saveDetailed, saveCache);
 	  walletFile.flush();
-//std::cout << "|- saveWallet" << std::endl;
+std::cout << "|- saveWallet" << std::endl;
 }
 ///////////////////////////////////////////////////////////////////////////////
 void secureSaveWallet(CryptoNote::IWallet& wallet, const std::string& path, bool saveDetailed, bool saveCache) {
