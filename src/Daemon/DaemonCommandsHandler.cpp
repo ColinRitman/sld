@@ -270,8 +270,8 @@ bool DaemonCommandsHandler::print_stat(const std::vector<std::string>& args) {
   }
 
   uint64_t totalCoinsInNetwork = m_core.coinsEmittedAtHeight(height);
-  uint64_t totalCoinsOnDeposits = m_core.depositAmountAtHeight(height);
-  uint64_t amountOfActiveCoins = totalCoinsInNetwork - totalCoinsOnDeposits;
+//  uint64_t totalCoinsOnDeposits = m_core.depositAmountAtHeight(height);
+  uint64_t amountOfActiveCoins = totalCoinsInNetwork;// - totalCoinsOnDeposits;
   const auto& currency = m_core.currency();
 //$$$$
   uint64_t hr = m_core.difficultyAtHeight(height) / CryptoNote::parameters::DIFFICULTY_TARGET;

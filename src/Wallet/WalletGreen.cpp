@@ -329,7 +329,7 @@ void WalletGreen::initWithKeys(const Crypto::PublicKey& viewPublicKey, const Cry
 }
 /////////////////////////////////////////////////////////////////////////////
 void WalletGreen::save_711WG(std::ostream& destination, bool saveDetails, bool saveCache) {
-std::cout << "|+ WalletGreen::save_711WG" << std::endl;
+//std::cout << "|+ WalletGreen::save_711WG" << std::endl;
   throwIfNotInitialized();
   throwIfStopped();
 
@@ -338,11 +338,11 @@ std::cout << "|+ WalletGreen::save_711WG" << std::endl;
   unsafeSave_71WG(destination, saveDetails, saveCache);// unsafeSave_71WG(ss, true, false) while creating
 
   startBlockchainSynchronizer();
-std::cout << "|- WalletGreen::save_711WG" << std::endl;
+//std::cout << "|- WalletGreen::save_711WG" << std::endl;
 }
 /////////////////////////////////////////////////////////////////////////////
 void WalletGreen::unsafeSave_71WG(std::ostream& destination, bool saveDetails, bool saveCache) {
-std::cout << "|+ WalletGreen::unsafeSave_71WG" << std::endl;
+//std::cout << "|+ WalletGreen::unsafeSave_71WG" << std::endl;
   WalletTransactions transactions;
   WalletTransfers transfers;
 
@@ -373,7 +373,7 @@ std::cout << "|+ WalletGreen::unsafeSave_71WG" << std::endl;
 
   StdOutputStream output(destination);
   s.save_7WS(m_password, output, saveDetails, saveCache); // save wallet command here
-std::cout << "|- WalletGreen::unsafeSave_71WG" << std::endl;
+//std::cout << "|- WalletGreen::unsafeSave_71WG" << std::endl;
 }
 
 void WalletGreen::load(std::istream& source, const std::string& password) {

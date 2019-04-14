@@ -74,6 +74,7 @@ const command_line::arg_descriptor<bool> arg_testnet = { "testnet", "Used to dep
 const command_line::arg_descriptor< std::vector<std::string> > arg_command = { "command", "" };
 //$$$$
 const command_line::arg_descriptor<std::string> arg_address = { "address", "Address to use while read-only wallet restore", "" };
+const command_line::arg_descriptor<bool> arg_nocache = {"nocache", "Discard wallet's cache", false};
 const command_line::arg_descriptor<bool> arg_classic = {"classic", "Creates CLASSIC (old-style) wallet", false};
 const command_line::arg_descriptor<bool> arg_silent_mode = {"silent", "Silent mode on", false};
 const command_line::arg_descriptor<bool> arg_restore_seed = {"restore-seed", "Recover wallet using mnemoseed", false};
@@ -835,8 +836,12 @@ bool simple_wallet::init(const boost::program_options::variables_map& vm)
 
 	m_is_copy = 0;
 
-	if (m_silent_mode) {std::cout << green << "Silent mode is on." << grey << std::endl; } 
+//$$
+	if (m_silent_mode) {std::cout << purple << "Silent mode is on." << grey << std::endl; } 
 	//else {std::cout << maroon << "Silent mode is off." << grey << std::endl;}
+
+	if (m_nocache)  std::cout << purple << "No-Cache mode activated" << std::endl;
+//$$
 	
 	if (!m_daemon_address.empty() && (!m_daemon_host.empty() || 0 != m_daemon_port)) {
 		fail_msg_writer() << "you can't specify daemon host or port several times";
@@ -1257,6 +1262,7 @@ void simple_wallet::handle_command_line(const boost::program_options::variables_
   m_restore_keys = command_line::get_arg(vm, arg_restore_keys);
   m_restore_legacy = command_line::get_arg(vm, arg_restore_legacy);
   m_restore_ro = command_line::get_arg(vm, arg_restore_readonly);
+  m_nocache = command_line::get_arg(vm, arg_nocache);
   m_classic = command_line::get_arg(vm, arg_classic);
   m_silent_mode = command_line::get_arg(vm, arg_silent_mode);
   m_seed = command_line::get_arg(vm, arg_seed);
@@ -1301,7 +1307,7 @@ bool simple_wallet::new_wallet
     }
 
     try {
-      CryptoNote::WalletHelper::storeWallet_7111WL(*m_wallet, m_wallet_file);
+      CryptoNote::WalletHelper::storeWallet_7111WL(*m_wallet, m_wallet_file, !m_nocache);
     } catch (std::exception& e) {
       fail_msg_writer() << "failed to save new wallet: " << e.what();
       throw;
@@ -1369,7 +1375,7 @@ bool simple_wallet::view_wallet
     }
 
     try {
-      CryptoNote::WalletHelper::storeWallet_7111WL(*m_wallet, m_wallet_file);
+      CryptoNote::WalletHelper::storeWallet_7111WL(*m_wallet, m_wallet_file, !m_nocache);
     } catch (std::exception& e) {
       fail_msg_writer() << "failed to save new wallet: " << e.what();
       throw;
@@ -1389,7 +1395,7 @@ bool simple_wallet::view_wallet
 bool simple_wallet::close_wallet()
 {
   try {
-    CryptoNote::WalletHelper::storeWallet_7111WL(*m_wallet, m_wallet_file);
+    CryptoNote::WalletHelper::storeWallet_7111WL(*m_wallet, m_wallet_file, !m_nocache);
   } catch (const std::exception& e) {
     fail_msg_writer() << e.what();
     return false;
@@ -1404,7 +1410,7 @@ bool simple_wallet::close_wallet()
 bool simple_wallet::save(const std::vector<std::string> &args)
 {
   try {
-    CryptoNote::WalletHelper::storeWallet_7111WL(*m_wallet, m_wallet_file);
+    CryptoNote::WalletHelper::storeWallet_7111WL(*m_wallet, m_wallet_file, !m_nocache);
     success_msg_writer() << "Wallet data saved";
   } catch (const std::exception& e) {
     fail_msg_writer() << e.what();
@@ -1866,7 +1872,7 @@ bool simple_wallet::transfer(const std::vector<std::string> &args) {
     success_msg_writer(true) << "Money successfully sent, transaction " << Common::podToHex(txInfo.hash);
 
     try {
-      CryptoNote::WalletHelper::storeWallet_7111WL(*m_wallet, m_wallet_file);
+      CryptoNote::WalletHelper::storeWallet_7111WL(*m_wallet, m_wallet_file, !m_nocache);
     } catch (const std::exception& e) {
       fail_msg_writer() << e.what();
       return true;
@@ -2053,6 +2059,7 @@ int main(int argc, char* argv[]) {
   command_line::add_arg(desc_params, arg_testnet);
 //$$$$
   command_line::add_arg(desc_params, arg_silent_mode);
+  command_line::add_arg(desc_params, arg_nocache);
   command_line::add_arg(desc_params, arg_classic);
   command_line::add_arg(desc_params, arg_restore_seed);
   command_line::add_arg(desc_params, arg_restore_keys);
@@ -2094,7 +2101,7 @@ int main(int argc, char* argv[]) {
 		} 
 	else if (command_line::get_arg(vm, command_line::arg_version))  
 		{
-			std::cout << cyan << CRYPTONOTE_NAME << " console wallet " << teal << PROJECT_VERSION_LONG << grey << std::endl << std::endl;
+			std::cout << cyan << CRYPTONOTE_NAME << " classic console wallet " << teal << PROJECT_VERSION_LONG << grey << std::endl << std::endl;
 			return false;
 		}
 
@@ -2120,10 +2127,9 @@ int main(int argc, char* argv[]) {
 	<< CRYPTONOTE_NAME 
 	<< " classic wallet " 
 	<< PROJECT_VERSION_LONG 
-	<< "..."
-	<< std::endl 
+	<< " :)"
 	<< std::endl;
-
+		
   CryptoNote::Currency currency = CryptoNote::CurrencyBuilder(logManager).
     testnet(command_line::get_arg(vm, arg_testnet)).currency();
 
@@ -2206,7 +2212,7 @@ int main(int argc, char* argv[]) {
     
     try {
       logger(INFO) << "Storing wallet...";
-      CryptoNote::WalletHelper::storeWallet_7111WL(*wallet, walletFileName);
+      CryptoNote::WalletHelper::storeWallet_7111WL(*wallet, walletFileName, !command_line::get_arg(vm, arg_nocache));
       logger(INFO, BRIGHT_GREEN) << "Stored ok";
     } catch (const std::exception& e) {
       logger(ERROR, BRIGHT_RED) << "Failed to store wallet: " << e.what();
@@ -2294,7 +2300,7 @@ bool simple_wallet::change_password(const std::vector<std::string>& args) {
 		//m_wallet->changePassword(m_pass, password);
 			
 		try {
-			CryptoNote::WalletHelper::storeWallet_7111WL(*m_wallet, m_wallet_file);
+			CryptoNote::WalletHelper::storeWallet_7111WL(*m_wallet, m_wallet_file, !m_nocache);
 			success_msg_writer() 
 				<< "Wallet data saved";
 		} catch (const std::exception& e) {

@@ -184,6 +184,7 @@ namespace CryptoNote
 		std::string m_wallet_file;
 //$$$$	
 		//Crypto::SecretKey m_common_recovery_key; //key to use in recovery
+		bool m_nocache;  // discard wallets cache
 		bool m_is_recovery_mode;  // recovery mode, not new wallet
 		bool m_is_copy; // is direct keys copy mode
 		bool m_restore_seed;  // recovery by mnemoseed flag

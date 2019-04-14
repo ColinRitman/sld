@@ -13,16 +13,16 @@ namespace CryptoNote
 {
 	namespace parameters 
 	{
-		const uint64_t CRYPTONOTE_MAX_BLOCK_NUMBER                   = 500000000;
+		const uint64_t 		CRYPTONOTE_MAX_BLOCK_NUMBER                   = 500000000;
 		const std::size_t   CRYPTONOTE_MAX_BLOCK_BLOB_SIZE                = 500000000;
 		const std::size_t   CRYPTONOTE_MAX_TX_SIZE                        = 1000000000;
-		const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX       = ADDRESS_BASE58_PREFIX;//Prefix of the wallet address: start with 135=ZZP, 117=SLD
+		const uint64_t 		CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX       = ADDRESS_BASE58_PREFIX;//Prefix of the wallet address: start with 135=ZZP, 117=SLD
 		const std::size_t   CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW          = 18;
-		const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT            = 60 * 60 * 2;
+		const uint64_t 		CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT            = 60 * 60 * 2;
 
 		const std::size_t   BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW             = 30;
 
-		const uint64_t MONEY_SUPPLY                                  = static_cast<uint64_t>(-1);//Total amount of atomic units to be emitted.
+		const uint64_t 		MONEY_SUPPLY                                  = static_cast<uint64_t>(-1);//Total amount of atomic units to be emitted.
 
 		const std::size_t   CRYPTONOTE_REWARD_BLOCKS_WINDOW               = 100;
 		const std::size_t   CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE     = 1048576; //size of block (bytes) after which reward for block calculated using block size
@@ -272,7 +272,7 @@ __attribute__((unused))
 		{ 2289200,   "7c12db5dbdbca4f81c381188dbbbe7c9ff6c11342841516d11c417721919f5b2" },		
 		{ 2293640,   "eb54329dac6b6a2b670c45519c1a81a86d0ac704326332f2d5121adacca0830e" },		
 		{ 2300000,   "0933b4b03773787970dfa536faf99844f9df4f4dd0b2565af58745864d9527c1" },		
-		{ 2313631,   "f3f7fe75797ccef0e955ec381cd53859d15e7f2c848b98d80f23344974b70eb4" },		
+		{ 2318500,   "4a8c63321e835acbf49c2c293b806ee05f5bcd66d9694a14affd50d9958167af" },		
 	};
 
 } // CryptoNote

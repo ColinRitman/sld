@@ -299,7 +299,7 @@ WalletSerializer::WalletSerializer(
 { }
 /////////////////////////////////////////////////////////////////////////////
 void WalletSerializer::save_7WS(const std::string& password, Common::IOutputStream& destination, bool saveDetails, bool saveCache) {
-std::cout << "|+ WalletSerializer::save_7WS" << std::endl;
+//std::cout << "|+ WalletSerializer::save_7WS" << std::endl;
   CryptoContext cryptoContext = generateCryptoContext(password);
 
   CryptoNote::BinaryOutputStreamSerializer s(destination);
@@ -325,7 +325,7 @@ std::cout << "|+ WalletSerializer::save_7WS" << std::endl;
   }
 
   s.endObject();
-std::cout << "|- WalletSerializer::save_7WS" << std::endl;
+//std::cout << "|- WalletSerializer::save_7WS" << std::endl;
 }
 /////////////////////////////////////////////////////////////////////////////
 CryptoContext WalletSerializer::generateCryptoContext(const std::string& password) {

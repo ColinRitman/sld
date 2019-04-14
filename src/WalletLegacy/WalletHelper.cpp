@@ -98,7 +98,7 @@ void WalletHelper::IWalletRemoveObserverGuard::removeObserver() {
   m_removed = true;
 }
 ///////////////////////////////////////////////////////////////////////////////
-void WalletHelper::storeWallet_7111WL(CryptoNote::IWalletLegacy& wallet, const std::string& walletFilename) {
+void WalletHelper::storeWallet_7111WL(CryptoNote::IWalletLegacy& wallet, const std::string& walletFilename, bool save_cache) {
 
 	boost::filesystem::path tempFile = boost::filesystem::unique_path(walletFilename + ".tmp.%%%%-%%%%");
 
@@ -117,7 +117,8 @@ void WalletHelper::storeWallet_7111WL(CryptoNote::IWalletLegacy& wallet, const s
 		throw;
 	}
 	// we need to store details and cache
-	std::error_code saveError = walletSaveWrapper_711WL(wallet, file, true, true);
+	//std::error_code saveError = walletSaveWrapper_711WL(wallet, file, true, true);
+	std::error_code saveError = walletSaveWrapper_711WL(wallet, file, true, save_cache);
   
 	if (saveError) {
 		file.close();

@@ -53,7 +53,7 @@ namespace CryptoNote {
 	};
 	/////////////////////////////////////////////////////////////////////////////
 	void prepareFileNames(const std::string& file_path, std::string& keys_file, std::string& wallet_file);
-	void storeWallet_7111WL(CryptoNote::IWalletLegacy& wallet, const std::string& walletFilename);
+	void storeWallet_7111WL(CryptoNote::IWalletLegacy& wallet, const std::string& walletFilename, bool save_cache = true);
 	}
 /////////////////////////////////////////////////////////////////////////////
 }
