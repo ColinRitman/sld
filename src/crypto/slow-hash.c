@@ -29,25 +29,25 @@ void cn_slow_hash_f(void * a, const void * b, size_t c, void * d){
 }
 
 #if defined(__GNUC__)
-#define likely(x) (__builtin_expect(!!(x), 1))
-#define unlikely(x) (__builtin_expect(!!(x), 0))
+	#define likely(x) (__builtin_expect(!!(x), 1))
+	#define unlikely(x) (__builtin_expect(!!(x), 0))
 #else
-#define likely(x) (x)
-#define unlikely(x) (x)
-#define __attribute__(x)
+	#define likely(x) (x)
+	#define unlikely(x) (x)
+	#define __attribute__(x)
 #endif
 
 #if defined(_MSC_VER)
-#define restrict
+	#define restrict
 #endif
 //////
 #define MEMORY_CLASSIC	(1 << 21)//(1 << 21)
-#define MEMORY_LIGHT	(1 << 20)
-#define MEMORY_NANO		(1 << 19)
+//#define MEMORY_LIGHT	(1 << 20)
+//#define MEMORY_NANO		(1 << 19)
 
 #define ITER_CLASSIC	(1 << 16)//(1 << 19)
-#define ITER_LIGHT		(1 << 18)
-#define ITER_NANO		(1 << 17)
+//#define ITER_LIGHT		(1 << 18)
+//#define ITER_NANO		(1 << 17)
 //////
 #define AES_BLOCK_SIZE  16
 #define AES_KEY_SIZE    32 /*16*/
@@ -65,11 +65,11 @@ union cn_slow_hash_state {
 #pragma pack(pop)
 
 #if defined(_MSC_VER)
-#define ALIGNED_DATA(x) __declspec(align(x))
-#define ALIGNED_DECL(t, x) ALIGNED_DATA(x) t
+	#define ALIGNED_DATA(x) __declspec(align(x))
+	#define ALIGNED_DECL(t, x) ALIGNED_DATA(x) t
 #elif defined(__GNUC__)
-#define ALIGNED_DATA(x) __attribute__((aligned(x)))
-#define ALIGNED_DECL(t, x) t ALIGNED_DATA(x)
+	#define ALIGNED_DATA(x) __attribute__((aligned(x)))
+	#define ALIGNED_DECL(t, x) t ALIGNED_DATA(x)
 #endif
 
 struct cn_ctx {
